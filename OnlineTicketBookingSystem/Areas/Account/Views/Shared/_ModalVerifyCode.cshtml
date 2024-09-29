@@ -1,0 +1,50 @@
+﻿<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="otpModalLabel">Yêu cầu xác thực</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>Mã code đã được gửi tới gmail</p>
+                <div id="countdown" class="mb-3" style="font-size: 20px; color: red"></div>
+                <div class="otp-container">
+                    <input type="text" class="form-control otp-input empty" maxlength="1" id="otp1" />
+                    <input type="text" class="form-control otp-input empty" maxlength="1" id="otp2" />
+                    <input type="text" class="form-control otp-input empty" maxlength="1" id="otp3" />
+                    <input type="text" class="form-control otp-input empty" maxlength="1" id="otp4" />
+                    <input type="text" class="form-control otp-input empty" maxlength="1" id="otp5" />
+                    <input type="text" class="form-control otp-input empty" maxlength="1" id="otp6" />
+                </div>
+                <div id="otpFeedback" class="mt-2" style="display: none"></div>
+                <div id="resendMessage" style="display: none;">
+                    <button type="button" class="btn btn-link" id="resendOtp">Gửi lại mã</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="submitOtp">Xác Nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="accountModalLabel">Tài Khoản Chưa Kích Hoạt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p><strong>Để tiếp tục, bạn cần kích hoạt tài khoản của mình.</strong></p>
+                <p>Bạn có muốn gửi mã xác thực đến email của bạn không?</p>
+                <p class="text-warning">Vui lòng kiểm tra hộp thư đến để nhận mã xác thực.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="nextToOtpModal">Gửi mã xác thực</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-5">
+        <section class="border p-4 rounded shadow-sm bg-light">
+            <form method="post">
+                <div class="form-floating mb-3">
+                    <input class="form-control" id="username" name="username" required aria-required="true" placeholder="name@example.com" />
+                    <label for="username">Tài khoản</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input class="form-control" type="password" id="password" name="password" required aria-required="true" placeholder="password" />
+                    <label for="password">Mật khẩu</label>
+                </div>
+                <div>
+                    @* <button type="submit" class="w-100 btn btn-lg btn-primary">Đăng nhập</button> *@
+                    <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="w-100 btn btn-lg btn-primary">Đăng nhập</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,109 @@
+﻿@model OnlineTicketBookingSystem.Models.ViewModel.UserVM
+
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+<div class="row justify-content-center align-items-center">
+    <div class="col-md-8 col-lg-6">
+        <form class="bg-light p-4 rounded shadow" method="post">
+            <div class="row">
+                <div class="form-floating mb-3 col-6">
+                    <input class="form-control" asp-for="@Model.User.FullName" aria-required="true" placeholder="Nhập họ và tên" required />
+                    <label asp-for="@Model.User.FullName" class="mx-2">Họ và tên</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <input class="form-control" asp-for="@Model.User.Email" type="email" aria-required="true" placeholder="name@example.com" required />
+                    <label asp-for="@Model.User.Email" class="mx-2">Email</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <input class="form-control" asp-for="@Model.User.Password" aria-required="true" placeholder="Mật khẩu" required />
+                    <label asp-for="@Model.User.Password" class="mx-2">Mật khẩu</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" aria-required="true" placeholder="Xác nhận mật khẩu" required />
+                    <label for="confirmPassword" class="mx-2">Xác nhận mật khẩu</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <input class="form-control" asp-for="@Model.User.PhoneNumber" aria-required="true" placeholder="Số điện thoại" required />
+                    <label asp-for="@Model.User.PhoneNumber" class="mx-2">Số điện thoại</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <input class="form-control" asp-for="@Model.User.DateOfBirth" type="date" aria-required="true" placeholder="Ngày sinh" required />
+                    <label asp-for="@Model.User.DateOfBirth" class="mx-2">Ngày sinh</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <select asp-for="@Model.User.Gender" class="form-select" aria-required="true">
+                        <option disabled selected>-- Chọn giới tính --</option>
+                        <option value="Male">Nam</option>
+                        <option value="Female">Nữ</option>
+                        <option value="Other">Khác</option>
+                    </select>
+                    <label asp-for="@Model.User.Gender" class="mx-2">Giới tính</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <select asp-items="@Model.Group" asp-for="@Model.User.GroupId" class="form-select">
+                        <option disabled selected>-- Chọn vai trò --</option>
+                    </select>
+                    <label asp-for="@Model.User.GroupId" class="mx-2">Vai trò</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <select id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.User.ProvinceCode" class="form-select">
+                        <option disabled selected>-- Chọn tỉnh --</option>
+                    </select>
+                    <label asp-for="@Model.User.ProvinceCode" class="mx-2">Tỉnh</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <select id="districtDropdown" asp-for="@Model.User.DistrictCode" class="form-select">
+                        <option disabled selected>-- Chọn huyện/quận --</option>
+                    </select>
+                    <label asp-for="@Model.User.DistrictCode" class="mx-2">Huyện/Quận</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <select id="wardDropdown" asp-for="@Model.User.WardCode" class="form-select">
+                        <option disabled selected>-- Chọn phường/xã --</option>
+                    </select>
+                    <label asp-for="@Model.User.WardCode" class="mx-2">Phường/Xã</label>
+                </div>
+
+                <div class="form-floating mb-3 col-6">
+                    <input class="form-control" asp-for="@Model.User.Address" aria-required="true" placeholder="Địa chỉ" required />
+                    <label class="mx-2" asp-for="@Model.User.Address">Địa chỉ</label>
+                </div>
+
+            </div>
+
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Đăng ký</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#provinceDropdown').change(function () {
+                var provinceCode = $(this).val();
+                loadDistricts(provinceCode);
+            });
+
+            $('#districtDropdown').change(function () {
+                var districtCode = $(this).val();
+                loadWards(districtCode);
+            });
+
+        })
+    </script>
+}

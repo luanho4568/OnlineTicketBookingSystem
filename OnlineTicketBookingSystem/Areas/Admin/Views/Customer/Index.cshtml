@@ -1,0 +1,26 @@
+﻿<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2>Danh sách khách hàng</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
+                <i class="bi bi-plus"></i>
+                Thêm mới khách hàng
+            </a>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped mt-4" id="tblData">
+        <thead>
+        <th>STT</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>CCCD</th> 
+        <th>Địa chỉ</th>
+        <th>Số chuyến đi</th>
+        </thead>
+    </table>
+</div>
+@section Scripts {
+    <script src="~/js/customer.js"></script>
+}
