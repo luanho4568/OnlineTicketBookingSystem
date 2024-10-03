@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/verifyCode.css" />
+
 </head>
 <body>
     <div class="wrapper">
@@ -39,6 +40,7 @@
             </nav>
         </header>
 
+        <!-- Phần content -->
         <div class="content container mt-4">
             <main role="main" class="pb-3">
                 @RenderBody()
@@ -46,17 +48,21 @@
             </main>
         </div>
 
+        <!-- Footer sẽ luôn ở dưới đáy -->
         <footer class="footer text-muted">
             <div class="container text-center">
                 Hồ Đình Thanh Luân &copy; 2024 - Hệ thống đặt vé xe trực tuyến
             </div>
         </footer>
     </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/verifyCode.js"></script>
     <script src="~/js/locationHandler.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

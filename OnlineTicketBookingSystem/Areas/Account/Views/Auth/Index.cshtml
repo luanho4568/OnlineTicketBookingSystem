@@ -1,4 +1,6 @@
-﻿@{
+﻿@model User
+
+@{
     ViewData["Title"] = "Đăng nhập";
 }
 
@@ -6,18 +8,18 @@
 <div class="row justify-content-center align-items-center">
     <div class="col-md-5">
         <section class="border p-4 rounded shadow-sm bg-light">
-            <form method="post">
+            <div id="feedbackMessage" class="alert d-none" role="alert"></div>
+            <form method="post" id="loginForm" asp-action="Login">
                 <div class="form-floating mb-3">
-                    <input class="form-control" id="username" name="username" required aria-required="true" placeholder="name@example.com" />
-                    <label for="username">Tài khoản</label>
+                    <input class="form-control" asp-for="Email" type="email" id="email" aria-required="true" placeholder="name@example.com" required />
+                    <label asp-for="Email" class="mx-2">Tài khoản</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input class="form-control" type="password" id="password" name="password" required aria-required="true" placeholder="password" />
-                    <label for="password">Mật khẩu</label>
+                    <input class="form-control" asp-for="Password" type="password" id="password" aria-required="true" placeholder="name@example.com" required />
+                    <label asp-for="Password" class="mx-2">Mật khẩu</label>
                 </div>
                 <div>
-                    @* <button type="submit" class="w-100 btn btn-lg btn-primary">Đăng nhập</button> *@
-                    <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="w-100 btn btn-lg btn-primary">Đăng nhập</a>
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Đăng nhập</button>
                 </div>
             </form>
         </section>

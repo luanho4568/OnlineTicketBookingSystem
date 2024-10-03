@@ -10,11 +10,9 @@ namespace AdminDriverDashboard.Areas.Account.Controllers
     public class RegisterController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private IWebHostEnvironment _webHostEnvironment;
-        public RegisterController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        public RegisterController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _webHostEnvironment = webHostEnvironment;
         }
         public async Task<IActionResult> Index()
         {
@@ -77,7 +75,5 @@ namespace AdminDriverDashboard.Areas.Account.Controllers
                 return View(userVM);
             }
         }
-
-
     }
 }

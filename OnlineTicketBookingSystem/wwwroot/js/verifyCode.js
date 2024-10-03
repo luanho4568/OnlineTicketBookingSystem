@@ -1,145 +1,131 @@
-﻿$(document).ready(function () {
-    initializeModal(); // Khởi tạo modal
-    initializeOtpInputs(); // Khởi tạo ô nhập OTP
-    initializeOtpSubmission(); // Khởi tạo việc xác nhận OTP
-    initializeResendOtp(); // Khởi tạo việc gửi lại mã OTP
+﻿var countdownTimer;
+var timeLeft = 30;
+
+$(document).ready(function () {
+    $('#loginForm').on('submit', function (e) {
+        e.preventDefault();
+        const user = {
+            Email: $('#email').val(),
+            Password: $('#password').val()
+        };
+        $.ajax({
+            url: '/Account/Auth/Login',
+            type: 'POST',
+            data: JSON.stringify(user),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                if (response.code === 403) {
+                    initializeModal(user);
+                } else if (response.code === 200) {
+                    window.location.href = '/Admin/Home';
+                }
+            },
+            error: function (errormessage) {
+                console.log(errormessage.responseText);
+            }
+        });
+    });
+
+    $('#submitOtp').click(function () {
+        const otpCode = $('#otpInput').val().toUpperCase();
+        const userEmail = $('#email').val();
+
+        $.ajax({
+            url: '/Account/Auth/VerifyCode',
+            type: 'POST',
+            data: JSON.stringify({ Email: userEmail, CodeId: otpCode }),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                if (response.code === 200) {
+                    $('#otpModal').modal('hide');
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else if (response.code === 404) {
+                    $('#otpFeedback').text(response.message).css('color', 'red').show();
+                }
+            },
+            error: function (errormessage) {
+                console.log(errormessage.responseText);
+            }
+        });
+    });
+
+
+    // Gửi lại mã OTP
+    $('#resendOtp').click(function () {
+        const userEmail = $('#email').val();
+
+        $.ajax({
+            url: '/Account/Auth/CheckActivation',
+            type: 'POST',
+            data: JSON.stringify({ Email: userEmail }),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.code === 200) {
+                    $('#otpFeedback').hide();
+                    resetCountdown();
+                    startCountdown();
+                }
+            },
+            error: function (errormessage) {
+                console.log(errormessage.responseText);
+            }
+        });
+    });
 });
 
-function initializeModal() {
-
-    //$('#accountModal').modal('show');
-
+function initializeModal(user) {
+    $('#accountModal').modal('show');
     $("#nextToOtpModal").click(function () {
-        $('#accountModal').modal('hide');
-        $('#otpModal').modal('show');
-        resetCountdown();
-        startCountdown();
-    });
-}
-
-function initializeOtpInputs() {
-    $(".otp-input").on("input", function () {
-        toggleInputState($(this));
-        if ($(this).val().length >= $(this).attr("maxlength")) {
-            $(this).next(".otp-input").focus();
-        }
-    });
-
-    $(".otp-input").on("click", function () {
-        $(this).focus();
-    });
-
-    $(".otp-input").on("keydown", function (e) {
-        handleKeyDown(e, $(this));
-    });
-}
-
-function toggleInputState(input) {
-    if (input.val()) {
-        input.removeClass("empty").addClass("filled");
-    } else {
-        input.removeClass("filled").addClass("empty");
-    }
-}
-
-function handleKeyDown(e, input) {
-    if (e.key >= 0 && e.key <= 9) {
-        input.val(e.key);
-        toggleInputState(input);
-        input.next(".otp-input").focus();
-        e.preventDefault();
-    } else if (e.key === "Backspace") {
-        e.preventDefault();
-        if (input.val() === '') {
-            var prevInput = input.prev(".otp-input");
-            if (prevInput.length) {
-                prevInput.focus();
+        $.ajax({
+            url: '/Account/Auth/CheckActivation',
+            type: 'POST',
+            data: JSON.stringify({ Email: user.Email }),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (response.code === 200) {
+                    $('#accountModal').modal('hide');
+                    $('#otpModal').modal('show');
+                    resetCountdown();
+                    startCountdown();
+                }
+            },
+            error: function (errormessage) {
+                console.log(errormessage.responseText);
             }
-        } else {
-            input.val('');
-            toggleInputState(input);
-        }
-    }
-}
-
-function initializeOtpSubmission() {
-    $("#submitOtp").click(function () {
-        var otp = getOtp();
-        const validOtp = "123456"; // Thay đổi mã xác thực cứng nếu cần
-
-        if (otp.length === 6) {
-            validateOtp(otp, validOtp);
-        } else {
-            showOtpFeedback("Vui lòng nhập đầy đủ mã xác thực!", "red");
-        }
+        });
     });
 }
 
-function getOtp() {
-    var otp = "";
-    $(".otp-input").each(function () {
-        otp += $(this).val();
-    });
-    return otp;
-}
-
-function validateOtp(otp, validOtp) {
-    if (otp === validOtp) {
-        showOtpFeedback("Mã xác thực thành công!", "green");
-        clearInterval(countdownInterval);
-        $("#resendMessage").hide();
-    } else {
-        showOtpFeedback("Mã xác thực không tồn tại!", "red");
-    }
-}
-
-function showOtpFeedback(message, color) {
-    $("#otpFeedback")
-        .css("color", color)
-        .text(message)
-        .show();
-}
-
-function initializeResendOtp() {
-    $("#resendOtp").click(function () {
-        resetCountdown();
-        startCountdown();
-        $("#resendMessage").hide();
-        resetOtpInputs();
-        enableOtpInputs();
-    });
-}
-
-function resetOtpInputs() {
-    $(".otp-input").val('').removeClass("filled").addClass("empty");
-    $("#otpFeedback").hide();
-}
-
-function enableOtpInputs() {
-    $(".otp-input").prop("disabled", false);
-    $("#submitOtp").prop("disabled", false);
-}
-
-let countdownTime;
-let countdownInterval;
-
+// Reset thời gian đếm ngược
 function resetCountdown() {
-    countdownTime = 5;
-    $("#countdown").text(countdownTime + "s");
-    $("#resendMessage").hide();
+    timeLeft = 120;
+    $('#countdown').text(timeLeft + "s");
+    $('#resendMessage').hide();
+    $('#otpFeedback').hide();
 }
 
+// Bắt đầu đếm ngược thời gian
 function startCountdown() {
-    countdownInterval = setInterval(function () {
-        countdownTime--;
-        $("#countdown").text(countdownTime + "s");
+    countdownTimer = setInterval(function () {
+        timeLeft--;
+        $('#countdown').text(timeLeft + "s");
 
-        if (countdownTime <= 0) {
-            clearInterval(countdownInterval);
-            $(".otp-input").prop("disabled", true);
-            showOtpFeedback("Mã xác thực đã hết hạn!", "red");
-            $("#resendMessage").show();
-            $("#submitOtp").prop("disabled", true);
+        if (timeLeft <= 0) {
+            clearInterval(countdownTimer);
+            $('#countdown').text("Mã xác thực đã hết hạn!");
+            $('#resendMessage').show(); // Hiển thị nút gửi lại mã OTP
         }
     }, 1000);
 }

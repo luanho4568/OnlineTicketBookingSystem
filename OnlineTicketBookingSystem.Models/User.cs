@@ -9,8 +9,7 @@ namespace OnlineTicketBookingSystem.Models
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-        [Required(ErrorMessage = "Họ tên không được để trống")]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
         [Required(ErrorMessage = "Email không được để trống")]
         [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ")]
         public string Email { get; set; }

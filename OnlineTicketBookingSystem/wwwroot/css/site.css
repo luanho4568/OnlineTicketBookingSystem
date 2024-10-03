@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -19,4 +19,20 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Đảm bảo phần chính chiếm không gian còn lại giữa header và footer */
+.content {
+    flex-grow: 1;
+}
+
+/* Đảm bảo footer luôn ở dưới đáy */
+.footer {
+    background-color: #f8f9fa;
+    padding: 1rem 0;
 }
