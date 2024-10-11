@@ -1,4 +1,6 @@
-﻿var countdownTimer;
+﻿import apiMain from '/js/apiHelper.js';
+
+var countdownTimer;
 var timeLeft = 30;
 
 $(document).ready(function () {
@@ -8,78 +10,71 @@ $(document).ready(function () {
             Email: $('#email').val(),
             Password: $('#password').val()
         };
-        $.ajax({
-            url: '/Account/Auth/Login',
-            type: 'POST',
-            data: JSON.stringify(user),
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                console.log(response);
-                if (response.code === 403) {
-                    initializeModal(user);
-                } else if (response.code === 200) {
-                    window.location.href = '/Admin/Home';
+
+        // Sử dụng apiMain.api cho Login (không cần Bearer token)
+        apiMain.api('/api/v1/Auth/Login', 'POST', user, function (response) {
+            console.log(response);
+            if (response.code === 403) {
+                initializeModal(user);
+            } else if (response.code === 200) {
+                localStorage.setItem('authToken', response.token);
+                localStorage.setItem('user', JSON.stringify({ fullName: response.fullName, group: response.group }));
+                var token = localStorage.getItem('authToken');
+                if (token) {
+                    if (response.group == 1) {
+                        window.location.href = '/Admin/Home';
+                    }
+                    //else if (response.group == 2) {
+                    //    window.location.href = '/Driver/Home';
+                    //} else if (response.group == 3) {
+                    //    window.location.href = '/Customer/Home';
+                    //}
                 }
-            },
-            error: function (errormessage) {
-                console.log(errormessage.responseText);
             }
+        }, function (errormessage) {
+            console.log(errormessage.responseText);
         });
     });
 
     $('#submitOtp').click(function () {
         const otpCode = $('#otpInput').val().toUpperCase();
         const userEmail = $('#email').val();
+        const userPassword = $('#password').val();
 
-        $.ajax({
-            url: '/Account/Auth/VerifyCode',
-            type: 'POST',
-            data: JSON.stringify({ Email: userEmail, CodeId: otpCode }),
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                console.log(response);
-                if (response.code === 200) {
-                    $('#otpModal').modal('hide');
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: response.message,
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
-                } else if (response.code === 404) {
-                    $('#otpFeedback').text(response.message).css('color', 'red').show();
-                }
-            },
-            error: function (errormessage) {
-                console.log(errormessage.responseText);
+        // Sử dụng apiMain.apiWithBearer cho VerifyCode (cần Bearer token)
+        apiMain.apiWithBearer('/api/v1/Auth/VerifyCode', 'POST', { Email: userEmail, Password: userPassword, CodeId: otpCode }, function (response) {
+            console.log(response);
+            if (response.code === 200) {
+                $('#otpModal').modal('hide');
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else if (response.code === 404) {
+                $('#otpFeedback').text(response.message).css('color', 'red').show();
             }
+        }, function (errormessage) {
+            console.log(errormessage.responseText);
         });
     });
-
 
     // Gửi lại mã OTP
     $('#resendOtp').click(function () {
         const userEmail = $('#email').val();
+        const userPassword = $('#password').val();
 
-        $.ajax({
-            url: '/Account/Auth/CheckActivation',
-            type: 'POST',
-            data: JSON.stringify({ Email: userEmail }),
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (response.code === 200) {
-                    $('#otpFeedback').hide();
-                    resetCountdown();
-                    startCountdown();
-                }
-            },
-            error: function (errormessage) {
-                console.log(errormessage.responseText);
+        // Sử dụng apiMain.api cho CheckActivation (không cần Bearer token)
+        apiMain.api('/api/v1/Auth/CheckActivation', 'POST', { Email: userEmail, Password: userPassword }, function (response) {
+            if (response.code === 200) {
+                $('#otpFeedback').hide();
+                resetCountdown();
+                startCountdown();
             }
+        }, function (errormessage) {
+            console.log(errormessage.responseText);
         });
     });
 });
@@ -87,23 +82,17 @@ $(document).ready(function () {
 function initializeModal(user) {
     $('#accountModal').modal('show');
     $("#nextToOtpModal").click(function () {
-        $.ajax({
-            url: '/Account/Auth/CheckActivation',
-            type: 'POST',
-            data: JSON.stringify({ Email: user.Email }),
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (response.code === 200) {
-                    $('#accountModal').modal('hide');
-                    $('#otpModal').modal('show');
-                    resetCountdown();
-                    startCountdown();
-                }
-            },
-            error: function (errormessage) {
-                console.log(errormessage.responseText);
+
+        // Sử dụng apiMain.api cho CheckActivation (không cần Bearer token)
+        apiMain.api('/api/v1/Auth/CheckActivation', 'POST', { Email: user.Email, Password: user.Password }, function (response) {
+            if (response.code === 200) {
+                $('#accountModal').modal('hide');
+                $('#otpModal').modal('show');
+                resetCountdown();
+                startCountdown();
             }
+        }, function (errormessage) {
+            console.log(errormessage.responseText);
         });
     });
 }

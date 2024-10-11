@@ -3,13 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineTicketBookingSystem", "OnlineTicketBookingSystem\OnlineTicketBookingSystem.csproj", "{486015A3-5386-4B4E-922A-5E70CC516917}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineTicketBookingSystem", "OnlineTicketBookingSystem\OnlineTicketBookingSystem.csproj", "{486015A3-5386-4B4E-922A-5E70CC516917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineTicketBookingSystem.DAL", "OnlineTicketBookingSystem.DAL\OnlineTicketBookingSystem.DAL.csproj", "{91D310F3-6D35-4F10-A5B9-9AD061918378}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineTicketBookingSystem.DAL", "OnlineTicketBookingSystem.DAL\OnlineTicketBookingSystem.DAL.csproj", "{91D310F3-6D35-4F10-A5B9-9AD061918378}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A6992576-7556-4612-8B2B-B298317EE90F} = {A6992576-7556-4612-8B2B-B298317EE90F}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineTicketBookingSystem.Models", "OnlineTicketBookingSystem.Models\OnlineTicketBookingSystem.Models.csproj", "{147186CE-2D9B-4141-B005-C2C30B90ED61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineTicketBookingSystem.Models", "OnlineTicketBookingSystem.Models\OnlineTicketBookingSystem.Models.csproj", "{147186CE-2D9B-4141-B005-C2C30B90ED61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineTicketBookingSystem.Utility", "OnlineTicketBookingSystem.Utility\OnlineTicketBookingSystem.Utility.csproj", "{A6992576-7556-4612-8B2B-B298317EE90F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineTicketBookingSystem.Utility", "OnlineTicketBookingSystem.Utility\OnlineTicketBookingSystem.Utility.csproj", "{A6992576-7556-4612-8B2B-B298317EE90F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

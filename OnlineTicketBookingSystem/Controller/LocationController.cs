@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 
-namespace AdminDriverDashboard.Areas.Account.Controllers
+namespace OnlineTicketBookingSystem.Controller
 {
-    [Route("Api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class LocationController : ControllerBase
     {
@@ -13,7 +13,6 @@ namespace AdminDriverDashboard.Areas.Account.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
         [HttpGet("GetDistrictsByProvince")]
         public async Task<IActionResult> GetDistrictsByProvince(string provinceCode)
         {

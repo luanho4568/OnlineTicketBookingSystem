@@ -1,8 +1,12 @@
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OnlineTicketBookingSystem.DAL.Data;
 using OnlineTicketBookingSystem.DAL.Repository;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 using OnlineTicketBookingSystem.Utility;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +17,75 @@ builder.Services.AddDbContext<ApplicationDbContext>(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(opt =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"])),
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+        };
+
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                // Ghi log khi xác thực thất bại
+                Console.WriteLine("Token xác thực thất bại: " + context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                // Ghi log khi token hợp lệ
+                Console.WriteLine("Token xác thực thành công cho user: " + context.Principal.Identity.Name);
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                // Ghi log khi có lỗi thách thức (challenge) về việc xác thực
+                Console.WriteLine("Xác thực JWT bị từ chối: " + context.ErrorDescription);
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 var app = builder.Build();
@@ -36,8 +106,12 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Account}/{controller=Auth}/{action=Index}/{id?}"
+    pattern: "{area=Account}/{controller=Login}/{action=Index}/{id?}"
 );
+
 app.Run();

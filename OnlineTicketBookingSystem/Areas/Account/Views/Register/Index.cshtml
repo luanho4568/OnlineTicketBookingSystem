@@ -92,16 +92,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
+    <script type="module">
+        import location from '/js/location/locationHandler.js'
+
         $(document).ready(function () {
             $('#provinceDropdown').change(function () {
                 var provinceCode = $(this).val();
-                loadDistricts(provinceCode);
+                location.loadDistricts(provinceCode);
             });
 
             $('#districtDropdown').change(function () {
                 var districtCode = $(this).val();
-                loadWards(districtCode);
+                location.loadWards(districtCode);
             });
 
         })

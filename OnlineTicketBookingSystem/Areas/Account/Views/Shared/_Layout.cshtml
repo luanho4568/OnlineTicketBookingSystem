@@ -6,7 +6,6 @@
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/verifyCode.css" />
 
 </head>
 <body>
@@ -19,7 +18,7 @@
                     <div class="navbar-collapse collapse justify-content-end">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Account" asp-controller="Auth" asp-action="Index">Đăng Nhập</a>
+                                <a class="nav-link text-dark" asp-area="Account" asp-controller="Login" asp-action="Index">Đăng Nhập</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Account" asp-controller="Register" asp-action="Index">Đăng Ký</a>
@@ -59,10 +58,21 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/verifyCode.js"></script>
-    <script src="~/js/locationHandler.js"></script>
+    <script type="module" src="~/js/verifyCode.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script>
+        $(document).ready(function () {
+            const token = localStorage.getItem('authToken'); // Hoặc kiểm tra từ session hoặc cookie tùy thuộc vào cách bạn lưu token
+            const user = localStorage.getItem('user')
+            const userGroup = JSON.parse(user)?.group
+            console.log(userGroup)
+            if (token) {
+                if(userGroup == 1) {
+              window.location.href = "/Admin/Home";
+                }
+            }
+        });
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

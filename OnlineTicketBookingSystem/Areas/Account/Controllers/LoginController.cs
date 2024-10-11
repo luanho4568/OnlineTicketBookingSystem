@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace AdminDriverDashboard.Areas.Admin.Controllers
+namespace AdminDriverDashboard.Areas.Account.Controllers
 {
-    public class CustomerController : Controller
+    [Area("Account")]
+    public class LoginController : Controller
     {
-        [Area("Admin")]
         public IActionResult Index()
         {
             return View();

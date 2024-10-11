@@ -16,7 +16,7 @@ namespace AdminDriverDashboard.Areas.Account.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var groupGetAll = await _unitOfWork.Group.GetAllAsync();
+            var groupGetAll = await _unitOfWork.Group.GetAllAsync(u => u.Id != 1);
             var provinceGetAll = await _unitOfWork.Province.GetAllAsync();
             UserVM userVM = new UserVM();
             userVM.User = new User();

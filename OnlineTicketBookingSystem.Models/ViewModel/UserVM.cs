@@ -12,6 +12,10 @@ namespace OnlineTicketBookingSystem.Models.ViewModel
 
         [ValidateNever]
         public IEnumerable<SelectListItem> Province { get; set; }
+        [ValidateNever]
+        public IEnumerable<SelectListItem> District { get; set; }
+        [ValidateNever]
+        public IEnumerable<SelectListItem> Ward { get; set; }
 
     }
 }
