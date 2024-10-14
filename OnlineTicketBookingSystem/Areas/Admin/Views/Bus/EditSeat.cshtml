@@ -1,0 +1,50 @@
+﻿@model Seats
+
+@{
+    ViewData["Title"] = "Chỉnh sửa vé";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <form class="bg-white p-5 rounded shadow-lg" method="post" asp-action="EditSeat" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <!-- Thông tin xe -->
+            <fieldset class="border p-4 mb-4">
+                <legend class="text-primary fw-bold">Thông tin vé</legend>
+                <div class="row">
+                    <!-- Tên xe -->
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="Buses.Name" placeholder="Tên xe" disabled />
+                        <label class="mx-2" asp-for="Buses.Name">Tên xe</label>
+                    </div>
+
+                    <!-- Biển số xe -->
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="SeatNumber" placeholder="Số ghế" disabled />
+                        <label class="mx-2" asp-for="SeatNumber">Số ghế</label>
+                    </div>
+
+                    <div class="form-floating mb-3 col-md-6">
+                        <select class="form-select" asp-for="Status" required>
+                            <option disabled selected>-- Chọn trạng thái --</option>
+                            <option value="Empty">Trống</option>
+                            <option value="Sold">Đã mua</option>
+                            <option value="Maintenance">Bảo trì</option>
+                        </select>
+                        <label class="mx-2" asp-for="Status">Trạng thái</label>
+                    </div>
+            </fieldset>
+
+            <!-- Nút hành động -->
+            <div class="d-flex justify-content-end">
+                <a href="/Admin/Bus/Seats?busId=@ViewBag.busId" class="btn btn-lg btn-outline-danger me-3">Quay lại</a>
+                <button type="submit" class="btn btn-lg btn-primary">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

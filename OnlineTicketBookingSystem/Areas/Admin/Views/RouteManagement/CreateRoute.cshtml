@@ -1,0 +1,76 @@
+﻿@model OnlineTicketBookingSystem.Models.ViewModel.TripVM
+
+@{
+    ViewData["Title"] = "Thêm mới tuyến xe";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <form class="bg-white p-5 rounded shadow-lg" method="post" asp-action="CreateRoute">
+            <fieldset class="border p-4 mb-4">
+                <legend class="text-primary fw-bold">Thông tin tuyến xe</legend>
+                <div class="row">
+                    <div class="form-floating mb-3 col-md-6">
+                        <select asp-items="@Model.Buses" asp-for="@Model.Trip.BusId" class="form-select">
+                            <option disabled selected>-- Chọn xe di chuyển --</option>
+                        </select>
+                        <label class="mx-2" asp-for="@Model.Trip.BusId">Chọn xe </label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.Trip.Distance" aria-required="true" placeholder="Khoảng cách" required />
+                        <label class="mx-2" asp-for="@Model.Trip.Distance">Khoảng cách</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.Trip.DepartureDate" type="date" aria-required="true" placeholder="Ngày khởi hành" required />
+                        <label class="mx-2" asp-for="@Model.Trip.DepartureDate">Ngày khởi hành</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <select asp-for="@Model.Trip.DepartureTime" class="form-select" aria-required="true">
+                            <option disabled selected>-- Chọn thời gian khởi hành --</option>
+                            @for (int i = 1; i <= 24; i++)
+                            {
+                                var timeValue = i == 24 ? "00:00" : $"{i:D2}:00";
+                                <option value="@timeValue">@timeValue</option>
+                            }
+                        </select>
+                        <label class="mx-2" asp-for="@Model.Trip.DepartureTime">Thời gian khởi hành</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <select asp-for="@Model.Trip.EstimatedArrivalTime" class="form-select" aria-required="true">
+                            <option disabled selected>-- Chọn thời gian dự kiến đến nơi --</option>
+                            @for (int i = 1; i <= 24; i++)
+                            {
+                                var timeValue = i == 24 ? "00:00" : $"{i:D2}:00";
+                                <option value="@timeValue">@timeValue</option>
+                            }
+                        </select>
+                        <label class="mx-2" asp-for="@Model.Trip.DepartureTime">Thời gian dự kiến đến nơi</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <select asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
+                            <option disabled selected>-- Chọn điểm khởi hành --</option>
+                        </select>
+                        <label class="mx-2" asp-for="@Model.Trip.StartPoint">Điểm khởi hành</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <select asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
+                            <option disabled selected>-- Chọn điểm đến --</option>
+                        </select>
+                        <label class="mx-2" asp-for="@Model.Trip.EndPoint">Điểm đến</label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="d-flex justify-content-end">
+                <a href="/Admin/RouteManagement/" class="btn btn-lg btn-outline-danger me-3">Quay lại</a>
+                <button type="submit" class="btn btn-lg btn-primary">Thêm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

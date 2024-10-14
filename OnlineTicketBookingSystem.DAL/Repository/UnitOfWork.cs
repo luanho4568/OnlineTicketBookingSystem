@@ -21,6 +21,14 @@ namespace OnlineTicketBookingSystem.DAL.Repository
 
         public IGroupRoleRepository GroupRole { get; private set; }
 
+        public IBusRepository Buses { get; private set; }
+
+        public ISeatRepository Seats { get; private set; }
+
+        public ITripRepository Trips { get; private set; }
+
+        public ITripAssignmentRepository TripsAssignments { get; private set; }
+
         private readonly ApplicationDbContext _db;
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -32,6 +40,10 @@ namespace OnlineTicketBookingSystem.DAL.Repository
             Group = new GroupRepository(_db);
             Role = new RoleRepository(_db);
             GroupRole = new GroupRoleRepository(_db);
+            Buses = new BusRepository(_db);
+            Seats = new SeatRepository(_db);
+            Trips = new TripRepository(_db);
+            TripsAssignments = new TripAssignmentRepository(_db);
         }
 
 

@@ -3,7 +3,7 @@
 namespace AdminDriverDashboard.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CarController : Controller
+    public class TripAssignmentController : Controller
     {
         public IActionResult Index()
         {

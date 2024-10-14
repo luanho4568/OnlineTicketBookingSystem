@@ -27,4 +27,8 @@
     <ProjectReference Include="..\OnlineTicketBookingSystem.Utility\OnlineTicketBookingSystem.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\buses\" />
+  </ItemGroup>
+
 </Project>

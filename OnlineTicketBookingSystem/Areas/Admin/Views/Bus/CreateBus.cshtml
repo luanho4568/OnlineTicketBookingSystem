@@ -1,0 +1,95 @@
+﻿@model Buses
+
+@{
+    ViewData["Title"] = "Thêm mới xe bus";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <form class="bg-white p-5 rounded shadow-lg" method="post" asp-action="CreateBus" enctype="multipart/form-data">
+
+            <!-- Thông tin xe -->
+            <fieldset class="border p-4 mb-4">
+                <legend class="text-primary fw-bold">Thông tin xe bus</legend>
+                <div class="row">
+                    <!-- Tên xe -->
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="Name" placeholder="Tên xe" required />
+                        <label class="mx-2" asp-for="Name">Tên xe</label>
+                    </div>
+
+                    <!-- Biển số xe -->
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="LicensePlate" placeholder="Biển số xe" required />
+                        <label class="mx-2" asp-for="LicensePlate">Biển số xe</label>
+                    </div>
+
+                    <!-- Tổng số ghế -->
+                    <div class="form-floating mb-3 col-md-6">
+                        <select class="form-select" asp-for="TotalSeats" required>
+                            <option disabled selected>-- Chọn tổng số ghế --</option>
+                            <option value="16">16</option>
+                            <option value="32">32</option>
+                            <option value="48">48</option>
+                        </select>
+                        <label class="mx-2" asp-for="TotalSeats">Tổng số ghế</label>
+                    </div>
+
+                    <!-- Kiểu xe -->
+                    <div class="form-floating mb-3 col-md-6">
+                        <select asp-for="BusType" class="form-select" required>
+                            <option disabled selected>-- Chọn kiểu xe --</option>
+                            <option value="Sleeper">Giường nằm</option>
+                            <option value="Standard">Tiêu chuẩn</option>
+                        </select>
+                        <label class="mx-2" asp-for="BusType">Kiểu xe</label>
+                    </div>
+
+                    <!-- Hình ảnh -->
+                    <div class="form-floating mb-3 col-md-6">
+                        <input type="file" id="imageUrl" name="file" class="form-control mt-2" asp-for="Image" onchange="loadImagePreview(event)" required />
+                        <label class="mx-2" asp-for="Image">Hình ảnh</label>
+                    </div>
+
+                    <!-- Xem trước hình ảnh -->
+                    <div class="form-group mb-3 col-md-6">
+                        <div class="image-preview mt-2" style="border: 1px solid #ddd; padding: 28px; border-radius: 5px;">
+                            <img id="imagePreview" src="#" alt="Hình ảnh xem trước" style="max-width: 100%; display: none;" />
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Nút hành động -->
+            <div class="d-flex justify-content-end">
+                <a href="/Admin/Bus/" class="btn btn-lg btn-outline-danger me-3">Quay lại</a>
+                <button type="submit" class="btn btn-lg btn-primary" onclick="return ValidateInput()">Thêm</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function loadImagePreview(event) {
+            var image = document.getElementById('imagePreview');
+            image.src = URL.createObjectURL(event.target.files[0]);
+            image.style.display = 'block';
+        }
+        function ValidateInput() {
+            var fileInput = document.querySelector("#imageUrl");
+            if (fileInput.files.length === 0) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi",
+                    text: "Vui lòng nhập hình ảnh!",
+                });
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

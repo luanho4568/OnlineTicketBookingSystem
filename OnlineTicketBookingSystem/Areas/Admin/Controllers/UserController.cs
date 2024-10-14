@@ -72,7 +72,6 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 user.Id = Guid.NewGuid();
                 string hashPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 user.Password = hashPassword;
-                user.CreatedAt = DateTime.Now.ToString();
                 user.UpdatedAt = DateTime.Now.ToString();
                 await _unitOfWork.User.AddAsync(user);
                 await _unitOfWork.SaveAsync();
@@ -149,6 +148,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                     {
                         foreach (var error in state.Value.Errors)
                         {
+                            TempData["Eror"] = "Chỉnh sửa người dùng thất bại";
                             Console.WriteLine(error.ErrorMessage);
                         }
                     }
@@ -180,7 +180,5 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 return View(userVM);
             }
         }
-
-
     }
 }

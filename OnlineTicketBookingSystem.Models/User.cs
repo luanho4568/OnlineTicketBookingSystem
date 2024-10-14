@@ -52,7 +52,7 @@ namespace OnlineTicketBookingSystem.Models
         public DateTime? CodeExpired { get; set; }
         public int LoginAttempts { get; set; } = 0;
 
-        public string? CreatedAt { get; set; }
+        public string? CreatedAt { get; set; } = DateTime.Now.ToString();
         public string? UpdatedAt { get; set; }
         public string? LastLogin { get; set; }
 

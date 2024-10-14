@@ -7,7 +7,6 @@
     <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <!-- Custom styles for this template-->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="//cdn.datatables.net/2.1.5/css/dataTables.dataTables.min.css" rel="stylesheet" />
@@ -75,26 +74,27 @@
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" asp-area="Admin" asp-controller="Car" asp-action="Index">Quản lý xe</a>
-                        <a class="collapse-item" asp-area="Admin" asp-controller="MaintenanceCar" asp-action="Index">Quản lý xe bảo trì</a>
-                        <a class="collapse-item" asp-area="Admin" asp-controller="Ticket" asp-action="Index">Quản lý vé xe</a>
+                        <a class="collapse-item" asp-area="Admin" asp-controller="Bus" asp-action="Index">Quản lý phương tiện</a>
                         <a class="collapse-item" asp-area="Admin" asp-controller="RouteManagement" asp-action="Index">Quản lý tuyến xe</a>
+                        <a class="collapse-item" asp-area="Admin" asp-controller="TripAssignment" asp-action="Index">Phê duyệt chuyến đi</a>
+                        <a class="collapse-item" asp-area="Admin" asp-controller="Ticket" asp-action="Index">Quản lý vé xe</a>
+
                     </div>
                 </div>
             </li>
-           @*  <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree"
-                   aria-expanded="true" aria-controls="collapseThree">
-                    <i class="fas fa-users-cog"></i>
-                    <span>Quản lý phân quyền</span>
-                </a>
-                <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" asp-area="Admin" asp-controller="" asp-action="Index">Quản lý quyền truy cập</a>
-                        <a class="collapse-item" asp-area="Admin" asp-controller="" asp-action="Index">Quản lý nhóm người dùng</a>
-                        <a class="collapse-item" asp-area="Admin" asp-controller="" asp-action="Index">Quản lý quyền nhóm</a>
-                    </div>
-                </div>
+            @*  <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree"
+            aria-expanded="true" aria-controls="collapseThree">
+            <i class="fas fa-users-cog"></i>
+            <span>Quản lý phân quyền</span>
+            </a>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" asp-area="Admin" asp-controller="" asp-action="Index">Quản lý quyền truy cập</a>
+            <a class="collapse-item" asp-area="Admin" asp-controller="" asp-action="Index">Quản lý nhóm người dùng</a>
+            <a class="collapse-item" asp-area="Admin" asp-controller="" asp-action="Index">Quản lý quyền nhóm</a>
+            </div>
+            </div>
             </li> *@
 
             <!-- Divider -->
@@ -180,7 +180,7 @@
                 <!-- End of Main Content -->
                 <!-- Footer -->
                 <!-- End of Footer -->
-                        
+
             </div>
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
@@ -203,68 +203,75 @@
 
         <script src="//cdn.datatables.net/2.1.5/js/dataTables.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-          $(document).ready(function () {
-    var user = localStorage.getItem('user');
-    var token = localStorage.getItem('authToken');
-    var status = JSON.parse(user)?.status
-    if (!token || status == false) {
-        // Nếu không có token, điều hướng đến trang đăng nhập
-        window.location.href = '/';
-    } else {
-        // Kiểm tra nếu không phải đang ở /admin/home thì điều hướng
-        if (user) {
-            $('#manage').text(JSON.parse(user).fullName);
-        }
-    }
+            $(document).ready(function () {
+                var user = localStorage.getItem('user');
+                var token = localStorage.getItem('authToken');
+                var expiry = localStorage.getItem('tokenExpiry');
+                var currentTime = new Date().getTime();
+                var status = JSON.parse(user)?.status
+                if(currentTime >= expiry) {
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('tokenExpiry');
+                }
+                if (!token || status == false) {
+                    // Nếu không có token, điều hướng đến trang đăng nhập
+                    window.location.href = '/';
+                } else {
+                    // Kiểm tra nếu không phải đang ở /admin/home thì điều hướng
+                    if (user) {
+                        $('#manage').text(JSON.parse(user).fullName);
+                    }
+                }
 
-    // Xử lý khi nhấn nút Đăng xuất
-    $('#logout').click(function (event) {
-        event.preventDefault();
-        Swal.fire({
-            title: 'Bạn có chắc chắn muốn đăng xuất?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Đăng xuất',
-            cancelButtonText: 'Hủy'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                 var token = localStorage.getItem('authToken');
-                             $.ajax({
-                             url: '/api/v1/Auth/Logout',
-                            type: 'POST',
-                            headers: {
-                                'Authorization': 'Bearer ' + token
-                            },
-                            success: function (response) {
-                                // Xóa thông tin người dùng trong localStorage
-                                localStorage.removeItem('user');
-                                localStorage.removeItem('authToken');
+                // Xử lý khi nhấn nút Đăng xuất
+                $('#logout').click(function (event) {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Bạn có chắc chắn muốn đăng xuất?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Đăng xuất',
+                        cancelButtonText: 'Hủy'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var token = localStorage.getItem('authToken');
+                            $.ajax({
+                                url: '/api/v1/Auth/Logout',
+                                type: 'POST',
+                                headers: {
+                                    'Authorization': 'Bearer ' + token
+                                },
+                                success: function (response) {
+                                    // Xóa thông tin người dùng trong localStorage
+                                    localStorage.removeItem('user');
+                                    localStorage.removeItem('authToken');
+                                    localStorage.removeItem('tokenExpiry');
 
-                                Swal.fire(
-                                    'Đã đăng xuất!',
-                                    'Bạn đã đăng xuất thành công.',
-                                    'success'
-                                ).then(() => {
-                            window.location.href = '/'; 
-                                });
-                            },
-                            error: function (xhr) {
-                                // Xử lý lỗi nếu có
-                                var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Đã xảy ra lỗi khi đăng xuất.';
-                                Swal.fire(
-                                    'Lỗi!',
-                                    errorMessage,
-                                    'error'
-                                );
-                            }
-                        });
-            }
-        });
-    });
-});
+                                    Swal.fire(
+                                        'Đã đăng xuất!',
+                                        'Bạn đã đăng xuất thành công.',
+                                        'success'
+                                    ).then(() => {
+                                        window.location.href = '/';
+                                    });
+                                },
+                                error: function (xhr) {
+                                    // Xử lý lỗi nếu có
+                                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Đã xảy ra lỗi khi đăng xuất.';
+                                    Swal.fire(
+                                        'Lỗi!',
+                                        errorMessage,
+                                        'error'
+                                    );
+                                }
+                            });
+                        }
+                    });
+                });
+            });
 
         </script>
         <!-- Page level custom scripts -->

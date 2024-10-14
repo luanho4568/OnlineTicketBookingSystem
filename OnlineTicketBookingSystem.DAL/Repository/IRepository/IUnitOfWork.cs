@@ -10,6 +10,10 @@ namespace OnlineTicketBookingSystem.DAL.Repository.IRepository
         IGroupRepository Group { get; }
         IRoleRepository Role { get; }
         IGroupRoleRepository GroupRole { get; }
+        IBusRepository Buses { get; }
+        ISeatRepository Seats { get; }
+        ITripRepository Trips { get; }
+        ITripAssignmentRepository TripsAssignments { get; }
         Task SaveAsync();
     }
 }

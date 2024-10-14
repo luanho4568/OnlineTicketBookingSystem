@@ -13,6 +13,19 @@
         public const string AccountType_Local = "Local";
         public const string AccountType_Social = "Social";
 
+        public const string SeatStatus_Empty = "Empty";
+        public const string SeatStatus_Sold = "Sold";
+        public const string SeatStatus_Maintenance = "Maintenance";
+
+        public const string TripStatus_Scheduled = "Scheduled";
+        public const string TripStatus_Departing = "Departing";
+        public const string TripStatus_Completed = "Completed";
+        public const string TripStatus_Cancelled = "Cancelled";
+
+        public const string TripAssignmentStatus_Empty = "Empty";
+        public const string TripAssignmentStatus_Pending = "Pending";
+        public const string TripAssignmentStatus_Approved = "Approved";
+
         public const bool IsActive_False = false;
         public const bool IsActive_True = true;
 

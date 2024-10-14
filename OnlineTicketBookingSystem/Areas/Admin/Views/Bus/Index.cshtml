@@ -1,30 +1,32 @@
-﻿@model IEnumerable<User>
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+﻿<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2>Danh sách tài xế</h2>
+            <h2>Danh sách xe</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Bus" asp-action="CreateBus" class="btn btn-primary">
+                <i class="bi bi-plus"></i>
+                Thêm mới xe
+            </a>
         </div>
     </div>
-    <!-- Thêm lớp table-responsive vào bảng -->
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped mt-4" id="tblData">
-            <thead>
-            <th>Tên</th>
-            <th>Email</th>
-            <th>Địa chỉ</th>
-            <th>Điện thoại</th>
-            <th>Ngày sinh</th>
-            <th>Giới tính</th>
-            <th>Số dư</th>
-            <th>Kích hoạt</th>
-            <th>Trạng thái</th>
-            <th></th>
-            </thead>
-        </table>
-    </div>
-</div>
+    <table class="table table-bordered table-striped mt-4" id="tblData">
+        <thead>
+            <tr>
+                <th>Tên Xe</th>
+                <th>Biển Số Xe</th>
+                <th>Loại Xe</th>
+                <th>Số ghế</th>
+                <th>Trạng Thái</th>
+                <th>Hình ảnh</th>
+                <th></th>
+            </tr>
+        </thead>
 
+    </table>
+</div>
 @section Scripts {
     <script>
         var dataTable;
@@ -36,74 +38,61 @@
         function loadDataTable() {
             dataTable = $('#tblData').DataTable({
                 "ajax": {
-                    "url": "/api/v1/user/GetAllUser?groupId=2",
+                    "url": "/api/v1/bus/GetAllBus",
                     "dataSrc": function (json) {
                         return json.data;
                     }
                 },
                 "columns": [
-                    { "data": "fullName", "width": "11%" },
-                    { "data": "email", "width": "10%" },
+                    { "data": "name", "width": "calc(100%/7)" },
+                    { "data": "licensePlate", "width": "calc(100%/7)" },
                     {
                         "data": null,
                         "render": function (data) {
-                            return `${data.address}, ${data.ward.name}, ${data.district.name}, ${data.province.name}`;
+                            return data.busType == "Sleeper" ? "Giường nằm" : "Tiêu chuẩn";
                         },
-                        "width": "14%"
-                    },
-                    { "data": "phoneNumber", "width": "10%" },
+                        "width": "calc(100%/7)"
+                    }
+                    , { "data": "totalSeats", "width": "calc(100%/7)" },
                     {
-                        "data": "dateOfBirth",
-                        "render": function (data) {
-                            return data.split('T')[0]; // Loại bỏ phần T00:00:00 và chỉ giữ ngày
-                        },
-                        "width": "10%"
-                    }, {
-                        "data": null,
-                        "render": function (data) {
-                            return data.gender == "Male" ? "Nam" : "Nữ";
-                        },
-                        "width": "9%"
-                    },
-                    { "data": "balance", "width": "7%" },
-                    {
-                        "data": "isActive",
+                        "data": "status",
                         "render": function (data) {
                             return data
                                 ? `<div class="text-center"><i class="bi bi-check-circle-fill text-success"></i></div>`
                                 : `<div class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></div>`;
                         },
-                        "width": "10%"
+                        "width": "calc(100%/7)"
                     },
                     {
-                        "data": "isStatus",
+                        "data": null,
                         "render": function (data) {
-                            return data
-                                ? `<div class="text-center"><i class="bi bi-check-circle-fill text-success"></i></div>`
-                                : `<div class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></div>`;
+                            return `<img src="/${data.image}" alt="Hình ảnh xe" style="width: 100px; height: auto;"/>`;
                         },
-                        "width": "10%"
-                    },
-                   {
+                        "width": "calc(100%/7)"
+                    }
+                    , {
                         "data": "id",
                         "render": function (data) {
                             return `
-                                <div class="text-center">
-                                    <a class="btn btn-warning" href="/Admin/User/EditUser?id=${data}">
-                                        <i class="bi bi-pencil-square"></i>
+                                                <div class="text-center">
+                                                <a class="btn btn-primary" href="/Admin/Bus/Seats?busId=${data}">
+                                        <i class="fas fa-info"></i>                                    
                                     </a>
-                                    <a class="btn btn-danger" onclick="return Delete('/api/v1/user/Delete?id=${data}')">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>`;
+                                                    <a class="btn btn-warning mx-2" href="/Admin/Bus/EditBus?id=${data}">
+                                                                <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                    <a class="btn btn-danger" onclick="return Delete('/api/v1/bus/Delete?id=${data}')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>`;
                         },
-                        "width": "12%"
+                        "width": "calc(100%/7)"
                     }
 
                 ],
                 "responsive": true,
                 "language": {
-                    "emptyTable": "Không có tài xế nào"
+                    "emptyTable": "Không có xe bus nào"
                 }
             });
         }

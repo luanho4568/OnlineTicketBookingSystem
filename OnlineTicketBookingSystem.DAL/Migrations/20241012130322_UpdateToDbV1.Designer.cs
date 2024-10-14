@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineTicketBookingSystem.DAL.Data;
 
@@ -11,9 +12,11 @@ using OnlineTicketBookingSystem.DAL.Data;
 namespace OnlineTicketBookingSystem.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241012130322_UpdateToDbV1")]
+    partial class UpdateToDbV1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,23 +93,11 @@ namespace OnlineTicketBookingSystem.DAL.Migrations
                     b.Property<string>("CreatedAt")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LicensePlate")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("TotalSeats")
                         .HasColumnType("int");
-
-                    b.Property<string>("UpdatedAt")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -348,22 +339,13 @@ namespace OnlineTicketBookingSystem.DAL.Migrations
                     b.Property<string>("DepartureTime")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Distance")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("EndPoint")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("EstimatedArrivalTime")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StartPoint")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedAt")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

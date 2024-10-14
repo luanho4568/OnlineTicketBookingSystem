@@ -1,32 +1,138 @@
-﻿<div class="container p-3">
+﻿<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2>Danh sách tuyến đường</h2>
+            <h2>Danh sách tuyến xe</h2>
         </div>
-         <div class="col-6 text-end">
-             <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
-                 <i class="bi bi-plus"></i>
-                 Thêm mới xe
-             </a>
-         </div>
+        <div class="col-6 text-end">
+            <a asp-controller="RouteManagement" asp-action="CreateRoute" class="btn btn-primary">
+                <i class="bi bi-plus"></i>
+                Thêm mới tuyến xe
+            </a>
+        </div>
     </div>
     <table class="table table-bordered table-striped mt-4" id="tblData">
         <thead>
             <tr>
-                <th>STT</th>
-                <th>Tên Tuyến</th>
-                <th>Điểm Khởi Hành</th>
-                <th>Điểm Đến</th>
+                <th>Tên Xe</th>
+                <th>Khởi Hành</th>
+                <th>Đến</th>
                 <th>Khoảng Cách</th>
-                <th>Thời Gian Ước Tính</th>
-                <th>Mô Tả Tuyến</th>
-                <th>Ngày Bắt Đầu</th>
-                <th>Ngày Kết Thúc</th>
+                <th>Ngày Khởi Hành</th>
+                <th>Giờ Khởi Hành</th>
+                <th>Giờ Đến</th>
                 <th>Trạng Thái</th>
+                <th></th>
+
             </tr>
         </thead>
 
     </table>
 </div>
 @section Scripts {
+    <script>
+        var dataTable;
+
+        $(document).ready(function () {
+            loadDataTable();
+        });
+
+        function loadDataTable() {
+            dataTable = $('#tblData').DataTable({
+                "ajax": {
+                    "url": "/api/v1/route/getallroute",
+                    "dataSrc": function (json) {
+                        return json.data;
+                    }
+                },
+                "columns": [
+                    { "data": "buses.name", "width": "calc(100%/9)" },
+                    { "data": "startProvince.name", "width": "calc(100%/9)" },
+                    { "data": "endProvince.name", "width": "calc(100%/9)" },
+                    { "data": "distance", "width": "calc(100%/9)" },
+                    {
+                        "data": "departureDate",
+                        "render": function (data) {
+                            return data.split('T')[0]; // Loại bỏ phần T00:00:00 và chỉ giữ ngày
+                        },
+                        "width": "calc(100%/9)"
+                    },
+                    { "data": "departureTime", "width": "calc(100%/9)" },
+                    { "data": "estimatedArrivalTime", "width": "calc(100%/9)" },
+                    {
+                        "data": null,
+                        "render": function (data) {
+                            if(data.status == "Scheduled") {
+                                return "Đã lên lịch"
+                            }else if(data.status == "Departing") {
+                                return "Đang khởi hành"
+                            }else if(data.status == "Completed") {
+                                return "Hoàn thành"
+                            }else if(data.status == "Cancelled") {
+                                return "Đã huỷ"
+                            } else {
+                                return null
+                            }
+                        },
+                        "width": "calc(100%/9)"
+                    },
+                    {
+                        "data": "id",
+                        "render": function (data) {
+                            return `
+                                <div class="text-center">
+                                    <a class="btn btn-warning" href="/Admin/RouteManagement/EditRoute?id=${data}">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a class="btn btn-danger" onclick="return Delete('/api/v1/route/Delete?id=${data}')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>`;
+                        },
+                        "width": "calc(100%/9)"
+                    }
+                ],
+                "responsive": true,
+                "language": {
+                    "emptyTable": "Không có tuyến xe nào"
+                }
+            });
+        }
+
+        function Delete(url) {
+            Swal.fire({
+                title: "Bạn có chắc chắn xoá?",
+                text: "Bạn sẽ không thể hoàn tác hành động này!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Vâng, xoá nó!",
+                cancelButtonText: "Huỷ"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'DELETE',
+                        success: function (data) {
+                            if (data.code == 200) {
+                                Swal.fire({
+                                    title: data.message,
+                                    text: "Dữ liệu của bạn đã được xoá.",
+                                    icon: "success"
+                                });
+                                dataTable.ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Xoá không thành công!"
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    </script>
 }
