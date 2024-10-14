@@ -26,6 +26,14 @@
         public const string TripAssignmentStatus_Pending = "Pending";
         public const string TripAssignmentStatus_Approved = "Approved";
 
+        public const string TicketStatus_Pending = "Pending"; // chờ
+        public const string TicketStatus_Confirmed = "Confirmed"; // đã xác nhận
+        public const string TicketStatus_Completed = "Completed"; // đã hoàn thành
+        public const string TicketStatus_Cancelled = "Cancelled"; // đã huỷ
+        public const string TicketStatus_Refunded = "Refunded"; // đã hoàn tiền
+        public const string TicketStatus_Expired = "Expired"; // đã hết hạn
+
+
         public const bool IsActive_False = false;
         public const bool IsActive_True = true;
 

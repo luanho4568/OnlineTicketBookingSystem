@@ -19,6 +19,6 @@ namespace OnlineTicketBookingSystem.Models
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
         public string? Status { get; set; }
-        public string? CreatedAt { get; set; } = DateTime.Now.ToString();
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }
 }

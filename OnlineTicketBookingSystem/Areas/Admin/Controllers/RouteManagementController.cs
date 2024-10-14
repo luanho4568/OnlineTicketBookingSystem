@@ -56,6 +56,18 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                     }
                     return View(tripVM);
                 }
+                var isDuplicateTrip = await _unitOfWork.Trips.GetFirstOrDefaultAsync(
+                    x => x.DepartureDate == tripVM.Trip.DepartureDate
+                      && x.DepartureTime == tripVM.Trip.DepartureTime
+                      && x.EstimatedArrivalTime == tripVM.Trip.EstimatedArrivalTime
+                      && x.BusId == tripVM.Trip.BusId
+                );
+                if (isDuplicateTrip != null)
+                {
+                    // Nếu trùng, trả về thông báo lỗi
+                    TempData["Eror"] = "Tuyến xe đã tồn tại với cùng ngày, giờ khởi hành và xe";
+                    return View(tripVM);
+                }
                 var trip = tripVM.Trip;
                 trip.Id = Guid.NewGuid();
                 trip.Status = SD.TripStatus_Scheduled;
@@ -134,13 +146,26 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 {
                     return View(tripVM);
                 }
-
+                var isDuplicateTrip = await _unitOfWork.Trips.GetFirstOrDefaultAsync(
+                    x => x.DepartureDate == tripVM.Trip.DepartureDate
+                      && x.DepartureTime == tripVM.Trip.DepartureTime
+                      && x.EstimatedArrivalTime == tripVM.Trip.EstimatedArrivalTime
+                      && x.BusId == tripVM.Trip.BusId
+                      && x.Id != tripVM.Trip.Id // Đảm bảo không trùng với chính tuyến đang được chỉnh sửa
+                );
+                if (isDuplicateTrip != null)
+                {
+                    // Nếu trùng, trả về thông báo lỗi
+                    TempData["Eror"] = "Tuyến xe đã tồn tại với cùng ngày, giờ khởi hành và xe";
+                    return View(tripVM);
+                }
                 trip.StartPoint = tripVM.Trip.StartPoint;
                 trip.EndPoint = tripVM.Trip.EndPoint;
                 trip.BusId = tripVM.Trip.BusId;
                 trip.DepartureDate = tripVM.Trip.DepartureDate;
                 trip.Distance = tripVM.Trip.Distance;
                 trip.DepartureTime = tripVM.Trip.DepartureTime;
+                trip.Price = tripVM.Trip.Price;
                 trip.EstimatedArrivalTime = tripVM.Trip.EstimatedArrivalTime;
                 trip.UpdatedAt = DateTime.Now.ToString();
                 var tripAssignments = await _unitOfWork.TripsAssignments.GetFirstOrDefaultAsync(x => x.TripId == tripVM.Trip.Id);

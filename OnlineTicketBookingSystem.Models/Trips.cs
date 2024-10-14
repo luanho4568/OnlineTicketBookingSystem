@@ -25,6 +25,9 @@ namespace OnlineTicketBookingSystem.Models
         public string? DepartureTime { get; set; }
         public string? EstimatedArrivalTime { get; set; }
         public string? Status { get; set; }
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
+        public decimal? Price { get; set; }
         public string? CreatedAt { get; set; } = DateTime.Now.ToString();
         public string? UpdatedAt { get; set; }
 

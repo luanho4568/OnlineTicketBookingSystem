@@ -29,6 +29,8 @@ namespace OnlineTicketBookingSystem.DAL.Repository
 
         public ITripAssignmentRepository TripsAssignments { get; private set; }
 
+        public ITicketRepository Tickets { get; private set; }
+
         private readonly ApplicationDbContext _db;
         public UnitOfWork(ApplicationDbContext db)
         {
@@ -44,6 +46,7 @@ namespace OnlineTicketBookingSystem.DAL.Repository
             Seats = new SeatRepository(_db);
             Trips = new TripRepository(_db);
             TripsAssignments = new TripAssignmentRepository(_db);
+            Tickets = new TicketRepository(_db);
         }
 
 

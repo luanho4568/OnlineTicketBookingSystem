@@ -1,33 +1,161 @@
-﻿<div class="container p-3">
+﻿<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2>Danh sách vé xe</h2>
+            <h2>Danh sách vé đã bán</h2>
         </div>
         <div class="col-6 text-end">
-            <a asp-controller="Product" asp-action="Upsert" class="btn btn-primary">
-                <i class="bi bi-plus"></i>
-                Thêm mới vé xe
-            </a>
+            <input type="date" id="filterDate" class="form-control d-inline-block" style="width: auto;" placeholder="Chọn ngày" />
+            <button class="btn btn-primary" onclick="filterByDate()">Lọc</button>
         </div>
     </div>
     <table class="table table-bordered table-striped mt-4" id="tblData">
         <thead>
             <tr>
-                <th>STT</th>
-                <th>Số Vé</th>
-                <th>Xe Bus</th>
-                <th>Điểm Khởi Hành</th>
-                <th>Điểm Đến</th>
-                <th>Khách Hàng</th>
-                <th>Số Ghế</th>
-                <th>Ngày Giờ Khởi Hành</th>
-                <th>Ngày Giờ Đến Nơi</th>
-                <th>Giá Vé</th>
-                <th>Trạng Thái</th>
+                <th>Tên người mua</th>
+                <th>Tên xe bus</th>
+                <th>Tên tuyến đường</th>
+                <th>Số ghế</th>
+                <th>Giá tiền</th>
+                <th>Trạng thái</th>
+                <th>Ngày mua</th>
+                <th></th>
             </tr>
         </thead>
-
     </table>
 </div>
+
 @section Scripts {
+    <script>
+        var dataTable;
+
+        $(document).ready(function () {
+            loadDataTable();
+        });
+
+        function loadDataTable(filterDate = null) {
+            dataTable = $('#tblData').DataTable({
+                "ajax": {
+                    "url": "/api/v1/ticket/getalltickets",
+                    "data": function (d) {
+                        if (filterDate) {
+                            d.date = filterDate;
+                        }
+                    },
+                    "dataSrc": function (json) {
+                        return json?.data || []
+                    }
+                },
+                "columns": [
+                    { "data": "user.fullName", "width": "calc(100%/8)" },
+                    { "data": "trips.buses.name", "width": "calc(100%/8)" },
+                    {
+                        "data": "trips",
+                        "render": function (data) {
+                            return "Từ " + data.startProvince.name + " đến " + data.endProvince.name;
+                        },
+                        "width": "calc(100%/8)"
+                    },
+                    { "data": "seats.seatNumber", "width": "calc(100%/8)" },
+                    { "data": "price", "width": "calc(100%/8)" },
+                    {
+                        "data": "status",
+                        "render": function (data) {
+                            if (data == "Expired") {
+                                return "Đã hết hạn";
+                            } else if (data == "Pending") {
+                                return "Đang chờ phê duyệt";
+                            } else if (data == "Completed") {
+                                return "Hoàn thành";
+                            } else if (data == "Confirmed") {
+                                return "Đã xác nhận";
+                            } else if (data == "Refunded") {
+                                return "Đã hoàn tiền";
+                            } else if (data == "Cancelled") {
+                                return "Đã huỷ";
+                            } else {
+                                return null;
+                            }
+                        },
+                        "width": "calc(100%/8)"
+                    },
+                    { "data": "createdAt", "width": "calc(100%/8)" },
+                    {
+                        "data": null,
+                        "render": function (data) {
+                            if (data.status === "Pending") {
+                                return `
+                                    <div class="text-center">
+                                        <span class="check-icon me-3">
+                                            <i class="fas fa-check text-success"></i>
+                                        </span>
+                                        <span class="times-icon">
+                                            <i class="fas fa-times text-danger"></i>
+                                        </span>
+                                    </div>`;
+                            } else if (data.status === "Confirmed") {
+                                return `
+                                    <div class="text-center">
+                                        <span class="check-icon me-3">
+                                            <i class="fas fa-check-circle text-success"></i>
+                                        </span>
+                                    </div>`;
+                            } else if (data.status === "Completed") {
+                                return `
+                                    <div class="text-center">
+                                        <span class="check-icon me-3">
+                                            <i class="fas fa-check-double text-info"></i>
+                                        </span>
+                                    </div>`;
+                            } else if (data.status === "Cancelled") {
+                                return `
+                                    <div class="text-center">
+                                        <span class="check-icon me-3">
+                                            <i class="fas fa-times-circle text-danger"></i>
+                                        </span>
+                                    </div>`;
+                            } else if (data.status === "Refunded") {
+                                return `
+                                    <div class="text-center">
+                                        <span class="check-icon me-3">
+                                            <i class="fas fa-undo-alt text-primary"></i>
+                                        </span>
+                                    </div>`;
+                            } else if (data.status === "Expired") {
+                                return `
+                                    <div class="text-center">
+                                        <span class="check-icon me-3">
+                                            <i class="fas fa-clock text-secondary"></i>
+                                        </span>
+                                    </div>`;
+                            } else {
+                                return `
+                                    <div class="text-center">
+                                        <i class="fas fa-spinner"></i>
+                                    </div>`;
+                            }
+                        },
+                        "width": "calc(100%/8)"
+                    }
+                ],
+                "responsive": true,
+                "language": {
+                    "emptyTable": "Không có vé xe nào"
+                }
+            });
+        }
+
+        function filterByDate() {
+            var selectedDate = $('#filterDate').val();
+            if (selectedDate) {
+                // Gọi lại loadDataTable với ngày đã chọn
+                dataTable.destroy(); // Hủy bảng hiện tại
+                loadDataTable(selectedDate); // Tải lại bảng với ngày lọc
+            } else {
+                dataTable.destroy(); // Hủy bảng hiện tại
+                loadDataTable(); // Tải lại bảng không có bộ lọc
+            }
+        }
+    </script>
 }

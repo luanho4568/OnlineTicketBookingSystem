@@ -16,9 +16,10 @@
         <thead>
             <tr>
                 <th>Tên Xe</th>
-                <th>Khởi Hành</th>
+                <th>Từ</th>
                 <th>Đến</th>
                 <th>Khoảng Cách</th>
+                <th>Giá vé</th>
                 <th>Ngày Khởi Hành</th>
                 <th>Giờ Khởi Hành</th>
                 <th>Giờ Đến</th>
@@ -47,19 +48,26 @@
                     }
                 },
                 "columns": [
-                    { "data": "buses.name", "width": "calc(100%/9)" },
-                    { "data": "startProvince.name", "width": "calc(100%/9)" },
-                    { "data": "endProvince.name", "width": "calc(100%/9)" },
-                    { "data": "distance", "width": "calc(100%/9)" },
+                    { "data": "buses.name", "width": "calc(100%/10)" },
+                    { "data": "startProvince.name", "width": "calc(100%/10)" },
+                    { "data": "endProvince.name", "width": "calc(100%/10)" },
+                    { "data": "distance", "width": "calc(100%/10)" },
+                    {
+                        "data": "price",
+                        "render": function (data) {
+                            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Chuyển đổi giá thành chuỗi có dấu chấm phân cách
+                        },
+                        "width": "calc(100%/10)"
+                        },                    
                     {
                         "data": "departureDate",
                         "render": function (data) {
                             return data.split('T')[0]; // Loại bỏ phần T00:00:00 và chỉ giữ ngày
                         },
-                        "width": "calc(100%/9)"
+                        "width": "calc(100%/10)"
                     },
-                    { "data": "departureTime", "width": "calc(100%/9)" },
-                    { "data": "estimatedArrivalTime", "width": "calc(100%/9)" },
+                    { "data": "departureTime", "width": "calc(100%/10)" },
+                    { "data": "estimatedArrivalTime", "width": "calc(100%/10)" },
                     {
                         "data": null,
                         "render": function (data) {
@@ -75,7 +83,7 @@
                                 return null
                             }
                         },
-                        "width": "calc(100%/9)"
+                        "width": "calc(100%/10)"
                     },
                     {
                         "data": "id",
@@ -90,7 +98,7 @@
                                     </a>
                                 </div>`;
                         },
-                        "width": "calc(100%/9)"
+                        "width": "calc(100%/10)"
                     }
                 ],
                 "responsive": true,

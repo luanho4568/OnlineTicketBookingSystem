@@ -27,6 +27,10 @@
                         <label class="mx-2" asp-for="@Model.Trip.DepartureDate">Ngày khởi hành</label>
                     </div>
                     <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.Trip.Price" aria-required="true" placeholder="500.000" required id="priceInput" />
+                        <label class="mx-2" asp-for="@Model.Trip.Price">Giá vé</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
                         <select asp-for="@Model.Trip.DepartureTime" class="form-select" aria-required="true">
                             <option disabled selected>-- Chọn thời gian khởi hành --</option>
                             @for (int i = 1; i <= 24; i++)
@@ -73,4 +77,23 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('#priceInput').on('input', function () {
+                let value = $(this).val().replace(/\./g, '');
+                if ($.isNumeric(value)) {
+                    // Định dạng lại với dấu chấm
+                    $(this).val(function () {
+                        return Number(value).toLocaleString('vi-VN');
+                    });
+                } else {
+                    $(this).val('');
+                }
+            });
+            $('form').on('submit', function () {
+                    let priceInput = $('#priceInput');
+                            priceInput.val(priceInput.val().replace(/\./g, '')); // Xóa dấu chấm trước khi gửi
+                        });
+        });
+    </script>
 }
