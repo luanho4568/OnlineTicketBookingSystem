@@ -71,7 +71,8 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 var trip = tripVM.Trip;
                 trip.Id = Guid.NewGuid();
                 trip.Status = SD.TripStatus_Scheduled;
-                trip.UpdatedAt = DateTime.Now.ToString();
+                trip.UpdatedAt = DateTime.Now;
+
                 await _unitOfWork.Trips.AddAsync(trip);
                 TripAssignments tripAssignments = new TripAssignments
                 {
@@ -167,7 +168,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 trip.DepartureTime = tripVM.Trip.DepartureTime;
                 trip.Price = tripVM.Trip.Price;
                 trip.EstimatedArrivalTime = tripVM.Trip.EstimatedArrivalTime;
-                trip.UpdatedAt = DateTime.Now.ToString();
+                trip.UpdatedAt = DateTime.Now;
                 var tripAssignments = await _unitOfWork.TripsAssignments.GetFirstOrDefaultAsync(x => x.TripId == tripVM.Trip.Id);
                 bool isApprovedAssignment = tripAssignments.Status == SD.TripAssignmentStatus_Approved && tripAssignments.DriverId.HasValue;
                 if (tripVM.Trip.Status == SD.TripStatus_Cancelled)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineTicketBookingSystem.DAL.Data;
 
@@ -11,9 +12,11 @@ using OnlineTicketBookingSystem.DAL.Data;
 namespace OnlineTicketBookingSystem.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015092618_UpdateCreateAtTripAssToDb")]
+    partial class UpdateCreateAtTripAssToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,8 +348,8 @@ namespace OnlineTicketBookingSystem.DAL.Migrations
                     b.Property<Guid?>("BusId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("CreatedAt")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("DepartureDate")
                         .HasColumnType("datetime2");
@@ -372,8 +375,8 @@ namespace OnlineTicketBookingSystem.DAL.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("UpdatedAt")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

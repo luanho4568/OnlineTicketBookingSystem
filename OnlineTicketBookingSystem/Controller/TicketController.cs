@@ -47,6 +47,21 @@ namespace OnlineTicketBookingSystem.Controller
 
             foreach (var seatId in ticketVM.SeatIds)
             {
+                var seat = await _unitOfWork.Seats.GetFirstOrDefaultAsync(s => s.Id == seatId);
+                if (seat == null)
+                {
+                    return BadRequest(new { code = 404, message = $"Ghế với ID {seatId} không tồn tại." });
+                }
+                if (seat.Status == SD.SeatStatus_Empty)
+                {
+                    // Cập nhật trạng thái ghế thành Processing
+                    seat.Status = SD.SeatStatus_Processing;
+                    _unitOfWork.Seats.Update(seat); // Cập nhật ghế
+                }
+                else
+                {
+                    return BadRequest(new { code = 400, message = $"Ghế với ID {seatId} đã được đặt." });
+                }
                 var ticket = new Tickets
                 {
                     UserId = ticketVM.UserId,

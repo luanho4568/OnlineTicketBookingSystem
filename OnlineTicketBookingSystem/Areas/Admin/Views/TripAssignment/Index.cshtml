@@ -13,6 +13,7 @@
                     <th>Tên xe</th>
                     <th>Tên tuyến đi</th>
                     <th>Trạng Thái</th>
+                    <th>Ngày tạo</th>
                     <th></th>
 
                 </tr>
@@ -42,14 +43,14 @@
                             "render": function (data) {
                                 return data != null ? data : "Chưa có tài xế" // Loại bỏ phần T00:00:00 và chỉ giữ ngày
                             },
-                            "width": "calc(100%/5)"
-                        }, { "data": "trips.buses.name", "width": "calc(100%/5)" },
+                            "width": "calc(100%/6)"
+                        }, { "data": "trips.buses.name", "width": "calc(100%/6)" },
                         {
                             "data": "trips",
                             "render": function (data) {
                                 return "Từ " + data.startProvince.name + " đến " + data.endProvince.name
                             },
-                            "width": "calc(100%/5)"
+                            "width": "calc(100%/6)"
                         },
                         {
                             "data": "status",
@@ -60,12 +61,20 @@
                                     return "Đang chờ phê duyệt"
                                 } else if (data == "Approved") {
                                     return "Chấp thuận"
-                                } else {
+                            } else if (data == "Expired") {
+                                return "Hết hạn"
+                            } else {
                                     return null
                                 }
                             },
-                            "width": "calc(100%/5)"
+                            "width": "calc(100%/6)"
+                    }, {
+                        "data": "createAt",
+                        "render": function (data) {
+                            return data.split('T')[0]; // Loại bỏ phần T00:00:00 và chỉ giữ ngày
                         },
+                        "width": "calc(100%/10)"
+                    },
                         {
                             "data": null,
                             "render": function (data) {
@@ -89,7 +98,16 @@
                                                     
                                                     </div>
                                                     `
-                                }else {
+                            } else if (data.status == "Expired") {
+                                return `
+                                                            <div class="text-center">
+                                                                <span class="check-icon me-3">
+                                                                     <i class="fas fa-calendar-times"></i>
+                                                                </span>
+
+                                                            </div>
+                                                            `
+                            } else {
                                     return `
                                         <div class="text-center">
                                                 <i class="fas fa-hourglass-half text-warning"></i>
@@ -97,7 +115,7 @@
                                 }
                                
                             },
-                            "width": "calc(100%/5)"
+                            "width": "calc(100%/6)"
                         }
                     ],
                     "responsive": true,

@@ -14,5 +14,6 @@ namespace OnlineTicketBookingSystem.Models
         [ForeignKey(nameof(TripId))]
         public Trips? Trips { get; set; }
         public string? Status { get; set; }
+        public DateTime? CreateAt { get; set; } = DateTime.Now;
     }
 }

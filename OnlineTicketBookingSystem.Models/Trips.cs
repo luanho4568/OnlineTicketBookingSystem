@@ -28,8 +28,8 @@ namespace OnlineTicketBookingSystem.Models
         [DataType(DataType.Currency)]
         [DisplayFormat(DataFormatString = "{0:N0}", ApplyFormatInEditMode = true)]
         public decimal? Price { get; set; }
-        public string? CreatedAt { get; set; } = DateTime.Now.ToString();
-        public string? UpdatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
 
     }
 }

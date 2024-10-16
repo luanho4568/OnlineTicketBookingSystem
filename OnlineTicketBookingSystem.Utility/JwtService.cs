@@ -65,6 +65,27 @@ namespace OnlineTicketBookingSystem.Utility
             return tokenHandler.WriteToken(securityToken);
 
         }
+        public IDictionary<string, string> DecodeToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var claimsDictionary = new Dictionary<string, string>();
 
+            if (handler.CanReadToken(token) && !string.IsNullOrEmpty(token))
+            {
+                var jwtToken = handler.ReadJwtToken(token);
+
+                // Lấy các thông tin (claims) từ token
+                foreach (var claim in jwtToken.Claims)
+                {
+                    claimsDictionary[claim.Type] = claim.Value;
+                }
+            }
+            else
+            {
+                throw new SecurityTokenException("Token không hợp lệ.");
+            }
+
+            return claimsDictionary;
+        }
     }
 }
