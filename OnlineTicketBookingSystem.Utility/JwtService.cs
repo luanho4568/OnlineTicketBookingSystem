@@ -65,27 +65,47 @@ namespace OnlineTicketBookingSystem.Utility
             return tokenHandler.WriteToken(securityToken);
 
         }
-        public IDictionary<string, string> DecodeToken(string token)
+        public IDictionary<string, string> ValidateAndDecodeToken(string token)
         {
-            var handler = new JwtSecurityTokenHandler();
+            var tokenHandler = new JwtSecurityTokenHandler();
             var claimsDictionary = new Dictionary<string, string>();
 
-            if (handler.CanReadToken(token) && !string.IsNullOrEmpty(token))
+            try
             {
-                var jwtToken = handler.ReadJwtToken(token);
+                // Tham số xác thực token
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true, // Kiểm tra thời gian hết hạn
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _jwtSettings.Issuer,
+                    ValidAudience = _jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),
+                    ClockSkew = TimeSpan.Zero // Không cho phép thời gian trễ
+                };
 
-                // Lấy các thông tin (claims) từ token
+                // Xác thực token
+                tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                // Nếu token hợp lệ, giải mã các claims
+                var jwtToken = tokenHandler.ReadJwtToken(token);
                 foreach (var claim in jwtToken.Claims)
                 {
                     claimsDictionary[claim.Type] = claim.Value;
                 }
             }
-            else
+            catch (SecurityTokenExpiredException)
             {
-                throw new SecurityTokenException("Token không hợp lệ.");
+                throw new SecurityTokenException("Token đã hết hạn.");
+            }
+            catch (Exception ex)
+            {
+                throw new SecurityTokenException("Token không hợp lệ: " + ex.Message);
             }
 
             return claimsDictionary;
         }
+
     }
 }

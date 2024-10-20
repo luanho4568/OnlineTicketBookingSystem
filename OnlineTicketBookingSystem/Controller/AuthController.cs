@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 using OnlineTicketBookingSystem.Models;
+using OnlineTicketBookingSystem.Models.DTO;
 using OnlineTicketBookingSystem.Utility;
 using System.Security.Claims;
 
@@ -54,15 +55,20 @@ namespace OnlineTicketBookingSystem.Controller
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
             try
             {
-                if (!ModelState.IsValid) return NotFound(new { code = 400, message = "Dữ liệu không được để trống" });
-                var isExistUser = await _unitOfWork.User.GetFirstOrDefaultAsync(x => x.Email == user.Email);
+                // Kiểm tra dữ liệu nhập
+                if (string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
+                {
+                    return BadRequest(new { code = 400, message = "Email và mật khẩu không được để trống" });
+                }
+
+                var isExistUser = await _unitOfWork.User.GetFirstOrDefaultAsync(x => x.Email == loginDto.Email);
                 if (isExistUser != null)
                 {
-                    var isPassword = BCrypt.Net.BCrypt.Verify(user.Password, isExistUser.Password);
+                    var isPassword = BCrypt.Net.BCrypt.Verify(loginDto.Password, isExistUser.Password);
                     if (isPassword)
                     {
                         if (!isExistUser.IsActive)
@@ -77,7 +83,7 @@ namespace OnlineTicketBookingSystem.Controller
                             isExistUser.LastLogin = DateTime.Now.ToString();
                             _unitOfWork.User.Update(isExistUser);
                             await _unitOfWork.SaveAsync();
-                            return Ok(new { code = 200, message = "Đăng nhập thành công", token = token, fullName = isExistUser.FullName, group = isExistUser.GroupId, status = isExistUser.IsStatus });
+                            return Ok(new { code = 200, message = "Đăng nhập thành công", token = token, fullName = isExistUser.FullName, group = isExistUser.GroupId, avatar = isExistUser.Avatar });
                         }
                     }
                     else

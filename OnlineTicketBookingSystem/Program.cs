@@ -63,24 +63,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
         };
 
-
         options.Events = new JwtBearerEvents
         {
             OnAuthenticationFailed = context =>
             {
-                // Ghi log khi xác thực thất bại
                 Console.WriteLine("Token xác thực thất bại: " + context.Exception.Message);
                 return Task.CompletedTask;
             },
             OnTokenValidated = context =>
             {
-                // Ghi log khi token hợp lệ
                 Console.WriteLine("Token xác thực thành công cho user: " + context.Principal.Identity.Name);
                 return Task.CompletedTask;
             },
             OnChallenge = context =>
             {
-                // Ghi log khi có lỗi thách thức (challenge) về việc xác thực
                 Console.WriteLine("Xác thực JWT bị từ chối: " + context.ErrorDescription);
                 return Task.CompletedTask;
             }

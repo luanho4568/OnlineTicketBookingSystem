@@ -18,11 +18,7 @@ $(document).ready(function () {
                 initializeModal(user);
             } else if (response.code === 200) {
                 localStorage.setItem('authToken', response.token);
-                localStorage.setItem('user', JSON.stringify({ fullName: response.fullName, group: response.group }));
-                const tokenExpiryInMinutes = 1440; // Thay đổi nếu cần
-                const expiryDate = new Date().getTime() + tokenExpiryInMinutes * 60 * 1000; // Tính thời gian hết hạn
-                localStorage.setItem('tokenExpiry', expiryDate); // Lưu thời gian hết hạn
-
+                localStorage.setItem('user', JSON.stringify({ fullName: response.fullName, group: response.group, avatar: response.avatar }));
                 var token = localStorage.getItem('authToken');
                 if (token) {
                     if (response.group == 1) {

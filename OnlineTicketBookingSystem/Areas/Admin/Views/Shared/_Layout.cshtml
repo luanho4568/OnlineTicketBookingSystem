@@ -81,6 +81,20 @@
                     </div>
                 </div>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#setting"
+                   aria-expanded="true" aria-controls="setting">
+                    <i class="fas fa-cog"></i>
+                    <span>Cài đặt</span>
+                </a>
+                <div id="setting" class="collapse" aria-labelledby="headingUtilities"
+                     data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" asp-area="Admin" asp-controller="ResetPassword" asp-action="Index">Đổi mật khẩu</a>
+                    </div>
+                </div>
+            </li>
             @*  <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree"
             aria-expanded="true" aria-controls="collapseThree">
@@ -153,6 +167,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img id="userAvatar" class="rounded-circle mx-2 w-100" height="30" alt="User Avatar" />
                                 <span id="manage" class="mr-2 d-none d-lg-inline text-gray-600 small" title="Manage"></span>
                             </a>
                             <!-- Dropdown - User Information -->
@@ -164,9 +179,9 @@
                                         Đăng xuất
                                     </button>
                                 </form>
-
                             </div>
                         </li>
+
 
                     </ul>
 
@@ -174,6 +189,7 @@
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    <partial name="_Notifycation" />
                     @RenderBody()
                 </div>
                 <!-- End of Main Content -->
@@ -207,24 +223,66 @@
             $(document).ready(function () {
                 var user = localStorage.getItem('user');
                 var token = localStorage.getItem('authToken');
-                var expiry = localStorage.getItem('tokenExpiry');
-                var currentTime = new Date().getTime();
-                var status = JSON.parse(user)?.status
-                if(currentTime >= expiry) {
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('authToken');
-                    localStorage.removeItem('tokenExpiry');
-                }
-                if (!token || status == false) {
+                var userData = JSON.parse(user);
+                var avatarUrl = userData?.avatar;
+                if (!token) {
                     // Nếu không có token, điều hướng đến trang đăng nhập
                     window.location.href = '/';
                 } else {
-                    // Kiểm tra nếu không phải đang ở /admin/home thì điều hướng
-                    if (user) {
-                        $('#manage').text(JSON.parse(user).fullName);
-                    }
-                }
+                    // Gọi API để giải mã token và kiểm tra thời gian hết hạn
+                    $.ajax({
+                        url: '/api/v1/Token/ValidateAndDecodeToken', // API để giải mã token
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(token), // Gửi token tới API để kiểm tra
+                        success: function (response) {
+                            if (response.code === 200) {
+                                var decodedToken = response.data; // Token đã được giải mã
+                                var currentTime = Math.floor(Date.now() / 1000); // Lấy thời gian hiện tại (Unix time)
 
+                                if (currentTime >= decodedToken.exp) {
+                                    // Token đã hết hạn, xóa thông tin và thông báo người dùng
+                                    localStorage.removeItem('user');
+                                    localStorage.removeItem('authToken');
+
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Phiên đăng nhập đã hết hạn!",
+                                        text: "Vui lòng đăng nhập lại",
+                                    }).then(() => {
+                                        window.location.href = '/';
+                                    });
+                                } else {
+                                    // Token còn hợp lệ, hiển thị tên người dùng
+                                    $('#manage').text(decodedToken.unique_name);
+                                }
+                            } else {
+                                // Token không hợp lệ, xóa thông tin và điều hướng
+                                localStorage.removeItem('user');
+                                localStorage.removeItem('authToken');
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Token không hợp lệ!",
+                                    text: "Vui lòng đăng nhập lại",
+                                }).then(() => {
+                                    window.location.href = '/';
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Lỗi!",
+                                text: "Đã xảy ra lỗi khi giải mã token.",
+                            });
+                        }
+                    });
+                }
+                if (avatarUrl != null) {
+                    $('#userAvatar').attr('src', avatarUrl);
+                } else {
+                    $('#userAvatar').attr('src', '/images/users/nouser.jpg'); // Đường dẫn đến biểu tượng mặc định
+                }
                 // Xử lý khi nhấn nút Đăng xuất
                 $('#logout').click(function (event) {
                     event.preventDefault();
@@ -236,7 +294,6 @@
                         cancelButtonText: 'Hủy'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            var token = localStorage.getItem('authToken');
                             $.ajax({
                                 url: '/api/v1/Auth/Logout',
                                 type: 'POST',
@@ -244,27 +301,15 @@
                                     'Authorization': 'Bearer ' + token
                                 },
                                 success: function (response) {
-                                    // Xóa thông tin người dùng trong localStorage
                                     localStorage.removeItem('user');
                                     localStorage.removeItem('authToken');
-                                    localStorage.removeItem('tokenExpiry');
 
-                                    Swal.fire(
-                                        'Đã đăng xuất!',
-                                        'Bạn đã đăng xuất thành công.',
-                                        'success'
-                                    ).then(() => {
+                                    Swal.fire('Đã đăng xuất!', 'Bạn đã đăng xuất thành công.', 'success').then(() => {
                                         window.location.href = '/';
                                     });
                                 },
-                                error: function (xhr) {
-                                    // Xử lý lỗi nếu có
-                                    var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Đã xảy ra lỗi khi đăng xuất.';
-                                    Swal.fire(
-                                        'Lỗi!',
-                                        errorMessage,
-                                        'error'
-                                    );
+                                error: function () {
+                                    Swal.fire('Lỗi!', 'Đã xảy ra lỗi khi đăng xuất.', 'error');
                                 }
                             });
                         }
@@ -274,6 +319,8 @@
 
         </script>
         <!-- Page level custom scripts -->
+        <partial name="_ValidationScriptsPartial" />
+
         @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
