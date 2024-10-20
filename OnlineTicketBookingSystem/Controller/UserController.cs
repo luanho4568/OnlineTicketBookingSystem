@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
+using OnlineTicketBookingSystem.Utility;
 
 namespace OnlineTicketBookingSystem.Controller
 {
@@ -8,10 +9,13 @@ namespace OnlineTicketBookingSystem.Controller
     public class UserController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private IWebHostEnvironment _env;
+        private readonly JwtService _jwtService;
 
-        public UserController(IUnitOfWork unitOfWork)
+        public UserController(IUnitOfWork unitOfWork, IWebHostEnvironment env)
         {
             _unitOfWork = unitOfWork;
+            _env = env;
         }
         [HttpGet("GetUserByGroup")]
         public async Task<IActionResult> GetUserByGroup(int groupId)
@@ -58,5 +62,37 @@ namespace OnlineTicketBookingSystem.Controller
                 return StatusCode(500, new { message = "Có lỗi xảy ra ở server", error = e.Message });
             }
         }
+        [HttpPost("Update-Avatar")]
+        public async Task<IActionResult> UpdateUserProfileAvatar([FromBody] string fileName)
+        {
+            try
+            {
+                // Kiểm tra xem tên tệp có hợp lệ hay không
+                if (string.IsNullOrEmpty(fileName))
+                {
+                    return BadRequest(new { code = 400, message = "Tên file không hợp lệ" });
+                }
+
+                string wwwRootPath = _env.WebRootPath;
+                var avatarUrl = Path.Combine(wwwRootPath, "images/drivers", fileName);
+
+                // Kiểm tra xem tệp có tồn tại hay không
+                if (System.IO.File.Exists(avatarUrl))
+                {
+                    string relativePath = Path.Combine("images/drivers", fileName).Replace("\\", "/"); // Thay thế \ bằng /
+
+                    return Ok(new { code = 200, message = "Avatar đã tồn tại", avatarUrl = relativePath });
+                }
+                else
+                {
+                    return NotFound(new { code = 401, message = "Không tìm thấy Avatar", avatarUrl });
+                }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { message = "Có lỗi xảy ra ở server", error = e.Message });
+            }
+        }
+
     }
 }

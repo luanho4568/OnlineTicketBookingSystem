@@ -1,8 +1,4 @@
 ﻿import apiMain from '/js/apiHelper.js';
-
-var countdownTimer;
-var timeLeft = 30;
-
 $(document).ready(function () {
     $('#loginForm').on('submit', function (e) {
         e.preventDefault();
@@ -17,21 +13,36 @@ $(document).ready(function () {
             if (response.code === 403) {
                 initializeModal(user);
             } else if (response.code === 200) {
-                localStorage.setItem('authToken', response.token);
-                localStorage.setItem('user', JSON.stringify({ fullName: response.fullName, group: response.group, avatar: response.avatar }));
-                var token = localStorage.getItem('authToken');
-                if (token) {
-                    if (response.group == 1) {
-                        window.location.href = '/Admin/Home';
+                Swal.fire({
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('user', JSON.stringify({ fullName: response.fullName, group: response.group, avatar: response.avatar }));
+                    var token = localStorage.getItem('authToken');
+                    if (token) {
+                        if (response.group == 1) {
+                            window.location.href = '/Admin/Home';
+                        }
+                        else if (response.group == 2) {
+                            console.log(token)
+                            console.log(response.group)
+                            window.location.href = '/Driver/Home';
+                        }
+                        //else if (response.group == 3) {
+                        //    window.location.href = '/Customer/Home';
+                        //}
                     }
-                    //else if (response.group == 2) {
-                    //    window.location.href = '/Driver/Home';
-                    //} else if (response.group == 3) {
-                    //    window.location.href = '/Customer/Home';
-                    //}
-                }
+                })
             }
         }, function (errormessage) {
+            Swal.fire({
+                icon: "error",
+                title: "Đăng nhập thất bại",
+                text: JSON.parse(errormessage.responseText).message,
+            });
             console.log(errormessage.responseText);
         });
     });
