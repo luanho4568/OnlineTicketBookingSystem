@@ -2,7 +2,6 @@
 using Microsoft.IdentityModel.Tokens;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 using OnlineTicketBookingSystem.Utility;
-using System.Security.Claims;
 
 namespace OnlineTicketBookingSystem.Controller
 {
@@ -30,33 +29,15 @@ namespace OnlineTicketBookingSystem.Controller
                 {
                     return NotFound(new { code = 404, message = "Token không hợp lệ hoặc không có thông tin" });
                 }
-
                 return Ok(new { code = 200, message = "Giải mã thành công", data = claims });
-            }
-            catch (SecurityTokenExpiredException)
-            {
-                var claims = _jwtService.ValidateAndDecodeToken(token);
-                if (claims.TryGetValue(ClaimTypes.NameIdentifier, out string nameid))
-                {
-                    // Lấy thông tin người dùng từ cơ sở dữ liệu
-                    var user = await _unitOfWork.User.GetFirstOrDefaultAsync(x => x.Id.ToString() == nameid);
-
-                    if (user != null)
-                    {
-                        user.IsStatus = false;
-                        _unitOfWork.User.Update(user);
-                        await _unitOfWork.SaveAsync();
-                    }
-                }
-                return Unauthorized(new { code = 401, message = "Token đã hết hạn" });
             }
             catch (SecurityTokenException ex)
             {
-                return Unauthorized(new { code = 401, message = "Token không hợp lệ: " + ex.Message });
+                return Unauthorized(new { code = 401, message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { code = 500, message = "Đã xảy ra lỗi: " + ex.Message });
+                return StatusCode(500, new { code = 500, message = ex.Message });
             }
         }
     }

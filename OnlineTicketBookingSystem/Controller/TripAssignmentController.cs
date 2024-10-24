@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 using OnlineTicketBookingSystem.Models.DTO;
+using OnlineTicketBookingSystem.Utility;
 
 namespace OnlineTicketBookingSystem.Controller
 {
@@ -9,10 +10,12 @@ namespace OnlineTicketBookingSystem.Controller
     public class TripAssignmentController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly JwtService _jwtService;
 
-        public TripAssignmentController(IUnitOfWork unitOfWork)
+        public TripAssignmentController(IUnitOfWork unitOfWork, JwtService jwtService)
         {
             _unitOfWork = unitOfWork;
+            _jwtService = jwtService;
         }
         [HttpGet("GetAllTripAssignments")]
         public async Task<IActionResult> GetAll()
@@ -29,45 +32,88 @@ namespace OnlineTicketBookingSystem.Controller
                 return StatusCode(500, new { message = "Có lỗi xảy ra ở server", error = e.Message });
             }
         }
-        [HttpPost("RegisterTrip")]
-        public async Task<IActionResult> RegisterTrip([FromBody] TripAssignmentDTO tripAssignmentDto)
+        [HttpGet("GetAllTripAssignmentByUserId")]
+        public async Task<IActionResult> GetTripAssignmentById(string? token)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new { code = 400, message = "Dữ liệu không hợp lệ" });
-            }
-
             try
             {
-                // Kiểm tra xem TripId và DriverId có hợp lệ không
-                var trip = await _unitOfWork.Trips.GetFirstOrDefaultAsync(t => t.Id == tripAssignmentDto.TripId);
-                var driver = await _unitOfWork.User.GetFirstOrDefaultAsync(d => d.Id == tripAssignmentDto.DriverId);
-
-                if (trip == null || driver == null)
+                var claims = _jwtService.ValidateAndDecodeToken(token);
+                if (!claims.TryGetValue("nameid", out string nameid))
                 {
-                    return NotFound(new { code = 404, message = "Không tìm thấy tài xế hoặc chuyến đi" });
+                    return NotFound(new { code = 401, message = "Không tìm thấy user" });
                 }
 
-                // Kiểm tra xem đã có đăng ký nào cho chuyến đi này chưa
-                var existingAssignment = await _unitOfWork.TripsAssignments.GetFirstOrDefaultAsync(ta =>
-                    ta.TripId == tripAssignmentDto.TripId &&
-                    ta.DriverId == tripAssignmentDto.DriverId);
+                // Lấy user từ database bằng userId
+                await _unitOfWork.Trips.GetAllAsync(includeProperties: "Buses,StartProvince,EndProvince");
+                var tripAssignments = await _unitOfWork.TripsAssignments.GetAllAsync(x => x.DriverId.ToString() == nameid, includeProperties: "Trips,Driver");
+                if (tripAssignments == null || !tripAssignments.Any()) return Ok(new { code = 404, message = "Lấy danh sách phê duyệt thất bại!", data = tripAssignments });
+                return Ok(new { code = 200, message = "Lấy danh sách phê duyệt thành công!", data = tripAssignments });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { message = "Có lỗi xảy ra ở server", error = e.Message });
+            }
+        }
+        [HttpPost("HandleTrip")]
+        public async Task<IActionResult> HandleTrip([FromBody] TripAssignmentDTO tripAssignmentDto)
+        {
+            try
+            {
+                // Kiểm tra xem TripId và DriverId có hợp lệ không  
+                var tripAssignment = await _unitOfWork.TripsAssignments.GetFirstOrDefaultAsync(t => t.Id == tripAssignmentDto.TripAssignmentId);
+                if (tripAssignment == null)
+                {
+                    return NotFound(new { code = 404, message = "Không tìm thấy đăng ký chuyến đi." });
+                }
+                if (tripAssignment.Status == "Expired")
+                {
+                    return NotFound(new { code = 404, message = "Đăng ký chuyến đi đã hết hạn." });
+                }
 
-                if (existingAssignment != null)
+                // Kiểm tra xem tài xế có được gán cho chuyến đi này chưa
+                if (tripAssignment.DriverId != null && tripAssignment.DriverId != tripAssignmentDto.DriverId)
                 {
-                    // Cập nhật trạng thái nếu đã có đăng ký
-                    existingAssignment.Status = "Pending"; // Hoặc trạng thái khác nếu cần
-                    _unitOfWork.TripsAssignments.Update(existingAssignment); // Cập nhật lại đối tượng
+                    return BadRequest(new { code = 400, message = "Chuyến đi đã có tài xế khác." });
                 }
-                else
+                switch (tripAssignmentDto.Action)
                 {
-                    // Nếu không có đăng ký, trả về thông báo lỗi
-                    return NotFound(new { code = 404, message = "Không có đăng ký nào cho chuyến đi này." });
+                    case "Empty":
+                        tripAssignment.Status = "Pending";
+                        break;
+
+                    case "Accept":
+                        if (tripAssignment.Status == "Pending")
+                        {
+                            tripAssignment.Status = "Approved";
+                        }
+                        else if (tripAssignment.Status == "Approved")
+                        {
+                            tripAssignment.Status = "Completed";
+                        }
+                        else
+                        {
+                            return BadRequest(new { code = 400, message = "Chuyến đi không thể được chấp nhận ở trạng thái hiện tại." });
+                        }
+                        break;
+
+                    case "Cancel":
+                        tripAssignment.Status = "Empty"; // Đặt lại trạng thái về "Empty"
+                        tripAssignment.DriverId = null;
+                        break;
+
+                    default:
+                        return BadRequest(new { code = 400, message = "Hành động không hợp lệ." });
                 }
+
+                if (tripAssignment.Status != "Empty")
+                {
+                    tripAssignment.DriverId = tripAssignmentDto.DriverId;
+                }
+                _unitOfWork.TripsAssignments.Update(tripAssignment);
 
                 await _unitOfWork.SaveAsync();
 
-                return Ok(new { code = 200, message = "Tài xế đã đăng ký chuyến đi thành công", data = existingAssignment });
+                return Ok(new { code = 200, message = "Tài xế đã đăng ký chuyến đi thành công", data = tripAssignment });
             }
             catch (Exception ex)
             {

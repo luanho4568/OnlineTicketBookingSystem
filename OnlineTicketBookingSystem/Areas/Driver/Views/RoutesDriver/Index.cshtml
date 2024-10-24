@@ -1,0 +1,208 @@
+﻿<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-7">
+            <h2>Danh sách tất cả tuyến đi</h2>
+        </div>
+    </div>
+    <table class="table table-bordered table-striped mt-4" id="tblData">
+        <thead>
+            <tr>
+                <th>Tên tài xế</th>
+                <th>Tên xe</th>
+                <th>Giá vé</th>
+                <th>Tên tuyến đi</th>
+                <th>Số km</th>
+                <th>Trạng Thái</th>
+                <th>Giờ khởi hành</th>
+                <th>Ngày khởi hành</th>
+                <th></th>
+
+            </tr>
+        </thead>
+
+    </table>
+</div>
+@section Scripts {
+    <script>
+        var dataTable;
+
+        $(document).ready(function () {
+            loadDataTable();
+        });
+
+        function loadDataTable() {
+            var token = localStorage.getItem("authToken");
+            dataTable = $('#tblData').DataTable({
+                "ajax": {
+                    "url": `/api/v1/TripAssignment/GetAllTripAssignmentByUserId?token=${token}`,
+                    "dataSrc": function (json) {
+                        var routes = json.data;
+                        console.log(routes);
+
+                        // Kiểm tra và lọc các tuyến xe không đạt yêu cầu
+                        var validRoutes = [];
+
+                        routes.forEach(function(route) {
+                        console.log(route);
+                            // Kiểm tra nếu tuyến không "Expired" và có driverId
+                            if (route.status !== "Expired") {
+                                validRoutes.push(route);
+                            }
+                        });
+                        console.log(validRoutes)
+                        // Nếu có tuyến hợp lệ, trả về các tuyến này, nếu không, hiển thị thông báo
+                        if (validRoutes.length > 0) {
+                            return validRoutes;
+                        } else {
+                            return {
+                                "language": {
+                                    "emptyTable": "Không có tuyến xe nào"
+                                }
+                            };
+                        }
+                    }
+
+                },
+                "columns": [
+                    {
+                        "data": "driver.fullName",
+                        "render": function (data) {
+                            return data != null ? data : "Chưa có tài xế" // Loại bỏ phần T00:00:00 và chỉ giữ ngày
+                        },
+                        "width": "calc(100%/7)"
+                    }, { "data": "trips.buses.name", "width": "calc(100%/7)" },
+                    { "data": "trips.price",
+                        "render": function (data) {
+                            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Chuyển đổi giá thành chuỗi có dấu chấm phân cách
+                        },
+                        "width": "calc(100%/7)" },
+                    {
+                        "data": "trips",
+                        "render": function (data) {
+                            return "Từ " + data.startProvince.name + " đến " + data.endProvince.name
+                        },
+                        "width": "calc(100%/7)"
+                    },{ "data": "trips.distance", "width": "calc(100%/7)" },
+                    {
+                        "data": "status",
+                        "render": function (data) {
+                            if (data == "Empty") {
+                                return "Trống"
+                            } else if (data == "Pending") {
+                                return "Đang chờ phê duyệt"
+                            } else if (data == "Approved") {
+                                return "Chấp thuận"
+                            } else if (data == "Expired") {
+                                return "Hết hạn"
+                            } else {
+                                return null
+                            }
+                        },
+                        "width": "calc(100%/7)"
+                    },
+                     { "data": "trips.departureTime", "width": "calc(100%/7)" },
+                    {
+                        "data": "trips.departureDate",
+                        "render": function (data) {
+                            return data.split('T')[0]; // Loại bỏ phần T00:00:00 và chỉ giữ ngày
+                        },
+                        "width": "calc(100%/10)"
+                    },
+                    {
+                       "data": null,
+                        "render": function (data) {
+                            if (data.status === "Pending") {
+                                return `
+                                                    <div class="text-center">
+                                                        <span class="check-icon me-3">
+                                                                    <i class="fas fa-hourglass-half text-warning"></i>
+                                                        </span>
+                                                        <span class="times-icon" onclick="CancelTripAssignment('${data.id}')">
+                                                                    <i class="fas fa-times text-danger"></i>
+                                                        </span>
+                                                    </div>
+                                                    `;
+                            } else if (data.status === "Approved") {
+                                return `
+                                                            <div class="text-center">
+                                                                <span class="check-icon me-3">
+                                                                            <i class="fas fa-check text-primary"></i>
+                                                                </span>
+
+                                                            </div>
+                                                            `
+                            } else if (data.status === "Complated"){
+                                return `
+                                                <div class="text-center">
+                                                                            <i class="fas fa-check text-success"></i>
+                                                </div>`;
+                            }
+
+                        },
+                        "width": "calc(100%/7)"
+                    }
+                ],
+                "responsive": true,
+                "language": {
+                    "emptyTable": "Không có tuyến xe nào"
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function CancelTripAssignment(tripAssignmentId) {
+            var token = localStorage.getItem('authToken');
+             $.ajax({
+                url: '/api/v1/Token/ValidateAndDecodeToken', // API để giải mã token
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(token), // Gửi token tới API để kiểm tra
+                success: function (response) {
+                    var driverId = response.data.nameid;
+                    console.log(driverId)
+                    const tripData = {
+                        tripAssignmentId: tripAssignmentId,
+                        driverId: driverId,
+                        action : "Cancel"
+                    };
+                    Swal.fire({
+                          title: "Bạn có chắc huỷ tuyến này?",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonColor: "#3085d6",
+                          cancelButtonColor: "#d33",
+                          confirmButtonText: "Đồng ý",
+                          cancelButtonText: "Huỷ bỏ"
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                              $.ajax({
+                                    url: '/api/v1/TripAssignment/HandleTrip',
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(tripData), // Sử dụng đúng biến 'tripData'
+                                    success: function (response) {
+                                        console.log(response);
+                                        Swal.fire({
+                                            title: "Bạn đã huỷ thành công",
+                                            icon: "success"
+                                        });
+                                        dataTable.ajax.reload();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        // Xử lý lỗi
+                                        alert("Lỗi: " + xhr.responseJSON.message);
+                                    }
+                                });
+                          }
+                        });
+                    },
+                    error: function (e) {
+                        console.log(e.responseText.message)
+                    }
+             });
+        }
+    </script>
+}

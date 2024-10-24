@@ -1,73 +1,74 @@
-﻿    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+﻿<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <div class="container p-3">
-        <div class="row pt-4">
-            <div class="col-6">
-                <h2>Danh sách phê duyệt tuyến đi</h2>
-            </div>
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-7">
+            <h2>Danh sách tất cả tuyến đi</h2>
         </div>
-        <table class="table table-bordered table-striped mt-4" id="tblData">
-            <thead>
-                <tr>
-                    <th>Tên tài xế</th>
-                    <th>Tên xe</th>
-                    <th>Tên tuyến đi</th>
-                    <th>Trạng Thái</th>
-                    <th>Ngày tạo</th>
-                    <th></th>
-
-                </tr>
-            </thead>
-
-        </table>
     </div>
-    @section Scripts {
-        <script>
-            var dataTable;
+    <table class="table table-bordered table-striped mt-4" id="tblData">
+        <thead>
+            <tr>
+                <th>Tên tài xế</th>
+                <th>Tên xe</th>
+                <th>Tên tuyến đi</th>
+                <th>Số km</th>
+                <th>Trạng Thái</th>
+                <th>Ngày tạo</th>
+                <th></th>
 
-            $(document).ready(function () {
-                loadDataTable();
-            });
+            </tr>
+        </thead>
 
-            function loadDataTable() {
-                dataTable = $('#tblData').DataTable({
-                    "ajax": {
-                        "url": "/api/v1/TripAssignment/GetAllTripAssignments",
-                        "dataSrc": function (json) {
-                            return json.data;
-                        }
-                    },
-                    "columns": [
-                        {
-                            "data": "driver.FullName",
-                            "render": function (data) {
-                                return data != null ? data : "Chưa có tài xế" // Loại bỏ phần T00:00:00 và chỉ giữ ngày
-                            },
-                            "width": "calc(100%/6)"
-                        }, { "data": "trips.buses.name", "width": "calc(100%/6)" },
-                        {
-                            "data": "trips",
-                            "render": function (data) {
-                                return "Từ " + data.startProvince.name + " đến " + data.endProvince.name
-                            },
-                            "width": "calc(100%/6)"
+    </table>
+</div>
+@section Scripts {
+    <script>
+        var dataTable;
+
+        $(document).ready(function () {
+            loadDataTable();
+        });
+
+        function loadDataTable() {
+            dataTable = $('#tblData').DataTable({
+                "ajax": {
+                    "url": "/api/v1/TripAssignment/GetAllTripAssignments",
+                    "dataSrc": function (json) {
+                        return json.data;
+                    }
+                },
+                "columns": [
+                    {
+                        "data": "driver.fullName",
+                        "render": function (data) {
+                            return data != null ? data : "Chưa có tài xế" // Loại bỏ phần T00:00:00 và chỉ giữ ngày
                         },
-                        {
-                            "data": "status",
-                            "render": function (data) {
-                                if (data == "Empty") {
-                                    return "Trống"
-                                } else if (data == "Pending") {
-                                    return "Đang chờ phê duyệt"
-                                } else if (data == "Approved") {
-                                    return "Chấp thuận"
+                        "width": "calc(100%/7)"
+                    }, { "data": "trips.buses.name", "width": "calc(100%/7)" },
+                    {
+                        "data": "trips",
+                        "render": function (data) {
+                            return "Từ " + data.startProvince.name + " đến " + data.endProvince.name
+                        },
+                        "width": "calc(100%/7)"
+                    },{ "data": "trips.distance", "width": "calc(100%/7)" },
+                    {
+                        "data": "status",
+                        "render": function (data) {
+                            if (data == "Empty") {
+                                return "Trống"
+                            } else if (data == "Pending") {
+                                return "Đang chờ phê duyệt"
+                            } else if (data == "Approved") {
+                                return "Chấp thuận"
                             } else if (data == "Expired") {
                                 return "Hết hạn"
                             } else {
-                                    return null
-                                }
-                            },
-                            "width": "calc(100%/6)"
+                                return null
+                            }
+                        },
+                        "width": "calc(100%/7)"
                     }, {
                         "data": "createAt",
                         "render": function (data) {
@@ -75,54 +76,54 @@
                         },
                         "width": "calc(100%/10)"
                     },
-                        {
-                            "data": null,
-                            "render": function (data) {
-                                if (data.status == "Pending") {
-                                    return `
-                                            <div class="text-center">
-                                                <span class="check-icon me-3">
-                                                            <i class="fas fa-check text-success"></i>
-                                                </span>
-                                                <span class="times-icon">
-                                                            <i class="fas fa-times text-danger"></i>
-                                                </span>
-                                            </div>
-                                            `;
-                                } else if (data.status == "Approved") {
-                                    return `
+                    {
+                        "data": null,
+                        "render": function (data) {
+                            if (data.status == "Pending") {
+                                return `
                                                     <div class="text-center">
                                                         <span class="check-icon me-3">
                                                                     <i class="fas fa-check text-success"></i>
                                                         </span>
-                                                    
+                                                        <span class="times-icon">
+                                                                    <i class="fas fa-times text-danger"></i>
+                                                        </span>
                                                     </div>
-                                                    `
-                            } else if (data.status == "Expired") {
+                                                    `;
+                            } else if (data.status == "Approved") {
                                 return `
                                                             <div class="text-center">
                                                                 <span class="check-icon me-3">
-                                                                     <i class="fas fa-calendar-times"></i>
+                                                                            <i class="fas fa-check text-success"></i>
                                                                 </span>
 
                                                             </div>
                                                             `
+                            } else if (data.status == "Expired") {
+                                return `
+                                                                    <div class="text-center">
+                                                                        <span class="check-icon me-3">
+                                                                             <i class="fas fa-calendar-times"></i>
+                                                                        </span>
+
+                                                                    </div>
+                                                                    `
                             } else {
-                                    return `
-                                        <div class="text-center">
-                                                <i class="fas fa-hourglass-half text-warning"></i>
-                                        </div>`;
-                                }
-                               
-                            },
-                            "width": "calc(100%/6)"
-                        }
-                    ],
-                    "responsive": true,
-                    "language": {
-                        "emptyTable": "Không có tuyến xe nào"
+                                return `
+                                                <div class="text-center">
+                                                        <i class="fas fa-hourglass-half text-warning"></i>
+                                                </div>`;
+                            }
+
+                        },
+                        "width": "calc(100%/7)"
                     }
-                });
-            }
-        </script>
-    }
+                ],
+                "responsive": true,
+                "language": {
+                    "emptyTable": "Không có tuyến xe nào"
+                }
+            });
+        }
+    </script>
+}

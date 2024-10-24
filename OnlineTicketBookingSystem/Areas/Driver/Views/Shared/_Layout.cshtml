@@ -73,8 +73,8 @@
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" asp-area="Admin" asp-controller="Bus" asp-action="Index">Quản lý tuyến xe</a>
-                        <a class="collapse-item" asp-area="Admin" asp-controller="RouteManagement" asp-action="Index">Đăng ký tuyến xe</a>
+                        <a class="collapse-item" asp-area="Driver" asp-controller="AvailableRoutes" asp-action="Index">Tất cả tuyến xe</a>
+                        <a class="collapse-item" asp-area="Driver" asp-controller="RoutesDriver" asp-action="Index">Tuyến xe đã đăng ký</a>
                     </div>
                 </div>
             </li>
@@ -202,48 +202,23 @@
                         contentType: 'application/json',
                         data: JSON.stringify(token), // Gửi token tới API để kiểm tra
                         success: function (response) {
-                            if (response.code === 200) {
-                                var decodedToken = response.data; // Token đã được giải mã
-                                var currentTime = Math.floor(Date.now() / 1000); // Lấy thời gian hiện tại (Unix time)
+                           var decodedToken = response.data;
+                           // Token còn hợp lệ, hiển thị tên người dùng
+                          $('#manage').text(decodedToken.unique_name);
+                            var nameid = decodedToken.nameid;
+                             $('#profileLink').attr('href', `/Driver/Profile/Index?id=${nameid}`);
 
-                                if (currentTime >= decodedToken.exp) {
-                                    // Token đã hết hạn, xóa thông tin và thông báo người dùng
-                                    localStorage.removeItem('user');
-                                    localStorage.removeItem('authToken');
-
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: "Phiên đăng nhập đã hết hạn!",
-                                        text: "Vui lòng đăng nhập lại",
-                                    }).then(() => {
-                                        window.location.href = '/';
-                                    });
-                                } else {
-                                    // Token còn hợp lệ, hiển thị tên người dùng
-                                    $('#manage').text(decodedToken.unique_name);
-                                    var nameid = decodedToken.nameid;
-                                   $('#profileLink').attr('href', `/Driver/Profile/Index?id=${nameid}`);
-
-                                }
-                            } else {
-                                // Token không hợp lệ, xóa thông tin và điều hướng
-                                localStorage.removeItem('user');
-                                localStorage.removeItem('authToken');
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Token không hợp lệ!",
-                                    text: "Vui lòng đăng nhập lại",
-                                }).then(() => {
-                                    window.location.href = '/';
-                                });
-                            }
                         },
-                        error: function () {
+                        error: function (e) {
+                            localStorage.removeItem('user');
+                                localStorage.removeItem('authToken');
                             Swal.fire({
                                 icon: "error",
-                                title: "Lỗi!",
-                                text: "Đã xảy ra lỗi khi giải mã token.",
-                            });
+                                title: JSON.parse(e.responseText).message,
+                                text: "Vui lòng đăng nhập lại",
+                            }).then(() => {
+                                        window.location.href = '/';
+                                    });
                         }
                     });
                 }
