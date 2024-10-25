@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\buses\" />
-    <Folder Include="wwwroot\images\drivers\" />
     <Folder Include="wwwroot\images\users\" />
   </ItemGroup>
 

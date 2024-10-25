@@ -3991,7 +3991,7 @@ jQuery.extend( {
 	when: function( singleValue ) {
 		var
 
-			// count of uncompleted subordinates
+			// count of unComplated subordinates
 			remaining = arguments.length,
 
 			// count of unprocessed arguments
@@ -4114,9 +4114,9 @@ jQuery.extend( {
 jQuery.ready.then = readyList.then;
 
 // The ready event handler and self cleanup method
-function completed() {
-	document.removeEventListener( "DOMContentLoaded", completed );
-	window.removeEventListener( "load", completed );
+function Complated() {
+	document.removeEventListener( "DOMContentLoaded", Complated );
+	window.removeEventListener( "load", Complated );
 	jQuery.ready();
 }
 
@@ -4133,10 +4133,10 @@ if ( document.readyState === "complete" ||
 } else {
 
 	// Use the handy event callback
-	document.addEventListener( "DOMContentLoaded", completed );
+	document.addEventListener( "DOMContentLoaded", Complated );
 
 	// A fallback to window.onload, that will always work
-	window.addEventListener( "load", completed );
+	window.addEventListener( "load", Complated );
 }
 
 
@@ -9402,7 +9402,7 @@ jQuery.extend( {
 			urlAnchor,
 
 			// Request state (becomes false upon send and true upon completion)
-			completed,
+			Complated,
 
 			// To know if global events are to be dispatched
 			fireGlobals,
@@ -9427,7 +9427,7 @@ jQuery.extend( {
 
 			// Deferreds
 			deferred = jQuery.Deferred(),
-			completeDeferred = jQuery.Callbacks( "once memory" ),
+			Complatedeferred = jQuery.Callbacks( "once memory" ),
 
 			// Status-dependent callbacks
 			statusCode = s.statusCode || {},
@@ -9446,7 +9446,7 @@ jQuery.extend( {
 				// Builds headers hashtable if needed
 				getResponseHeader: function( key ) {
 					var match;
-					if ( completed ) {
+					if ( Complated ) {
 						if ( !responseHeaders ) {
 							responseHeaders = {};
 							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
@@ -9462,12 +9462,12 @@ jQuery.extend( {
 
 				// Raw string
 				getAllResponseHeaders: function() {
-					return completed ? responseHeadersString : null;
+					return Complated ? responseHeadersString : null;
 				},
 
 				// Caches the header
 				setRequestHeader: function( name, value ) {
-					if ( completed == null ) {
+					if ( Complated == null ) {
 						name = requestHeadersNames[ name.toLowerCase() ] =
 							requestHeadersNames[ name.toLowerCase() ] || name;
 						requestHeaders[ name ] = value;
@@ -9477,7 +9477,7 @@ jQuery.extend( {
 
 				// Overrides response content-type header
 				overrideMimeType: function( type ) {
-					if ( completed == null ) {
+					if ( Complated == null ) {
 						s.mimeType = type;
 					}
 					return this;
@@ -9487,7 +9487,7 @@ jQuery.extend( {
 				statusCode: function( map ) {
 					var code;
 					if ( map ) {
-						if ( completed ) {
+						if ( Complated ) {
 
 							// Execute the appropriate callbacks
 							jqXHR.always( map[ jqXHR.status ] );
@@ -9560,7 +9560,7 @@ jQuery.extend( {
 		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
 
 		// If request was aborted inside a prefilter, stop there
-		if ( completed ) {
+		if ( Complated ) {
 			return jqXHR;
 		}
 
@@ -9645,7 +9645,7 @@ jQuery.extend( {
 
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend &&
-			( s.beforeSend.call( callbackContext, jqXHR, s ) === false || completed ) ) {
+			( s.beforeSend.call( callbackContext, jqXHR, s ) === false || Complated ) ) {
 
 			// Abort if not done already and return
 			return jqXHR.abort();
@@ -9655,7 +9655,7 @@ jQuery.extend( {
 		strAbort = "abort";
 
 		// Install callbacks on deferreds
-		completeDeferred.add( s.complete );
+		Complatedeferred.add( s.complete );
 		jqXHR.done( s.success );
 		jqXHR.fail( s.error );
 
@@ -9674,7 +9674,7 @@ jQuery.extend( {
 			}
 
 			// If request was aborted inside ajaxSend, stop there
-			if ( completed ) {
+			if ( Complated ) {
 				return jqXHR;
 			}
 
@@ -9686,12 +9686,12 @@ jQuery.extend( {
 			}
 
 			try {
-				completed = false;
+				Complated = false;
 				transport.send( requestHeaders, done );
 			} catch ( e ) {
 
 				// Rethrow post-completion exceptions
-				if ( completed ) {
+				if ( Complated ) {
 					throw e;
 				}
 
@@ -9706,11 +9706,11 @@ jQuery.extend( {
 				statusText = nativeStatusText;
 
 			// Ignore repeat invocations
-			if ( completed ) {
+			if ( Complated ) {
 				return;
 			}
 
-			completed = true;
+			Complated = true;
 
 			// Clear timeout if it exists
 			if ( timeoutTimer ) {
@@ -9808,7 +9808,7 @@ jQuery.extend( {
 			}
 
 			// Complete
-			completeDeferred.fireWith( callbackContext, [ jqXHR, statusText ] );
+			Complatedeferred.fireWith( callbackContext, [ jqXHR, statusText ] );
 
 			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s ] );

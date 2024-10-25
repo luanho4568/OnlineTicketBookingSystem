@@ -4812,7 +4812,7 @@
 	/**
 	 * Draw the table for the first time, adding all required features
 	 *  @param {object} oSettings dataTables settings object
-	 *  @param {object} [json] JSON from the server that completed the table, if using Ajax source
+	 *  @param {object} [json] JSON from the server that Complated the table, if using Ajax source
 	 *    with client-side processing (optional)
 	 *  @memberof DataTable#oApi
 	 */
@@ -14700,7 +14700,7 @@
 					// Because this approach is destroying and recreating the paging
 					// elements, focus is lost on the select button which is bad for
 					// accessibility. So we want to restore focus once the draw has
-					// completed
+					// Complated
 					activeEl = $(host).find(document.activeElement).data('dt-idx');
 				}
 				catch (e) {}
@@ -15315,7 +15315,7 @@
 	 */
 
 	/**
-	 * Ajax (XHR) event, fired whenever an Ajax request is completed from a
+	 * Ajax (XHR) event, fired whenever an Ajax request is Complated from a
 	 * request to made to the server for new data. This event is called before
 	 * DataTables processed the returned data, so it can also be used to pre-
 	 * process the data returned from the server, if needed.

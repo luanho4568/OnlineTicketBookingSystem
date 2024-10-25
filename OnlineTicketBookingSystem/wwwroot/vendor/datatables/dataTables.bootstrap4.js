@@ -164,7 +164,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 		// Because this approach is destroying and recreating the paging
 		// elements, focus is lost on the select button which is bad for
 		// accessibility. So we want to restore focus once the draw has
-		// completed
+		// Complated
 		activeEl = $(host).find(document.activeElement).data('dt-idx');
 	}
 	catch (e) {}

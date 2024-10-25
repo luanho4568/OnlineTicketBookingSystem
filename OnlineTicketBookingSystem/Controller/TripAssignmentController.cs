@@ -60,7 +60,7 @@ namespace OnlineTicketBookingSystem.Controller
             try
             {
                 // Kiểm tra xem TripId và DriverId có hợp lệ không  
-                var tripAssignment = await _unitOfWork.TripsAssignments.GetFirstOrDefaultAsync(t => t.Id == tripAssignmentDto.TripAssignmentId);
+                var tripAssignment = await _unitOfWork.TripsAssignments.GetFirstOrDefaultAsync(t => t.Id == tripAssignmentDto.TripAssignmentId, includeProperties: "Trips");
                 if (tripAssignment == null)
                 {
                     return NotFound(new { code = 404, message = "Không tìm thấy đăng ký chuyến đi." });
@@ -84,11 +84,20 @@ namespace OnlineTicketBookingSystem.Controller
                     case "Accept":
                         if (tripAssignment.Status == "Pending")
                         {
+                            tripAssignment.Trips.Status = "Departing";
                             tripAssignment.Status = "Approved";
                         }
                         else if (tripAssignment.Status == "Approved")
                         {
-                            tripAssignment.Status = "Completed";
+                            if (tripAssignment.Trips.DepartureDate > DateTime.Now)
+                            {
+                                return NotFound(new { message = "Chưa đến thời gian khởi hành" });
+                            }
+                            else
+                            {
+                                tripAssignment.Trips.Status = "Complated";
+                                tripAssignment.Status = "Complated";
+                            }
                         }
                         else
                         {
@@ -98,6 +107,7 @@ namespace OnlineTicketBookingSystem.Controller
 
                     case "Cancel":
                         tripAssignment.Status = "Empty"; // Đặt lại trạng thái về "Empty"
+                        tripAssignment.Trips.Status = "Scheduled";
                         tripAssignment.DriverId = null;
                         break;
 

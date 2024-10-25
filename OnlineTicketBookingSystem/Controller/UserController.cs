@@ -74,12 +74,12 @@ namespace OnlineTicketBookingSystem.Controller
                 }
 
                 string wwwRootPath = _env.WebRootPath;
-                var avatarUrl = Path.Combine(wwwRootPath, "images/drivers", fileName);
+                var avatarUrl = Path.Combine(wwwRootPath, "images/users", fileName);
 
                 // Kiểm tra xem tệp có tồn tại hay không
                 if (System.IO.File.Exists(avatarUrl))
                 {
-                    string relativePath = Path.Combine("images/drivers", fileName).Replace("\\", "/"); // Thay thế \ bằng /
+                    string relativePath = Path.Combine("images/users", fileName).Replace("\\", "/"); // Thay thế \ bằng /
 
                     return Ok(new { code = 200, message = "Avatar đã tồn tại", avatarUrl = relativePath });
                 }

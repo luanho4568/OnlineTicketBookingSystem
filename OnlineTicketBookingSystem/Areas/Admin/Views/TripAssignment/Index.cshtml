@@ -52,7 +52,7 @@
                             return "Từ " + data.startProvince.name + " đến " + data.endProvince.name
                         },
                         "width": "calc(100%/7)"
-                    },{ "data": "trips.distance", "width": "calc(100%/7)" },
+                    }, { "data": "trips.distance", "width": "calc(100%/7)" },
                     {
                         "data": "status",
                         "render": function (data) {
@@ -64,6 +64,8 @@
                                 return "Chấp thuận"
                             } else if (data == "Expired") {
                                 return "Hết hạn"
+                            } else if (data == "Complated") {
+                                return "Hoàn thành"
                             } else {
                                 return null
                             }
@@ -81,38 +83,46 @@
                         "render": function (data) {
                             if (data.status == "Pending") {
                                 return `
-                                                    <div class="text-center">
-                                                        <span class="check-icon me-3">
-                                                                    <i class="fas fa-check text-success"></i>
-                                                        </span>
-                                                        <span class="times-icon">
-                                                                    <i class="fas fa-times text-danger"></i>
-                                                        </span>
-                                                    </div>
-                                                    `;
-                            } else if (data.status == "Approved") {
-                                return `
                                                             <div class="text-center">
-                                                                <span class="check-icon me-3">
+                                                                                <span class="check-icon me-3" onclick="ApprovedTripAssignment('${data.id}','${data.driverId}')">
                                                                             <i class="fas fa-check text-success"></i>
                                                                 </span>
-
+                                                                        <span class="times-icon" onclick="CancelTripAssignment('${data.id}','${data.driverId}')">
+                                                                            <i class="fas fa-times text-danger"></i>
+                                                                </span>
                                                             </div>
-                                                            `
-                            } else if (data.status == "Expired") {
+                                                            `;
+                            } else if (data.status == "Approved") {
                                 return `
                                                                     <div class="text-center">
-                                                                        <span class="check-icon me-3">
-                                                                             <i class="fas fa-calendar-times"></i>
+                                                                                    <i class="fas fa-check text-primary"></i>
                                                                         </span>
 
                                                                     </div>
                                                                     `
+                            } else if (data.status == "Complated") {
+                                return `
+                                                                    <div class="text-center">
+                                                                                <i class="fas fa-check-circle text-success" title="Hoàn thành"></i>
+
+                                                                        </span>
+
+                                                                    </div>
+                                                                    `
+                            }else if (data.status == "Expired") {
+                                return `
+                                                                            <div class="text-center">
+                                                                                <span class="check-icon me-3">
+                                                                                     <i class="fas fa-calendar-times"></i>
+                                                                                </span>
+
+                                                                            </div>
+                                                                            `
                             } else {
                                 return `
-                                                <div class="text-center">
-                                                        <i class="fas fa-hourglass-half text-warning"></i>
-                                                </div>`;
+                                                        <div class="text-center">
+                                                                <i class="fas fa-hourglass-half text-warning"></i>
+                                                        </div>`;
                             }
 
                         },
@@ -125,5 +135,90 @@
                 }
             });
         }
+    </script>
+
+    <script>
+        function ApprovedTripAssignment(tripAssignmentId, driverId) {
+
+            const tripData = {
+                tripAssignmentId: tripAssignmentId,
+                driverId: driverId,
+                action: "Accept"
+            };
+            Swal.fire({
+                title: "Bạn có chắc duyệt tuyến này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Huỷ bỏ"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/api/v1/TripAssignment/HandleTrip',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(tripData),
+                        success: function (response) {
+                            console.log(response);
+                            Swal.fire({
+                                title: "Bạn đã duyệt thành công",
+                                icon: "success"
+                            });
+                            dataTable.ajax.reload();
+                        },
+                        error: function (e) {
+                            Swal.fire({
+                                title: JSON.parse(e.responseText).message,
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        function CancelTripAssignment(tripAssignmentId, driverId) {
+
+            const tripData = {
+                tripAssignmentId: tripAssignmentId,
+                driverId: driverId,
+                action: "Cancel"
+            };
+            Swal.fire({
+                title: "Bạn có chắc huỷ tuyến này?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Đồng ý",
+                cancelButtonText: "Huỷ bỏ"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/api/v1/TripAssignment/HandleTrip',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(tripData),
+                        success: function (response) {
+                            console.log(response);
+                            Swal.fire({
+                                title: "Bạn đã huỷ thành công",
+                                icon: "success"
+                            });
+                            dataTable.ajax.reload();
+                        },
+                        error: function (e) {
+                            Swal.fire({
+                                title: JSON.parse(e.responseText).message,
+                                icon: "error"
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+
     </script>
 }

@@ -79,7 +79,7 @@ namespace AdminDriverDashboard.Areas.Driver.Controllers
             else
             {
                 string fileName = Guid.NewGuid().ToString();
-                var uploads = Path.Combine(wwwRootPath, @"images\drivers");
+                var uploads = Path.Combine(wwwRootPath, @"images\users");
                 var extension = Path.GetExtension(file.FileName);
 
                 // Xóa hình ảnh cũ nếu có
@@ -97,7 +97,7 @@ namespace AdminDriverDashboard.Areas.Driver.Controllers
                 {
                     await file.CopyToAsync(fileStreams);
                 }
-                user.Avatar = @"images\drivers\" + fileName + extension; // Cập nhật đường dẫn hình ảnh
+                user.Avatar = @"images\users\" + fileName + extension; // Cập nhật đường dẫn hình ảnh
             }
 
             // Cập nhật thông tin người dùng

@@ -3965,7 +3965,7 @@ clipboard-list:
   search:
     terms:
       - checklist
-      - completed
+      - Complated
       - done
       - finished
       - intinerary
@@ -11745,7 +11745,7 @@ list:
   search:
     terms:
       - checklist
-      - completed
+      - Complated
       - done
       - finished
       - ol
@@ -11763,7 +11763,7 @@ list-alt:
   search:
     terms:
       - checklist
-      - completed
+      - Complated
       - done
       - finished
       - ol
@@ -11783,7 +11783,7 @@ list-ol:
   search:
     terms:
       - checklist
-      - completed
+      - Complated
       - done
       - finished
       - numbers
@@ -11803,7 +11803,7 @@ list-ul:
   search:
     terms:
       - checklist
-      - completed
+      - Complated
       - done
       - finished
       - ol
@@ -18816,7 +18816,7 @@ th-list:
   search:
     terms:
       - checklist
-      - completed
+      - Complated
       - done
       - finished
       - ol

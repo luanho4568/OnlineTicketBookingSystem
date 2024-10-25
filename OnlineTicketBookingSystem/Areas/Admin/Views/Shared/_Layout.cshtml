@@ -91,6 +91,7 @@
                 <div id="setting" class="collapse" aria-labelledby="headingUtilities"
                      data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item" id="profileLink" href="#">Thông tin cá nhân</a>
                         <a class="collapse-item" asp-area="Admin" asp-controller="ResetPassword" asp-action="Index">Đổi mật khẩu</a>
                     </div>
                 </div>
@@ -240,7 +241,7 @@
                            // Token còn hợp lệ, hiển thị tên người dùng
                           $('#manage').text(decodedToken.unique_name);
                             var nameid = decodedToken.nameid;
-                             $('#profileLink').attr('href', `/Driver/Profile/Index?id=${nameid}`);
+                            $('#profileLink').attr('href', `/Admin/User/Profile?id=${nameid}`);
 
                         },
                         error: function (e) {
@@ -257,7 +258,7 @@
                     });
                 }
                 if (avatarUrl != null) {
-                    $('#userAvatar').attr('src', avatarUrl);
+                    $('#userAvatar').attr('src','/' + avatarUrl);
                 } else {
                     $('#userAvatar').attr('src', '/images/users/nouser.jpg'); // Đường dẫn đến biểu tượng mặc định
                 }
