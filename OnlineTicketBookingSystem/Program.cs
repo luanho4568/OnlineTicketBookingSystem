@@ -6,6 +6,7 @@ using OnlineTicketBookingSystem.DAL.Data;
 using OnlineTicketBookingSystem.DAL.Repository;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 using OnlineTicketBookingSystem.Utility;
+using Stripe;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -99,6 +100,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -107,7 +110,7 @@ app.UseSwaggerUI();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=Account}/{controller=Login}/{action=Index}/{id?}"
+    pattern: "{area=Guest}/{controller=Home}/{action=Index}/{id?}"
 );
 
 app.Run();

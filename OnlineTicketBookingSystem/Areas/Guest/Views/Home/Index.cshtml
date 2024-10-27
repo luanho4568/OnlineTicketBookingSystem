@@ -1,0 +1,222 @@
+﻿<!-- Header Section -->
+<header class="py-5 text-center position-relative" style="min-height: 550px; background-image: url('/images/background/home.png'); background-size: cover; background-position: center;">
+    <!-- Search Section -->
+    <div class="search-section bg-white text-black p-4 container" style="bottom: 0; left: 0; border-radius: 6px; margin-top: 130px;">
+        <div class="container">
+            <h4 class="text-center mb-4">Tìm Kiếm Chuyến Đi</h4>
+            <form>
+                <div class="row align-items-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-bus-alt"></i></span>
+                            <select class="form-control" id="fromLocation">
+                                <option value="">Chọn nơi đi</option>
+                                <option value="hanoi">Hà Nội</option>
+                                <option value="hochiminh">TP. Hồ Chí Minh</option>
+                                <option value="danang">Đà Nẵng</option>
+                                <option value="haiphong">Hải Phòng</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <select class="form-control" id="toLocation">
+                                <option value="">Chọn nơi đến</option>
+                                <option value="hanoi">Hà Nội</option>
+                                <option value="hochiminh">TP. Hồ Chí Minh</option>
+                                <option value="danang">Đà Nẵng</option>
+                                <option value="haiphong">Hải Phòng</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="date" class="form-control" id="departureDate">
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <button type="submit" class="btn btn-warning w-100">Tìm kiếm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!-- Sections for Popular Routes, News, Offers -->
+<!-- Section Tuyến Đường Phổ Biến với Carousel -->
+<section class="container my-5">
+    <h3 class="text-center mb-4">Tuyến Đường Phổ Biến</h3>
+    <div id="popularRoutesCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route1.png" class="card-img-top" alt="Tuyến Đường 1">
+                            <div class="card-body text-center bg-danger text-white">
+                                <h5 class="card-title fw-bold">Sài Gòn - Nha Trang</h5>
+                                <p class="card-text">Từ 250.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route2.png" class="card-img-top" alt="Tuyến Đường 2">
+                            <div class="card-body text-center bg-warning text-white">
+                                <h5 class="card-title fw-bold">Hà Nội - Hải Phòng</h5>
+                                <p class="card-text">Từ 350.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route3.png" class="card-img-top" alt="Tuyến Đường 3">
+                            <div class="card-body text-center bg-info text-white">
+                                <h5 class="card-title fw-bold">Sài Gòn - Đà Lạt</h5>
+                                <p class="card-text">Từ 300.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route4.png" class="card-img-top" alt="Tuyến Đường 4">
+                            <div class="card-body text-center bg-primary text-white">
+                                <h5 class="card-title fw-bold">Sài Gòn - Phan Thiết</h5>
+                                <p class="card-text">Từ 200.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route5.png" class="card-img-top" alt="Tuyến Đường 5">
+                            <div class="card-body text-center bg-success text-white">
+                                <h5 class="card-title fw-bold">Sài Gòn - Phan Rang</h5>
+                                <p class="card-text">Từ 140.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route6.png" class="card-img-top" alt="Tuyến Đường 6">
+                            <div class="card-body text-center bg-secondary text-white">
+                                <h5 class="card-title fw-bold">Sài Gòn - Vũng Tàu</h5>
+                                <p class="card-text">Từ 280.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route7.png" class="card-img-top" alt="Tuyến Đường 7">
+                            <div class="card-body text-center bg-dark text-white">
+                                <h5 class="card-title fw-bold">Nha Trang - Phan Thiết</h5>
+                                <p class="card-text">Từ 180.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card route-card">
+                            <img src="~/images/route/route8.png" class="card-img-top" alt="Tuyến Đường 8">
+                            <div class="card-body text-center bg-warning text-white">
+                                <h5 class="card-title fw-bold">Sài Gòn - Buôn Ma Thuột</h5>
+                                <p class="card-text">Từ 330.000đ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#popularRoutesCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#popularRoutesCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Ưu Đãi Đặc Biệt -->
+    <h3 class="text-center mt-5 mb-4">Ưu Đãi Đặc Biệt</h3>
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <img src="~/images/endow/endow1.jpg" class="card-img-top" alt="Ưu Đãi 1">
+                <div class="card-body">
+                    <p class="card-text">Thứ 3 hàng tuần - Flash Sale đến 50% tại Thanh Luân Booking</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <img src="~/images/endow/endow2.jpg" class="card-img-top" alt="Ưu Đãi 2">
+                <div class="card-body">
+                    <p class="card-text">Giảm đến 25% cho khách hàng lần đầu tiên đặt dịch vụ</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <img src="~/images/endow/endow3.jpg" class="card-img-top" alt="Ưu Đãi 3">
+                <div class="card-body">
+                    <p class="card-text">Giảm 20% dành cho khách hàng lần đầu đặt dịch vụ của nhà xe</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <img src="~/images/endow/endow4.jpg" class="card-img-top" alt="Ưu Đãi 4">
+                <div class="card-body">
+                    <p class="card-text">Giới thiệu bạn mới - Nhận quà khủng tại Thanh Luân Booking</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nền Tảng Kết Nối Người Dùng và Nhà Xe -->
+    <h3 class="text-center mt-5 mb-4">Nền Tảng Kết Nối Người Dùng và Nhà Xe</h3>
+    <div class="row text-center">
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <i class="fas fa-bus fa-3x mb-3"></i>
+                    <h5 class="card-title">2000+ nhà xe chất lượng cao</h5>
+                    <p class="card-text">5000+ tuyến đường trên toàn quốc, chủ động và đa dạng lựa chọn.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <h5 class="card-title">Đặt vé dễ dàng</h5>
+                    <p class="card-text">Đặt vé chỉ với 60s. Chọn xe yêu thích cực nhanh và thuận tiện.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <i class="fas fa-thumbs-up fa-3x mb-3"></i>
+                    <h5 class="card-title">Chắc chắn có chỗ</h5>
+                    <p class="card-text">Hoàn ngay 150% nếu nhà xe không cung cấp dịch vụ vận chuyển, mang đến hành trình trọn vẹn.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <i class="fas fa-tags fa-3x mb-3"></i>
+                    <h5 class="card-title">Nhiều ưu đãi</h5>
+                    <p class="card-text">Hàng ngàn ưu đãi cực chất độc quyền tại Vexere.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
