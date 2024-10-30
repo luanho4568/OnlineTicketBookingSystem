@@ -1,5 +1,7 @@
 ﻿@model OnlineTicketBookingSystem.Models.ViewModel.TripVM
-
+@{
+    ViewData["Title"] = "Không tìm thấy tuyến xe";
+}
 <div class="search-section bg-light text-dark p-4 container mt-4" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <h4 class="text-center mb-4 h2" style="font-size: 24px; font-weight: bold;"><em>Tìm Kiếm Chuyến Đi</em></h4>
     <form method="post" asp-action="Index" enctype="multipart/form-data">
@@ -8,7 +10,7 @@
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-lg"></i></span>
                     <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
-                        <option disabled selected>Chọn nơi đi</option>
+                        <option disabled selected>Chọn điểm đi</option>
                     </select>
                 </div>
             </div>
@@ -16,7 +18,7 @@
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-map-marker-alt text-danger fa-lg"></i></span>
                     <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
-                        <option disabled selected>Chọn nơi đến</option>
+                        <option disabled selected>Chọn điểm đến</option>
                     </select>
                 </div>
             </div>

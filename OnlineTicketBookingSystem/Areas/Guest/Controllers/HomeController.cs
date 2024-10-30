@@ -35,10 +35,6 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return View(tripVM);
-                }
                 var trips = await _unitOfWork.Trips.GetAllAsync(
                         t => t.StartPoint == tripVM.Trip.StartPoint &&
                              t.EndPoint == tripVM.Trip.EndPoint &&

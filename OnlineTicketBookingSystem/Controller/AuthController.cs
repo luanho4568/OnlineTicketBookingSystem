@@ -107,14 +107,11 @@ namespace OnlineTicketBookingSystem.Controller
             try
             {
                 var isExistUser = await _unitOfWork.User.GetFirstOrDefaultAsync(x => x.Email == user.Email);
-
                 if (isExistUser != null && !isExistUser.IsActive)
                 {
                     string codeId = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
-                    DateTime codeExpired = DateTime.Now.AddSeconds(30);
-
+                    DateTime codeExpired = DateTime.Now.AddSeconds(120);
                     await _emailService.SendVerificationEmailAsync(user.Email, isExistUser.FullName, "Xác thực tài khoản", codeId);
-
                     isExistUser.CodeId = codeId;
                     isExistUser.CodeExpired = codeExpired;
                     _unitOfWork.User.Update(isExistUser);
@@ -123,7 +120,7 @@ namespace OnlineTicketBookingSystem.Controller
                 }
                 else
                 {
-                    return NotFound(new { code = 404, message = "Tài khoản đã được kích hoạt hoặc không tồn tại" });
+                    return BadRequest(new { code = 404, message = "Tài khoản đã được kích hoạt hoặc không tồn tại" });
                 }
             }
             catch (Exception ex)

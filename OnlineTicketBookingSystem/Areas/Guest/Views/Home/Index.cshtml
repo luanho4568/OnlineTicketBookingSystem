@@ -1,6 +1,8 @@
 ﻿@model OnlineTicketBookingSystem.Models.ViewModel.TripVM
 
-
+@{
+    ViewData["Title"] = "Trang chủ";
+}
 <!-- Header Section -->
 @Html.AntiForgeryToken()
 <header class="py-5 text-center position-relative" style="min-height: 550px; background-image: url('/images/background/home.png'); background-size: cover; background-position: center;">
@@ -14,7 +16,7 @@
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-2x"></i></span>
                             <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
-                                <option disabled selected>Chọn nơi đi</option>
+                                <option disabled selected>Chọn điểm đi</option>
                             </select>
                         </div>
                     </div>
@@ -22,7 +24,7 @@
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-map-marker-alt  text-danger fa-2x"></i></span>
                             <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
-                                <option disabled selected>Chọn nơi đi</option>
+                                <option disabled selected>Chọn điểm đến</option>
                             </select>
                         </div>
                     </div>

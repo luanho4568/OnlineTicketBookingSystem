@@ -1,0 +1,47 @@
+﻿.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    border-radius: 10px; /* Bo tròn góc cho thẻ */
+}
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+.discount-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    padding: 5px 10px; /* Tăng kích thước cho mã giảm giá */
+    border-radius: 5px; /* Bo tròn cho mã giảm giá */
+    font-weight: bold; /* Làm đậm chữ */
+}
+
+.price-btn {
+    border: 1px solid #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+    .price-btn:hover {
+        border: 1px solid #007bff;
+        color: #007bff;
+    }
+
+    .price-btn:focus {
+        background-color: #007bff;
+        color: white;
+    }
+
+.disabled {
+    opacity: 0.5; /* Ngăn cản tương tác với nút */
+}
+
+.active {
+    border: 2px solid #007bff; /* Viền nổi bật cho thẻ hoạt động */
+}
+
+.inactive {
+    background-color: #f8f9fa; /* Màu xám nhạt cho thẻ không hoạt động */
+}

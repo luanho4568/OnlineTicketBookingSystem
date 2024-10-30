@@ -67,7 +67,7 @@ namespace AdminDriverDashboard.Areas.Account.Controllers
                 user.UpdatedAt = DateTime.Now.ToString();
                 await _unitOfWork.User.AddAsync(user);
                 await _unitOfWork.SaveAsync();
-                return RedirectToAction("Index", "Auth");
+                return RedirectToAction("Index", "Login");
             }
             catch (Exception ex)
             {

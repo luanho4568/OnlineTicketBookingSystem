@@ -15,6 +15,7 @@ namespace OnlineTicketBookingSystem.DAL.Repository.IRepository
         ITripRepository Trips { get; }
         ITripAssignmentRepository TripsAssignments { get; }
         ITicketRepository Tickets { get; }
+        ITransactionHistoryRepository TransactionHistory { get; }
         Task SaveAsync();
     }
 }

@@ -52,6 +52,11 @@ namespace OnlineTicketBookingSystem.Controller
             {
                 var users = await _unitOfWork.User.GetFirstOrDefaultAsync(u => u.Id == id);
                 if (users == null) return NotFound(new { code = 404, message = "Không tìm thấy user!" });
+                var transactions = await _unitOfWork.TransactionHistory.GetAllAsync(x => x.UserId == id);
+                foreach (var transaction in transactions)
+                {
+                    await _unitOfWork.TransactionHistory.RemoveAsync(transaction);
+                }
                 await _unitOfWork.User.RemoveAsync(users);
                 await _unitOfWork.SaveAsync();
                 return Ok(new { code = 200, message = "Xoá thành công!" });

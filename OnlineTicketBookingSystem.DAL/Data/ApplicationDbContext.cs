@@ -23,5 +23,6 @@ namespace OnlineTicketBookingSystem.DAL.Data
         public DbSet<Trips> Trips { get; set; }
         public DbSet<Tickets> Tickets { get; set; }
         public DbSet<TripAssignments> TripAssignments { get; set; }
+        public DbSet<TransactionHistory> TransactionHistories { get; set; }
     }
 }

@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Nạp tiền";
+}
+<link rel="stylesheet" href="~/css/payment.css" />
+
+<div class="container mt-5">
+    <!-- Chọn loại thẻ -->
+    <div class="row mb-4 text-center">
+        <h1 class="mb-4"> CHỌN LOẠI THẺ NẠP TIỀN</h1>
+        <div class="col-12 d-flex flex-wrap mb-4">
+            <!-- Thẻ Stripe (Mặc định) -->
+            <div class="card m-2 active" style="width: 80px; cursor: pointer;" onclick="selectCard('stripe')">
+                <img src="/images/payment/stripe.jpg" class="card-img-top" alt="Stripe">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">-5%</span>
+                </div>
+            </div>
+            <!-- Các loại thẻ khác (Vô hiệu hóa) -->
+            <div class="card m-2 inactive disabled " style="width: 80px;" onclick="selectCard('9play')">
+                <img src="/images/payment/9PLAY-04-07-2023-10-22-55.png" class="card-img-top" alt="9play">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">15%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('appota')">
+                <img src="/images/payment/APPOTA@BuyCard-13-08-2024-14-43-13.png" class="card-img-top" alt="apppota">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">8%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('card_fun')">
+                <img src="/images/payment/CARD_FUN-04-07-2023-10-22-39.png" class="card-img-top" alt="card_fun">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">20%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('garena')">
+                <img src="/images/payment/GARENA-13-08-2024-14-44-01.png" class="card-img-top" alt="garena">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">15%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('gate')">
+                <img src="/images/payment/GATE-13-08-2024-14-48-18.png" class="card-img-top" alt="gate">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">7%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('gosucard')">
+                <img src="/images/payment/GOSUCARD-13-08-2024-14-46-29.png" class="card-img-top" alt="gosucard">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">6%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('kul')">
+                <img src="/images/payment/KUL-13-08-2024-14-45-28.png" class="card-img-top" alt="kul">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">10%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('scoin')">
+                <img src="/images/payment/SCOIN_MOBILE_CARD-13-08-2024-14-47-54.png" class="card-img-top" alt="scoin">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">5%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('soha')">
+                <img src="/images/payment/Soha@BuyCard-13-08-2024-14-47-05.png" class="card-img-top" alt="soha">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">4%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('vgp')">
+                <img src="/images/payment/VGP-28-10-2024-14-05-56.png" class="card-img-top" alt="vgp">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">2.5%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('vtc')">
+                <img src="/images/payment/VTC-06-04-2022-14-01-43.png" class="card-img-top" alt="vtc">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">5%</span>
+                </div>
+            </div>
+            <div class="card m-2 inactive disabled" style="width: 80px;" onclick="selectCard('zing')">
+                <img src="/images/payment/ZING-13-08-2024-14-44-57.png" class="card-img-top" alt="zing">
+                <div class="card-body p-1 text-center">
+                    <span class="badge bg-danger">9%</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Chọn mệnh giá và số lượng -->
+    <div class="row mb-4  text-center" id="amount-selection" style="display: block;">
+        <!-- Hiện luôn mệnh giá khi có thẻ Stripe -->
+        <h2 class="mb-4"> CHỌN MỆNH GIÁ</h2>
+        <div class="col-12 d-flex flex-wrap">
+            <form id="payment-form" method="post" action="/Guest/Stripe/CreateCheckoutSession">
+                <input type="hidden" id="amount" name="amount" value="" />
+                <input type="hidden" id="authToken" name="token" />
+                <!-- Các mệnh giá -->
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(19000)">20.000đ<br><small>Giá bán: 19.000đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(47500)">50.000đ<br><small>Giá bán: 47.500đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(95000)">100.000đ<br><small>Giá bán: 95.000đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(190000)">200.000đ<br><small>Giá bán: 190.000đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(285000)">300.000đ<br><small>Giá bán: 285.000đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(475000)">500.000đ<br><small>Giá bán: 475.000đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(950000)">1.000.000đ<br><small>Giá bán: 950.000đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(1900000)">2.000.000đ<br><small>Giá bán: 1.900.000đ</small></button>
+                <button type="button" class="btn price-btn m-2" onclick="setAmount(4750000)">5.000.000đ<br><small>Giá bán: 4.750.000đ</small></button>
+                <button type="button" class="btn price-btn m-2 " onclick="setAmount(9500000)">10.000.000đ<br><small>Giá bán: 9.500.000đ</small></button>
+
+                <!-- Nút thanh toán -->
+                <div class="row mt-5">
+                    <div class="col-12 text-center">
+                        <a href="/" class="btn btn-danger btn-lg">QUAY LẠI</a>
+                        <button type="submit" class="btn btn-primary btn-lg">THANH TOÁN NGAY</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.onload = function () {
+            setAuthToken();
+        }
+
+        function setAuthToken() {
+            const token = localStorage.getItem('authToken');
+            document.getElementById('authToken').value = token;
+        }
+
+        function selectCard(cardType) {
+            if (cardType === 'stripe') {
+                document.getElementById('amount-selection').style.display = 'block';
+            } else {
+                showError();
+            }
+        }
+
+        function showError() {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Chưa hỗ trợ loại thẻ này!',
+            });
+        }
+
+        function setAmount(value) {
+            document.getElementById('amount').value = value;
+        }
+    </script>
+}

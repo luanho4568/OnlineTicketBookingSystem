@@ -1,7 +1,7 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security; // Thêm MailKit.Security
+﻿
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
-
 namespace OnlineTicketBookingSystem.Utility
 {
     public class EmailService
@@ -9,8 +9,7 @@ namespace OnlineTicketBookingSystem.Utility
         private readonly string _smtpServer = "smtp.gmail.com";
         private readonly int _smtpPort = 587;
         private readonly string _smtpUser = "luanhotest@gmail.com"; // Thay bằng email gốc
-        private readonly string _smtpPass = "amhdaqvbbseuknkn"; // Thay bằng mật khẩu email 
-
+        private readonly string _smtpPass = "afuasdwjsniwevmo"; // Thay bằng mật khẩu email 
         public async Task SendVerificationEmailAsync(string toEmail, string fullName, string subject, string codeId)
         {
             // Gắn HTML trực tiếp vào body
@@ -92,18 +91,15 @@ namespace OnlineTicketBookingSystem.Utility
                 <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js'></script>
             </body>
             </html>";
-
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("Thanh Luân", _smtpUser));
             message.To.Add(new MailboxAddress(fullName, toEmail));
             message.Subject = subject;
-
             // Đặt nội dung email từ HTML
             message.Body = new TextPart("html")
             {
                 Text = body
             };
-
             using (var client = new SmtpClient())
             {
                 // Kết nối với SMTP server

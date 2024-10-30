@@ -16,6 +16,14 @@
             min-height: 100vh;
             margin: 0;
         }
+        main {
+            flex: 1; /* Giữ cho phần main chiếm không gian còn lại */
+        }
+        footer {
+            background-color: #f8f9fa; /* Màu nền của footer */
+            padding: 10px 0; /* Padding cho footer */
+            text-align: center; /* Canh giữa nội dung trong footer */
+        }
     </style>
 </head>
 <body>
@@ -35,15 +43,13 @@
         </nav>
     </header>
 
-    <div class="h-100" style="background: #F2F2F2">
-        <main role="main" class="pb-3" style="flex: 1;">
-            <partial name="_Notifycation" />
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main" class="pb-3">
+        <partial name="_Notifycation" />
+        @RenderBody()
+    </main>
 
     <footer>
-        <div class="text-center">
+        <div>
             Website Đặt Vé Xe Trực Tuyến © 2024 by Hồ Đình Thanh Luân.
         </div>
     </footer>
@@ -58,7 +64,6 @@
             var token = localStorage.getItem('authToken');
             var user = localStorage.getItem('user');
             var userNav = $('#userNav');
-
 
             // Nếu token không tồn tại, hiển thị nút đăng nhập và chuyển hướng đến trang chủ
             if (!token) {
@@ -108,11 +113,11 @@
                         userNav.html(`
                             <li class="nav-item dropdown d-flex align-items-center" style="margin-right: 15px;">
                                 <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="balanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
-                                    <span>đ${balanceToken}</span>
+                                    <span>${balanceToken}đ</span>
                                     <i class="fas fa-wallet ms-2" style="color: orange; font-size: 1.4em;"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="balanceDropdown">
-                                    <li><a class="dropdown-item" href="/User/Deposit">Nạp tiền</a></li>
+                                    <li><a class="dropdown-item" href="/Guest/Stripe">Nạp tiền</a></li>
                                     <li><a class="dropdown-item" href="/User/Transactions">Lịch sử giao dịch</a></li>
                                 </ul>
                             </li>
@@ -165,7 +170,6 @@
                 });
             }
         });
-
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

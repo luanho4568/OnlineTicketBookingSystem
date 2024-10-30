@@ -32,10 +32,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
 
             // Giải mã token và lấy các claims
             var claims = _jwtService.ValidateAndDecodeToken(authToken);
-            foreach (var claim in claims)
-            {
-                Console.WriteLine($"Claim Type: {claim.Key}, Claim Value: {claim.Value}");
-            }
+
             if (!claims.TryGetValue("nameid", out string nameid))
             {
                 TempData["Error"] = "Token không hợp lệ hoặc không có userId.";

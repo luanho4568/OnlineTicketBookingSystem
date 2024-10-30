@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Thanh Toán Thành Công";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center text-success mb-4">
+        <i class="fas fa-check-circle"></i> Thanh Toán Thành Công
+    </h2>
+
+    <div class="card shadow-lg border-success">
+        <div class="card-body">
+            <h4 class="alert-heading text-success">
+                <i class="fas fa-thumbs-up"></i> Cảm ơn bạn đã thanh toán!
+            </h4>
+            <p class="lead text-muted">
+                <i class="fas fa-info-circle"></i> Giao dịch của bạn đã được thực hiện thành công.
+            </p>
+            <hr>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    @{
+                        int amountValue = 0;
+                        int originalPriceValue = 0;
+
+                        int.TryParse(ViewData["Amount"]?.ToString(), out amountValue);
+                        int.TryParse(ViewData["OriginalPrice"]?.ToString(), out originalPriceValue);
+                    }
+                    <p class="mb-1"><strong>Số tiền nạp:</strong> <span class="text-dark">@amountValue.ToString("N0").Replace(",", ".")đ</span></p>
+                    <p class="mb-1"><strong>Giá gốc:</strong> <span class="text-dark">@originalPriceValue.ToString("N0").Replace(",", ".")đ</span></p>
+                    <p class="mb-1"><strong>Trạng thái:</strong> <span class="text-success">Đã thanh toán</span></p>
+                    <p class="mb-1"><strong>ID Giao Dịch:</strong> <span class="text-dark">@ViewData["TransactionId"]</span></p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    @if (ViewData["ReceiptUrl"] != null)
+                    {
+                        <p class="mb-0">
+                            <strong>Hóa đơn:</strong>
+                            <a href="@ViewData["ReceiptUrl"]" target="_blank" class="btn btn-outline-success">
+                                <i class="fas fa-file-invoice"></i> Xem Hóa Đơn
+                            </a>
+                        </p>
+                    }
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="@Url.Action("Index", "Home", new { area = "Guest" })" class="btn btn-success btn-lg px-4 py-2">
+                    <i class="fas fa-home"></i> Quay lại trang chính
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+

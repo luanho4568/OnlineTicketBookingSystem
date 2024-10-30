@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using OnlineTicketBookingSystem.DAL.Data;
 using OnlineTicketBookingSystem.DAL.Repository;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
+using OnlineTicketBookingSystem.Models;
 using OnlineTicketBookingSystem.Utility;
 using Stripe;
 using System.Text;
@@ -17,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt =>
 {
