@@ -63,6 +63,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                     bus.Image = @"images\buses\" + fileName + extension;
                 }
                 bus.Id = Guid.NewGuid();
+                bus.EmptySeats = bus.TotalSeats;
                 bus.Status = true;
                 await _unitOfWork.Buses.AddAsync(bus);
 
@@ -176,6 +177,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
 
             // Cập nhật số ghế
             existingBus.TotalSeats = bus.TotalSeats;
+            existingBus.EmptySeats = bus.TotalSeats;
             _unitOfWork.Buses.Update(existingBus);
             await _unitOfWork.SaveAsync();
 

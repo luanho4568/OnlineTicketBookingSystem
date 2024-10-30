@@ -13,18 +13,8 @@
         body {
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Đảm bảo chiều cao tối thiểu cho body */
-            margin: 0; /* Loại bỏ khoảng cách mặc định của body */
-        }
-
-        main {
-            flex: 1; /* Tự động chiếm không gian còn lại */
-        }
-
-        footer {
-            background-color: #f8f9fa;
-            text-align: center;
-            padding: 1rem 0; /* Thêm khoảng cách cho footer */
+            min-height: 100vh;
+            margin: 0;
         }
     </style>
 </head>
@@ -32,22 +22,22 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-primary bg-gradient">
             <div class="container-fluid">
-                <a class="navbar-brand  text-white fw-bold" href="/">Thanh Luân Booking</a> <!-- Tên mới -->
+                <a class="navbar-brand text-white fw-bold" href="/">Thanh Luân Booking</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-white fw-bold" asp-area="Account" asp-controller="Login" asp-action="Index">Đăng Nhập</a>
-                        </li>
+                    <ul class="navbar-nav ms-auto" id="userNav">
+                        <!-- Nút đăng nhập hoặc thông tin người dùng sẽ được thêm qua JavaScript -->
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div>
-        <main role="main" class="pb-3">
+
+    <div class="h-100" style="background: #F2F2F2">
+        <main role="main" class="pb-3" style="flex: 1;">
+            <partial name="_Notifycation" />
             @RenderBody()
         </main>
     </div>
@@ -57,9 +47,127 @@
             Website Đặt Vé Xe Trực Tuyến © 2024 by Hồ Đình Thanh Luân.
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function () {
+            var token = localStorage.getItem('authToken');
+            var user = localStorage.getItem('user');
+            var userNav = $('#userNav');
+
+
+            // Nếu token không tồn tại, hiển thị nút đăng nhập và chuyển hướng đến trang chủ
+            if (!token) {
+                userNav.html(`
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="/Account/Login">Đăng Nhập</a>
+                    </li>
+                `);
+            } else {
+                var avatar = '/images/users/nouser.jpg';  // Avatar mặc định
+                var group = 0;
+                var userName = "Người dùng";  // Tên người dùng mặc định
+
+                if (user) {
+                    try {
+                        var userData = JSON.parse(user);
+                        avatar = userData.avatar ? '/' + userData.avatar : avatar;
+                        group = userData.group || 0;
+                        userName = userData.name || "Người dùng";
+                    } catch (error) {
+                        console.error("Lỗi khi phân tích chuỗi JSON user:", error);
+                        // Xóa dữ liệu bị lỗi nếu cần
+                        localStorage.removeItem('user');
+                    }
+                }
+
+                // Gọi API để kiểm tra tính hợp lệ của token và lấy thông tin người dùng
+                $.ajax({
+                    url: '/api/v1/Token/ValidateAndDecodeToken',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(token),
+                    success: function (response) {
+                        var decodedToken = response.data;
+                        var userName = decodedToken.unique_name;
+                        var balanceToken = Math.floor(decodedToken.Balance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                        var managementLink = '';
+                        if (group === 1) { // Admin
+                            managementLink = '<li><a class="dropdown-item" href="/admin/home">Trang Quản Lý</a></li>';
+                        } else if (group === 2) { // Tài xế
+                            managementLink = '<li><a class="dropdown-item" href="/driver/home">Trang Quản Lý</a></li>';
+                        } else {
+                            managementLink = `<li><a class="dropdown-item" href="/Guest/Profile/Index?id=${decodedToken.nameid}">Hồ sơ</a></li>`;
+                        }
+
+                        // Hiển thị thông tin người dùng với tùy chọn quản lý (nếu có)
+                        userNav.html(`
+                            <li class="nav-item dropdown d-flex align-items-center" style="margin-right: 15px;">
+                                <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="balanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
+                                    <span>đ${balanceToken}</span>
+                                    <i class="fas fa-wallet ms-2" style="color: orange; font-size: 1.4em;"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="balanceDropdown">
+                                    <li><a class="dropdown-item" href="/User/Deposit">Nạp tiền</a></li>
+                                    <li><a class="dropdown-item" href="/User/Transactions">Lịch sử giao dịch</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Mục Tài khoản người dùng -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
+                                    <img src="${avatar}" alt="User Avatar" class="rounded-circle" width="30" height="30" style="margin-right: 8px;">
+                                    <span>${userName}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    ${managementLink}
+                                    <li><a class="dropdown-item" id="logout">Đăng xuất</a></li>
+                                </ul>
+                            </li>
+                        `);
+
+                        // Xử lý khi nhấn nút Đăng xuất
+                        $('#logout').click(function (event) {
+                            event.preventDefault();
+                            Swal.fire({
+                                title: 'Bạn có chắc chắn muốn đăng xuất?',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Đăng xuất',
+                                cancelButtonText: 'Hủy'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    localStorage.removeItem('authToken');
+                                    localStorage.removeItem('user');
+                                    Swal.fire('Đã đăng xuất!', 'Bạn đã đăng xuất thành công.', 'success').then(() => {
+                                        window.location.href = '/';
+                                    });
+                                }
+                            });
+                        });
+                    },
+                    error: function () {
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('user');
+                        Swal.fire({
+                            icon: "error",
+                            title: JSON.parse(e.responseText).message,
+                            text: "Vui lòng đăng nhập lại",
+                        }).then(() => {
+                            window.location.href = '/';
+
+                        });
+                    }
+                });
+            }
+        });
+
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

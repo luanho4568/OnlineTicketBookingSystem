@@ -1,31 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
+using OnlineTicketBookingSystem.Models;
 using OnlineTicketBookingSystem.Models.ViewModel;
 using OnlineTicketBookingSystem.Utility;
 
 namespace AdminDriverDashboard.Areas.Guest.Controllers
 {
     [Area("Guest")]
-    public class HomeController : Controller
+    public class RouteController : Controller
     {
         private readonly JwtService _jwt;
         private readonly IUnitOfWork _unitOfWork;
-        public HomeController(JwtService jwt, IUnitOfWork unitOfWork)
+        public RouteController(JwtService jwt, IUnitOfWork unitOfWork)
         {
             _jwt = jwt;
             _unitOfWork = unitOfWork;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string startPoint, string endPoint, DateTime departureDate)
         {
             var provinceGetAll = await _unitOfWork.Province.GetAllAsync();
+            IEnumerable<Trips> trips = new List<Trips>();
+            trips = await _unitOfWork.Trips.GetAllAsync(t => t.StartPoint == startPoint &&
+            t.EndPoint == endPoint &&
+            t.DepartureDate == departureDate.Date,
+            includeProperties: "Buses");
             TripVM tripVM = new TripVM
             {
                 Province = provinceGetAll.Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Code
-                })
+                }),
+                TripList = trips
             };
             return View(tripVM);
         }
@@ -43,12 +50,12 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                         t => t.StartPoint == tripVM.Trip.StartPoint &&
                              t.EndPoint == tripVM.Trip.EndPoint &&
                              t.DepartureDate == tripVM.Trip.DepartureDate &&
-                             t.Status == "Scheduled");
+                     t.Status == "Scheduled");
                 if (!trips.Any())
                 {
                     return RedirectToAction("Index", "NoTrips");
                 }
-                return RedirectToAction("Index", "Route", new
+                return RedirectToAction(nameof(Index), new
                 {
                     startPoint = tripVM.Trip.StartPoint,
                     endPoint = tripVM.Trip.EndPoint,

@@ -62,6 +62,9 @@
                                 return "Đang chờ phê duyệt"
                             } else if (data == "Approved") {
                                 return "Chấp thuận"
+                            }
+                            else if (data == "Departing") {
+                                return "Đang khởi hành"
                             } else if (data == "Expired") {
                                 return "Hết hạn"
                             } else if (data == "Complated") {
@@ -72,7 +75,7 @@
                         },
                         "width": "calc(100%/7)"
                     }, {
-                        "data": "createAt",
+                        "data": "trips.departureDate",
                         "render": function (data) {
                             return data.split('T')[0]; // Loại bỏ phần T00:00:00 và chỉ giữ ngày
                         },

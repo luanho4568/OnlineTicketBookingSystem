@@ -36,7 +36,10 @@
                         </select>
                         <label class="mx-2" asp-for="TotalSeats">Tổng số ghế</label>
                     </div>
-
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="EmptySeats" placeholder="Biển số xe" disabled />
+                        <label class="mx-2" asp-for="EmptySeats">Số ghế trống</label>
+                    </div>
                     <!-- Kiểu xe -->
                     <div class="form-floating mb-3 col-md-6">
                         <select asp-for="BusType" class="form-select" required>

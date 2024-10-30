@@ -31,9 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\buses\" />
     <Folder Include="wwwroot\images\endow\" />
-    <Folder Include="wwwroot\images\users\" />
   </ItemGroup>
 
 </Project>

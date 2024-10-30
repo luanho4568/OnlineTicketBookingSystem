@@ -32,9 +32,10 @@ body {
 }
 
 /* Đảm bảo footer luôn ở dưới đáy */
-.footer {
+footer {
     background-color: #f8f9fa;
-    padding: 1rem 0;
+    text-align: center;
+    padding: 1rem 0; /* Thêm khoảng cách cho footer */
 }
 .route-card img {
     width: 100%;

@@ -78,16 +78,20 @@ namespace OnlineTicketBookingSystem.Controller
                 switch (tripAssignmentDto.Action)
                 {
                     case "Empty":
-                        tripAssignment.Status = "Pending";
+                        tripAssignment.Status = SD.TripAssignmentStatus_Pending;
                         break;
 
                     case "Accept":
                         if (tripAssignment.Status == "Pending")
                         {
-                            tripAssignment.Trips.Status = "Departing";
-                            tripAssignment.Status = "Approved";
+                            tripAssignment.Status = SD.TripAssignmentStatus_Approved;
                         }
                         else if (tripAssignment.Status == "Approved")
+                        {
+                            tripAssignment.Status = SD.TripAssignmentStatus_Departing;
+                            tripAssignment.Trips.Status = SD.TripStatus_Departing;
+                        }
+                        else if (tripAssignment.Status == "Departing")
                         {
                             if (tripAssignment.Trips.DepartureDate > DateTime.Now)
                             {
@@ -95,8 +99,8 @@ namespace OnlineTicketBookingSystem.Controller
                             }
                             else
                             {
-                                tripAssignment.Trips.Status = "Complated";
-                                tripAssignment.Status = "Complated";
+                                tripAssignment.Trips.Status = SD.TripStatus_Completed;
+                                tripAssignment.Status = SD.TripAssignmentStatus_Complated;
                             }
                         }
                         else
@@ -106,8 +110,8 @@ namespace OnlineTicketBookingSystem.Controller
                         break;
 
                     case "Cancel":
-                        tripAssignment.Status = "Empty"; // Đặt lại trạng thái về "Empty"
-                        tripAssignment.Trips.Status = "Scheduled";
+                        tripAssignment.Status = SD.TripAssignmentStatus_Empty; // Đặt lại trạng thái về "Empty"
+                        tripAssignment.Trips.Status = SD.TripStatus_Scheduled;
                         tripAssignment.DriverId = null;
                         break;
 

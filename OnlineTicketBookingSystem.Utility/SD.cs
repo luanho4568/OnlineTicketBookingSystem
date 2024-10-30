@@ -26,6 +26,7 @@
 
         public const string TripAssignmentStatus_Empty = "Empty";
         public const string TripAssignmentStatus_Pending = "Pending";
+        public const string TripAssignmentStatus_Departing = "Departing";
         public const string TripAssignmentStatus_Approved = "Approved";
         public const string TripAssignmentStatus_Complated = "Complated";
         public const string TripAssignmentStatus_Expired = "Expired";

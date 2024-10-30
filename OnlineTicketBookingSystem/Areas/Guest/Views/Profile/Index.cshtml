@@ -1,0 +1,150 @@
+﻿@model OnlineTicketBookingSystem.Models.ViewModel.UserVM
+
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <form class="bg-white p-4 rounded shadow-lg" asp-action="Index" method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="@Model.User.Id" />
+
+            <!-- Thông tin cá nhân -->
+            <fieldset class="border p-4 mb-4">
+                <legend class="text-primary fw-bold">Thông tin cá nhân</legend>
+                <div class="row">
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.User.FullName" aria-required="true" placeholder="Nhập họ và tên" required />
+                        <label asp-for="@Model.User.FullName" class="mx-2">Họ và tên</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.User.Email" type="email" aria-required="true" placeholder="name@example.com" required disabled />
+                        <label asp-for="@Model.User.Email" class="mx-2">Email</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.User.PhoneNumber" aria-required="true" placeholder="Số điện thoại" required />
+                        <label asp-for="@Model.User.PhoneNumber" class="mx-2">Số điện thoại</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.User.DateOfBirth" type="date" aria-required="true" placeholder="Ngày sinh" required />
+                        <label asp-for="@Model.User.DateOfBirth" class="mx-2">Ngày sinh</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6 mt-2">
+                        <select asp-for="@Model.User.Gender" class="form-select" aria-required="true">
+                            <option disabled selected>-- Chọn giới tính --</option>
+                            <option value="Male">Nam</option>
+                            <option value="Female">Nữ</option>
+                            <option value="Other">Khác</option>
+                        </select>
+                        <label asp-for="@Model.User.Gender" class="mx-2">Giới tính</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input type="file" id="imageUrl" name="file" class="form-control mt-2" asp-for="@Model.User.Avatar" onchange="loadImagePreview(event)" />
+                        <label class="mx-2" asp-for="@Model.User.Avatar">Hình ảnh</label>
+                    </div>
+                    <!-- Xem trước hình ảnh hiện tại -->
+                    <div class="form-group mb-3 col-md-6">
+                        <div class="image-preview mt-2" style="border: 1px solid #ddd; padding: 28px; border-radius: 5px;">
+                            @if (!string.IsNullOrEmpty(@Model.User.Avatar))
+                            {
+                                <img id="imagePreview" src="@Url.Content("~/" + @Model.User.Avatar)" alt="Hình ảnh " style="max-width: 100%; display: block;" />
+                            }
+                            else
+                            {
+                                <img id="imagePreview" alt="Hình ảnh xe" style="max-width: 100%; display: none;" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Thông tin vị trí -->
+            <fieldset class="border p-4 mb-4">
+                <legend class="text-primary fw-bold">Thông tin vị trí</legend>
+                <div class="row">
+                    <div class="form-floating mb-3 col-md-6">
+                        <select id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.User.ProvinceCode" class="form-select">
+                            <option disabled selected>-- Chọn tỉnh --</option>
+                        </select>
+                        <label asp-for="@Model.User.ProvinceCode" class="mx-2">Tỉnh</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <select id="districtDropdown" asp-items="@Model.District" asp-for="@Model.User.DistrictCode" class="form-select">
+                            <option disabled selected>-- Chọn huyện/quận --</option>
+                        </select>
+                        <label asp-for="@Model.User.DistrictCode" class="mx-2">Huyện/Quận</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <select id="wardDropdown" asp-items="@Model.Ward" asp-for="@Model.User.WardCode" class="form-select">
+                            <option disabled selected>-- Chọn phường/xã --</option>
+                        </select>
+                        <label asp-for="@Model.User.WardCode" class="mx-2">Phường/Xã</label>
+                    </div>
+                    <div class="form-floating mb-3 col-md-6">
+                        <input class="form-control" asp-for="@Model.User.Address" aria-required="true" placeholder="Địa chỉ" />
+                        <label asp-for="@Model.User.Address" class="mx-2">Địa chỉ</label>
+                    </div>
+                </div>
+            </fieldset>
+            <!-- Nút hành động -->
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-lg btn-primary">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="module">
+        import location from '/js/location/locationHandler.js';
+
+        $(document).ready(function () {
+            let currentAvatarUrl = $('#imagePreview').attr('src').split('/').pop().split('\\').pop(); // Lưu URL hiện tại của ảnh
+            // Đảm bảo loadImagePreview đã được định nghĩa trước khi sử dụng
+            function loadImagePreview(event) {
+                var image = document.getElementById('imagePreview');
+                image.src = URL.createObjectURL(event.target.files[0]);
+                image.style.display = 'block';
+            }
+            $.ajax({
+                url: "/api/v1/user/Update-Avatar",
+                type: "POST",
+                data: JSON.stringify(currentAvatarUrl),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    console.log(response)
+                    if (response.code === 200) {
+                        let user = JSON.parse(localStorage.getItem('user'));
+                        if (user) {
+                            user.avatar = response.avatarUrl;
+                            localStorage.setItem('user', JSON.stringify(user));
+                        }
+                    }
+                },
+                error: function (error) {
+                    if (typeof errorCallback === "function") {
+                        errorCallback(error);
+                    }
+                }
+            })
+            $('#provinceDropdown').change(function () {
+                var provinceCode = $(this).val();
+                location.loadDistricts(provinceCode);
+            });
+
+            $('#districtDropdown').change(function () {
+                var districtCode = $(this).val();
+                location.loadWards(districtCode);
+            });
+
+            // Gán sự kiện onchange cho input file
+            $('#imageUrl').change(loadImagePreview);
+
+        });
+    </script>
+}
+

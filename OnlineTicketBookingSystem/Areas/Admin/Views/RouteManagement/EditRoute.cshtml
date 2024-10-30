@@ -35,9 +35,9 @@
                     <div class="form-floating mb-3 col-md-6">
                         <select asp-for="@Model.Trip.DepartureTime" class="form-select" aria-required="true">
                             <option disabled selected>-- Chọn thời gian khởi hành --</option>
-                            @for (int i = 1; i <= 24; i++)
+                            @for (int i = 1; i < 24; i++)
                             {
-                                var timeValue = i == 24 ? "00:00" : $"{i:D2}:00";
+                                var timeValue = $"{i:D2}:00";
                                 <option value="@timeValue">@timeValue</option>
                             }
                         </select>
@@ -46,9 +46,9 @@
                     <div class="form-floating mb-3 col-md-6">
                         <select asp-for="@Model.Trip.EstimatedArrivalTime" class="form-select" aria-required="true">
                             <option disabled selected>-- Chọn thời gian dự kiến đến nơi --</option>
-                            @for (int i = 1; i <= 24; i++)
+                            @for (int i = 1; i < 24; i++)
                             {
-                                var timeValue = i == 24 ? "00:00" : $"{i:D2}:00";
+                                var timeValue = $"{i:D2}:00";
                                 <option value="@timeValue">@timeValue</option>
                             }
                         </select>

@@ -33,7 +33,8 @@ namespace OnlineTicketBookingSystem.Controller
             }
             catch (SecurityTokenException ex)
             {
-                return Unauthorized(new { code = 401, message = ex.Message });
+                Console.WriteLine(ex.Message);
+                return Unauthorized(new { code = 401, message = "Phiên bản đăng nhập đã hết hạn" });
             }
             catch (Exception ex)
             {

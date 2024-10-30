@@ -2,18 +2,15 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 using OnlineTicketBookingSystem.Models.ViewModel;
-using OnlineTicketBookingSystem.Utility;
 
 namespace AdminDriverDashboard.Areas.Guest.Controllers
 {
     [Area("Guest")]
-    public class HomeController : Controller
+    public class NoTripsController : Controller
     {
-        private readonly JwtService _jwt;
         private readonly IUnitOfWork _unitOfWork;
-        public HomeController(JwtService jwt, IUnitOfWork unitOfWork)
+        public NoTripsController(IUnitOfWork unitOfWork)
         {
-            _jwt = jwt;
             _unitOfWork = unitOfWork;
         }
         public async Task<IActionResult> Index()

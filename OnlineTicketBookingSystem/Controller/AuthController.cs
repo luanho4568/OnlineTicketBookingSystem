@@ -83,7 +83,7 @@ namespace OnlineTicketBookingSystem.Controller
                             isExistUser.LastLogin = DateTime.Now.ToString();
                             _unitOfWork.User.Update(isExistUser);
                             await _unitOfWork.SaveAsync();
-                            return Ok(new { code = 200, message = "Đăng nhập thành công", token = token, fullName = isExistUser.FullName, group = isExistUser.GroupId, avatar = isExistUser.Avatar });
+                            return Ok(new { code = 200, message = "Đăng nhập thành công", token = token, group = isExistUser.GroupId, avatar = isExistUser.Avatar });
                         }
                     }
                     else
@@ -111,7 +111,7 @@ namespace OnlineTicketBookingSystem.Controller
                 if (isExistUser != null && !isExistUser.IsActive)
                 {
                     string codeId = Guid.NewGuid().ToString().Substring(0, 6).ToUpper();
-                    DateTime codeExpired = DateTime.Now.AddSeconds(120);
+                    DateTime codeExpired = DateTime.Now.AddSeconds(30);
 
                     await _emailService.SendVerificationEmailAsync(user.Email, isExistUser.FullName, "Xác thực tài khoản", codeId);
 

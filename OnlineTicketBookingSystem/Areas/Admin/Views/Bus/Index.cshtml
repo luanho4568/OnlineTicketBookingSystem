@@ -18,7 +18,8 @@
                 <th>Tên Xe</th>
                 <th>Biển Số Xe</th>
                 <th>Loại Xe</th>
-                <th>Số ghế</th>
+                <th>Tổng số ghế</th>
+                <th>Tổng ghế trống</th>
                 <th>Trạng Thái</th>
                 <th>Hình ảnh</th>
                 <th></th>
@@ -44,16 +45,17 @@
                     }
                 },
                 "columns": [
-                    { "data": "name", "width": "calc(100%/7)" },
-                    { "data": "licensePlate", "width": "calc(100%/7)" },
+                    { "data": "name", "width": "calc(100%/8)" },
+                    { "data": "licensePlate", "width": "calc(100%/8)" },
                     {
                         "data": null,
                         "render": function (data) {
                             return data.busType == "Sleeper" ? "Giường nằm" : "Tiêu chuẩn";
                         },
-                        "width": "calc(100%/7)"
+                        "width": "calc(100%/8)"
                     }
-                    , { "data": "totalSeats", "width": "calc(100%/7)" },
+                    , { "data": "totalSeats", "width": "calc(100%/8)" },
+                    { "data": "emptySeats", "width": "calc(100%/8)" },
                     {
                         "data": "status",
                         "render": function (data) {
@@ -61,14 +63,14 @@
                                 ? `<div class="text-center"><i class="bi bi-check-circle-fill text-success"></i></div>`
                                 : `<div class="text-center"><i class="bi bi-x-circle-fill text-danger"></i></div>`;
                         },
-                        "width": "calc(100%/7)"
+                        "width": "calc(100%/8)"
                     },
                     {
                         "data": null,
                         "render": function (data) {
                             return `<img src="/${data.image}" alt="Hình ảnh xe" style="width: 100px; height: auto;"/>`;
                         },
-                        "width": "calc(100%/7)"
+                        "width": "calc(100%/8)"
                     }
                     , {
                         "data": "id",
@@ -86,7 +88,7 @@
                                                     </a>
                                                 </div>`;
                         },
-                        "width": "calc(100%/7)"
+                        "width": "calc(100%/8)"
                     }
 
                 ],

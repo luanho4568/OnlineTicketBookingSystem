@@ -93,6 +93,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" id="profileLink" href="#">Thông tin cá nhân</a>
                         <a class="collapse-item" asp-area="Admin" asp-controller="ResetPassword" asp-action="Index">Đổi mật khẩu</a>
+                        <a class="collapse-item" asp-area="Guest" asp-controller="Home" asp-action="Index">Quay lại</a>
                     </div>
                 </div>
             </li>
@@ -246,14 +247,15 @@
                         },
                         error: function (e) {
                             localStorage.removeItem('user');
-                                localStorage.removeItem('authToken');
+                            localStorage.removeItem('authToken');
                             Swal.fire({
                                 icon: "error",
                                 title: JSON.parse(e.responseText).message,
                                 text: "Vui lòng đăng nhập lại",
                             }).then(() => {
-                                        window.location.href = '/';
-                                    });
+                                window.location.href = '/Account/Login';
+
+                            });
                         }
                     });
                 }
@@ -284,7 +286,7 @@
                                     localStorage.removeItem('authToken');
 
                                     Swal.fire('Đã đăng xuất!', 'Bạn đã đăng xuất thành công.', 'success').then(() => {
-                                        window.location.href = '/';
+                                        window.location.href = '/Account/Login';
                                     });
                                 },
                                 error: function () {

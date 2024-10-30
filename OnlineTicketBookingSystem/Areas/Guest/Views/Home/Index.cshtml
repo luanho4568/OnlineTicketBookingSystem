@@ -1,43 +1,39 @@
-﻿<!-- Header Section -->
+﻿@model OnlineTicketBookingSystem.Models.ViewModel.TripVM
+
+
+<!-- Header Section -->
+@Html.AntiForgeryToken()
 <header class="py-5 text-center position-relative" style="min-height: 550px; background-image: url('/images/background/home.png'); background-size: cover; background-position: center;">
     <!-- Search Section -->
-    <div class="search-section bg-white text-black p-4 container" style="bottom: 0; left: 0; border-radius: 6px; margin-top: 130px;">
+    <div class="search-section bg-white text-black p-3 container" style="bottom: 0; left: 0; border-radius: 6px; margin-top: 130px;">
         <div class="container">
-            <h4 class="text-center mb-4">Tìm Kiếm Chuyến Đi</h4>
-            <form>
+            <h4 class="text-center mb-3 h2"><em>Tìm Kiếm Chuyến Đi</em></h4>
+            <form method="post" asp-action="Index" enctype="multipart/form-data">
                 <div class="row align-items-center">
                     <div class="col-md-3 mb-3">
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-bus-alt"></i></span>
-                            <select class="form-control" id="fromLocation">
-                                <option value="">Chọn nơi đi</option>
-                                <option value="hanoi">Hà Nội</option>
-                                <option value="hochiminh">TP. Hồ Chí Minh</option>
-                                <option value="danang">Đà Nẵng</option>
-                                <option value="haiphong">Hải Phòng</option>
+                            <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-2x"></i></span>
+                            <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
+                                <option disabled selected>Chọn nơi đi</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
-                            <select class="form-control" id="toLocation">
-                                <option value="">Chọn nơi đến</option>
-                                <option value="hanoi">Hà Nội</option>
-                                <option value="hochiminh">TP. Hồ Chí Minh</option>
-                                <option value="danang">Đà Nẵng</option>
-                                <option value="haiphong">Hải Phòng</option>
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt  text-danger fa-2x"></i></span>
+                            <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
+                                <option disabled selected>Chọn nơi đi</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
                         <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                            <input type="date" class="form-control" id="departureDate">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt text-primary fa-2x"></i></span>
+                            <input type="date" class="form-control" id="departureDate" asp-for="@Model.Trip.DepartureDate">
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <button type="submit" class="btn btn-warning w-100">Tìm kiếm</button>
+                        <button type="submit" class="btn btn-warning w-75 p-2 border-warning" style="border-radius : 12px; font-size:25px">Tìm kiếm</button>
                     </div>
                 </div>
             </form>
@@ -220,3 +216,11 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+        })
+    </script>
+}

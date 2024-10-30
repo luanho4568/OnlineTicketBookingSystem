@@ -20,7 +20,7 @@ $(document).ready(function () {
                     timer: 1500
                 }).then(() => {
                     localStorage.setItem('authToken', response.token);
-                    localStorage.setItem('user', JSON.stringify({ fullName: response.fullName, group: response.group, avatar: response.avatar }));
+                    localStorage.setItem('user', JSON.stringify({group: response.group, avatar: response.avatar }));
                     var token = localStorage.getItem('authToken');
                     if (token) {
                         if (response.group == 1) {
@@ -31,9 +31,9 @@ $(document).ready(function () {
                             console.log(response.group)
                             window.location.href = '/Driver/Home';
                         }
-                        //else if (response.group == 3) {
-                        //    window.location.href = '/Customer/Home';
-                        //}
+                        else {
+                            window.location.href = '/Guest/Home';
+                        }
                     }
                 })
             }
@@ -110,7 +110,7 @@ function initializeModal(user) {
 
 // Reset thời gian đếm ngược
 function resetCountdown() {
-    timeLeft = 120;
+    timeLeft = 30;
     $('#countdown').text(timeLeft + "s");
     $('#resendMessage').hide();
     $('#otpFeedback').hide();

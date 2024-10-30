@@ -1,0 +1,102 @@
+﻿@model OnlineTicketBookingSystem.Models.ViewModel.TripVM
+</style>
+<!-- Search Section -->
+<div class="search-section bg-light text-dark p-4 container mt-4" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h4 class="text-center mb-4 h2" style="font-size: 24px; font-weight: bold;"><em>Tìm Kiếm Chuyến Đi</em></h4>
+            <form method="post" asp-action="Index" enctype="multipart/form-data">
+        <div class="row align-items-center">
+            <div class="col-md-3 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-lg"></i></span>
+                    <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
+                        <option disabled selected>Chọn nơi đi</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-map-marker-alt text-danger fa-lg"></i></span>
+                    <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
+                        <option disabled selected>Chọn nơi đến</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt text-primary fa-lg"></i></span>
+                    <input type="date" class="form-control" asp-for="@Model.Trip.DepartureDate">
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                 <button type="submit" class="btn btn-warning w-75 p-2 border-warning" style="border-radius : 12px; font-size:25px">Tìm kiếm</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Filter and Trip Cards Section -->
+<div class="container my-5">
+    <div class="row">
+        <!-- Filter Section -->
+        <div class="col-md-3 mb-4">
+            <div class="filter-section bg-white p-4 border rounded" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                <h5 class="mb-3">Sắp xếp theo</h5>
+                <div>
+                    <input type="radio" id="sortDefault" name="sort" value="default" checked>
+                    <label for="sortDefault" class="mb-2">Mặc định</label><br>
+                    <input type="radio" id="sortPriceAsc" name="sort" value="priceAsc">
+                    <label for="sortPriceAsc" class="mb-2">Giá tăng dần</label><br>
+                    <input type="radio" id="sortPriceDesc" name="sort" value="priceDesc">
+                    <label for="sortPriceDesc" class="mb-2">Giá giảm dần</label><br>
+                    <input type="radio" id="sortTimeEarly" name="sort" value="timeEarly">
+                    <label for="sortTimeEarly" class="mb-2">Giờ đi sớm</label><br>
+                    <input type="radio" id="sortTimeLate" name="sort" value="timeLate">
+                    <label for="sortTimeLate">Giờ đi muộn</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip Cards Section -->
+        <div class="col-md-9">
+            <div class="row justify-content-center">
+                @if (Model.TripList != null && Model.TripList.Any())
+
+                {
+                    foreach (var trip in Model.TripList)
+                    {
+                        <div class="col-12 trip-card mb-4">
+                            <div class="d-flex flex-column flex-md-row align-items-center bg-white border rounded p-4" style="border-radius: 12px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                <img src="/@trip.Buses.Image" class="mb-3 w-100 d-md-none" alt="Xe Khách @trip.Id" style="border-radius: 12px;">
+                                <img src="/@trip.Buses.Image" class="me-3 d-none d-md-block" alt="Xe Khách @trip.Id" style="width: 200px; height: 150px;">
+                                <div class="flex-grow-1 w-100">
+                                    <div class="d-md-flex justify-content-between">
+                                        <div class="text-center text-md-start mb-2 mb-md-0">
+                                            <h5 class="card-title" style="font-size: 22px; font-weight: bold;">@trip.Buses.Name</h5>
+                                            <p class="card-text" style="font-size: 18px;">Tổng: @trip.Buses.TotalSeats chỗ</p>
+                                            <p class="card-text" style="font-size: 18px;">Ngày: @(trip.DepartureDate.HasValue ? trip.DepartureDate.Value.ToString("dd/MM/yyyy") : "N/A")</p>
+                                            <p class="card-text" style="font-size: 18px;">@trip.DepartureTime @trip.StartProvince.Name - @trip.EndProvince.Name</p>
+                                        </div>
+                                        <div class="text-center text-md-end">
+                                            <p class="card-text" style="font-size: 22px; font-weight: bold;">
+                                                @(trip.Price.HasValue ? trip.Price.Value.ToString("N0").Replace(",", ".") : "0") đ
+                                            </p>
+                                            <p class="card-text" style="font-size: 18px;">Còn: @trip.Buses.TotalSeats chỗ trống</p>
+                                            <a href="#" class="btn btn-info" style="border-radius: 8px; font-size: 22px;">Chi tiết</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                }
+
+                else
+
+                {
+                    <p>Không tìm thấy chuyến đi nào.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -55,7 +55,7 @@
                     {
                         "data": "price",
                         "render": function (data) {
-                            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Chuyển đổi giá thành chuỗi có dấu chấm phân cách
+                            return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ"; // Chuyển đổi giá thành chuỗi có dấu chấm phân cách
                         },
                         "width": "calc(100%/10)"
                         },                    
