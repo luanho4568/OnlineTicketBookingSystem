@@ -133,6 +133,17 @@ namespace OnlineTicketBookingSystem.Controller
                 return StatusCode(500, new { message = "Có lỗi xảy ra ở server", error = e.Message });
             }
         }
+        [HttpGet("GetAllTransactionHistory")]
+        public async Task<IActionResult> GetAllTransactionHistory(string? token)
+        {
+            var claims = _jwtService.ValidateAndDecodeToken(token);
+            if (!claims.TryGetValue("nameid", out string nameid))
+            {
+                Console.WriteLine("không có user");
+            }
+            var transactionHistoryList = await _unitOfWork.TransactionHistory.GetAllAsync(x => x.UserId.ToString() == nameid);
+            return Ok(transactionHistoryList);
+        }
 
     }
 }

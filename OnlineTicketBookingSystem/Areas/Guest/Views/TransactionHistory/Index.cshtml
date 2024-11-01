@@ -1,0 +1,55 @@
+﻿@model IEnumerable<TransactionHistory>
+
+<h1 class="my-4 text-center">Lịch sử Giao dịch</h1>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a href="/" class="btn btn-danger">
+        <i class="fas fa-arrow-left"></i> Quay lại Trang Chủ
+    </a>
+</div>
+
+<div class="table-responsive shadow-sm p-3 mb-5 bg-white rounded">
+    <table class="table table-hover table-striped table-bordered text-center">
+        <thead class="table-primary">
+            <tr>
+                <th scope="col"><i class="fas fa-receipt"></i> ID Giao dịch</th>
+                <th scope="col"><i class="fas fa-money-bill-wave"></i> Số tiền</th>
+                <th scope="col"><i class="fas fa-coins"></i> Tiền tệ</th>
+                <th scope="col"><i class="fas fa-info-circle"></i> Trạng thái</th>
+                <th scope="col"><i class="fas fa-calendar-alt"></i> Ngày</th>
+                <th scope="col"><i class="fas fa-file-invoice-dollar"></i> Hoá đơn</th>
+                <th scope="col"><i class="fas fa-file-alt"></i> Mô tả</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Model)
+            {
+                <tr>
+                    <td>@transaction.TransactionId</td>
+                    <td>@string.Format("{0:N0} {1}", transaction.Amount / 100, transaction.Currency.ToUpper())</td>
+                    <td>@transaction.Currency.ToUpper()</td>
+                    <td>
+                        <span class="badge badge-pill @(transaction.Status == "paid" ? "badge-success" : "badge-danger") text-success">
+                            <i class="fas @(transaction.Status == "paid" ? "fa-check-circle" : "fa-times-circle")"></i>
+                            @transaction.Status
+                        </span>
+                    </td>
+                    <td>@transaction.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(transaction.ReceiptUrl))
+                        {
+                            <a href="@transaction.ReceiptUrl" target="_blank" class="btn btn-sm btn-info text-white">
+                                <i class="fas fa-link"></i> Xem hóa đơn
+                            </a>
+                        }
+                        else
+                        {
+                            <span>Không có hóa đơn</span>
+                        }
+                    </td>
+                    <td>@transaction.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

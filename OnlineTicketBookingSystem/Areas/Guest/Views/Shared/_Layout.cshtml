@@ -119,7 +119,7 @@
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="balanceDropdown">
                                             <li><a class="dropdown-item" href="/Guest/Stripe">Nạp tiền</a></li>
-                                            <li><a class="dropdown-item" href="/User/Transactions">Lịch sử giao dịch</a></li>
+                                            <li><a class="dropdown-item" href="/Guest/TransactionHistory?token=${token}">Lịch sử giao dịch</a></li>
                                         </ul>
                                     </li>
 
@@ -141,7 +141,7 @@
                             contentType: 'application/json',
                             success: function (response) {
                                 console.log(response)
-                                $("#balance").text(response?.data?.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " đ")
+                                $("#balance").text(response?.data?.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ")
                             },
                             error: function (e) {
                                 console.log(JSON.parse(e.responseText).message)
