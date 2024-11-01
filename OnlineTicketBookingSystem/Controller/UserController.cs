@@ -12,9 +12,10 @@ namespace OnlineTicketBookingSystem.Controller
         private IWebHostEnvironment _env;
         private readonly JwtService _jwtService;
 
-        public UserController(IUnitOfWork unitOfWork, IWebHostEnvironment env)
+        public UserController(IUnitOfWork unitOfWork, IWebHostEnvironment env, JwtService jwtService)
         {
             _unitOfWork = unitOfWork;
+            _jwtService = jwtService;
             _env = env;
         }
         [HttpGet("GetUserByGroup")]
@@ -98,7 +99,40 @@ namespace OnlineTicketBookingSystem.Controller
                 return StatusCode(500, new { message = "Có lỗi xảy ra ở server", error = e.Message });
             }
         }
+        [HttpGet("GetInfoUser")]
+        public async Task<IActionResult> UserInfo(string? token)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(token))
+                {
+                    return BadRequest(new { code = 400, message = "Token không hợp lệ" });
+                }
 
+                var claims = _jwtService.ValidateAndDecodeToken(token);
+                if (claims == null)
+                {
+                    return Unauthorized(new { code = 401, message = "Token không hợp lệ" });
+                }
+
+                if (!claims.TryGetValue("nameid", out string nameid))
+                {
+                    return BadRequest(new { code = 404, message = "Không tìm thấy user" });
+                }
+
+                var user = await _unitOfWork.User.GetFirstOrDefaultAsync(x => x.Id.ToString() == nameid);
+                if (user == null)
+                {
+                    return NotFound(new { code = 404, message = "Không tìm thấy người dùng" });
+                }
+
+                return Ok(new { code = 200, message = "Lấy thông tin người dùng thành công", data = user });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { message = "Có lỗi xảy ra ở server", error = e.Message });
+            }
+        }
 
     }
 }

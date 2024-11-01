@@ -16,9 +16,11 @@
             min-height: 100vh;
             margin: 0;
         }
+
         main {
             flex: 1; /* Giữ cho phần main chiếm không gian còn lại */
         }
+
         footer {
             background-color: #f8f9fa; /* Màu nền của footer */
             padding: 10px 0; /* Padding cho footer */
@@ -68,10 +70,10 @@
             // Nếu token không tồn tại, hiển thị nút đăng nhập và chuyển hướng đến trang chủ
             if (!token) {
                 userNav.html(`
-                    <li class="nav-item">
-                        <a class="nav-link text-white fw-bold" href="/Account/Login">Đăng Nhập</a>
-                    </li>
-                `);
+                            <li class="nav-item">
+                                <a class="nav-link text-white fw-bold" href="/Account/Login">Đăng Nhập</a>
+                            </li>
+                        `);
             } else {
                 var avatar = '/images/users/nouser.jpg';  // Avatar mặc định
                 var group = 0;
@@ -99,7 +101,6 @@
                     success: function (response) {
                         var decodedToken = response.data;
                         var userName = decodedToken.unique_name;
-                        var balanceToken = Math.floor(decodedToken.Balance).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                         var managementLink = '';
                         if (group === 1) { // Admin
                             managementLink = '<li><a class="dropdown-item" href="/admin/home">Trang Quản Lý</a></li>';
@@ -111,30 +112,41 @@
 
                         // Hiển thị thông tin người dùng với tùy chọn quản lý (nếu có)
                         userNav.html(`
-                            <li class="nav-item dropdown d-flex align-items-center" style="margin-right: 15px;">
-                                <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="balanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
-                                    <span>${balanceToken}đ</span>
-                                    <i class="fas fa-wallet ms-2" style="color: orange; font-size: 1.4em;"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="balanceDropdown">
-                                    <li><a class="dropdown-item" href="/Guest/Stripe">Nạp tiền</a></li>
-                                    <li><a class="dropdown-item" href="/User/Transactions">Lịch sử giao dịch</a></li>
-                                </ul>
-                            </li>
+                                    <li class="nav-item dropdown d-flex align-items-center" style="margin-right: 15px;">
+                                        <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="balanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
+                                            <span id="balance"></span>
+                                            <i class="fas fa-wallet ms-2" style="color: orange; font-size: 1.4em;"></i>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="balanceDropdown">
+                                            <li><a class="dropdown-item" href="/Guest/Stripe">Nạp tiền</a></li>
+                                            <li><a class="dropdown-item" href="/User/Transactions">Lịch sử giao dịch</a></li>
+                                        </ul>
+                                    </li>
 
-                            <!-- Mục Tài khoản người dùng -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
-                                    <img src="${avatar}" alt="User Avatar" class="rounded-circle" width="30" height="30" style="margin-right: 8px;">
-                                    <span>${userName}</span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    ${managementLink}
-                                    <li><a class="dropdown-item" id="logout">Đăng xuất</a></li>
-                                </ul>
-                            </li>
-                        `);
-
+                                    <!-- Mục Tài khoản người dùng -->
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
+                                            <img src="${avatar}" alt="User Avatar" class="rounded-circle" width="30" height="30" style="margin-right: 8px;">
+                                            <span>${userName}</span>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                            ${managementLink}
+                                            <li><a class="dropdown-item" id="logout">Đăng xuất</a></li>
+                                        </ul>
+                                    </li>
+                                `);
+                        $.ajax({
+                            url: `/api/v1/user/GetInfoUser?token=${token}`,
+                            type: 'GET',
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log(response)
+                                $("#balance").text(response?.data?.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " đ")
+                            },
+                            error: function (e) {
+                                console.log(JSON.parse(e.responseText).message)
+                            }
+                        })
                         // Xử lý khi nhấn nút Đăng xuất
                         $('#logout').click(function (event) {
                             event.preventDefault();
@@ -155,7 +167,7 @@
                             });
                         });
                     },
-                    error: function () {
+                    error: function (e) {
                         localStorage.removeItem('authToken');
                         localStorage.removeItem('user');
                         Swal.fire({

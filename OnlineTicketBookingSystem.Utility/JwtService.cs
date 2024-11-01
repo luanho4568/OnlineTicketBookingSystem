@@ -33,7 +33,6 @@ namespace OnlineTicketBookingSystem.Utility
 
             new Claim(ClaimTypes.Name, user.FullName),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim("Balance", user.Balance.ToString())
 
             // Add additional claims as needed (e.g., roles)
 
