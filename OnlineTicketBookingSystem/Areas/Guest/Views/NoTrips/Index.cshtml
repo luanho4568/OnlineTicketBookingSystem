@@ -3,47 +3,49 @@
     ViewData["Title"] = "Không tìm thấy tuyến xe";
 }
 <div class="search-section bg-light text-dark p-4 container mt-4" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h4 class="text-center mb-4 h2" style="font-size: 24px; font-weight: bold;"><em>Tìm Kiếm Chuyến Đi</em></h4>
-    <form method="post" asp-action="Index" enctype="multipart/form-data">
-        <div class="row align-items-center">
-            <div class="col-md-3 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-lg"></i></span>
-                    <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
-                        <option disabled selected>Chọn điểm đi</option>
-                    </select>
+    <div class="container">
+        <h4 class="text-center mb-3 h2"><em>Tìm Kiếm Chuyến Đi</em></h4>
+        <form method="post" asp-action="Index" enctype="multipart/form-data">
+            <div class="row align-items-center">
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-2x"></i></span>
+                        <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
+                            <option disabled selected>Chọn điểm đi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt  text-danger fa-2x"></i></span>
+                        <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
+                            <option disabled selected>Chọn điểm đến</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt text-primary fa-2x"></i></span>
+                        <input type="date" class="form-control" id="departureDate" asp-for="@Model.Trip.DepartureDate">
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button type="submit" class="btn btn-warning w-75 p-2 border-warning" style="border-radius : 12px; font-size:25px">Tìm kiếm</button>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-map-marker-alt text-danger fa-lg"></i></span>
-                    <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
-                        <option disabled selected>Chọn điểm đến</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-calendar-alt text-primary fa-lg"></i></span>
-                    <input type="date" class="form-control" asp-for="@Model.Trip.DepartureDate">
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <button type="submit" class="btn btn-warning w-75 p-2 border-warning" style="border-radius : 12px; font-size:25px">Tìm kiếm</button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
+
+
 <div class="container my-5">
-    <div class="d-flex flex-column align-items-center p-4" style="background-color: #fff3cd; border: 1px solid #ffeeba; border-radius: 12px;">
-        <i class="fas fa-exclamation-circle fa-3x mb-3 text-warning"></i>
-        <h4 class="text-warning mb-2" style="font-size: 24px;">Không tìm thấy chuyến đi nào!</h4>
-        <p class="text-center" style="font-size: 18px; color: #856404;">
-            Rất tiếc, chúng tôi không tìm thấy chuyến đi nào phù hợp với thông tin bạn đã cung cấp.
-        </p>
-        <p class="text-center mb-0" style="font-size: 16px; color: #856404;">
-            Vui lòng thử lại với các tùy chọn khác hoặc <a href="#" class="text-decoration-none text-warning fw-bold">liên hệ chúng tôi</a> để được hỗ trợ.
-        </p>
+    <div class="alert alert-info text-center p-5 mt-5 shadow-lg rounded">
+        <i class="fas fa-info-circle fa-3x mb-3 text-primary"></i>
+        <h3 class="mb-3">Không tìm thấy chuyến đi nào!</h3>
+        <p class="mb-4">Hiện tại, không có chuyến đi nào phù hợp với thông tin bạn đã cung cấp. Vui lòng thử lại với các tùy chọn khác.</p>
+        <a href="/" class="btn btn-primary">
+            <i class="fas fa-home"></i> Quay lại Trang Chủ
+        </a>
     </div>
 </div>

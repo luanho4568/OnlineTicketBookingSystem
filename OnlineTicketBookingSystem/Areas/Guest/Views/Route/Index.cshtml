@@ -2,38 +2,53 @@
 @{
     ViewData["Title"] = "Chuyến xe";
 }
+<style>
+    .seat {
+        cursor: pointer;
+    }
+
+        .seat.bg-success:hover {
+            opacity: 0.8;
+        }
+
+        .seat.bg-warning:hover {
+            opacity: 0.8;
+        }
+</style>
 <!-- Search Section -->
 <div class="search-section bg-light text-dark p-4 container mt-4" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <h4 class="text-center mb-4 h2" style="font-size: 24px; font-weight: bold;"><em>Tìm Kiếm Chuyến Đi</em></h4>
-            <form method="post" asp-action="Index" enctype="multipart/form-data">
-        <div class="row align-items-center">
-            <div class="col-md-3 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-lg"></i></span>
-                    <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
-                        <option disabled selected>Chọn điểm đi</option>
-                    </select>
+    <div class="container">
+        <h4 class="text-center mb-3 h2"><em>Tìm Kiếm Chuyến Đi</em></h4>
+        <form method="post" asp-action="Index" enctype="multipart/form-data">
+            <div class="row align-items-center">
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-bus-alt text-info fa-2x"></i></span>
+                        <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.StartPoint" class="form-select">
+                            <option disabled selected>Chọn điểm đi</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-map-marker-alt  text-danger fa-2x"></i></span>
+                        <select class="form-control" id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
+                            <option disabled selected>Chọn điểm đến</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt text-primary fa-2x"></i></span>
+                        <input type="date" class="form-control" id="departureDate" asp-for="@Model.Trip.DepartureDate">
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button type="submit" class="btn btn-warning w-75 p-2 border-warning" style="border-radius : 12px; font-size:25px">Tìm kiếm</button>
                 </div>
             </div>
-            <div class="col-md-3 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-map-marker-alt text-danger fa-lg"></i></span>
-                    <select class="form-control" asp-items="@Model.Province" asp-for="@Model.Trip.EndPoint" class="form-select">
-                        <option disabled selected>Chọn điểm đến</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="fas fa-calendar-alt text-primary fa-lg"></i></span>
-                    <input type="date" class="form-control" asp-for="@Model.Trip.DepartureDate">
-                </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                 <button type="submit" class="btn btn-warning w-75 p-2 border-warning" style="border-radius : 12px; font-size:25px">Tìm kiếm</button>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <!-- Filter and Trip Cards Section -->
@@ -82,9 +97,31 @@
                                             <p class="card-text" style="font-size: 22px; font-weight: bold;">
                                                 @(trip.Price.HasValue ? trip.Price.Value.ToString("N0").Replace(",", ".") : "0") đ
                                             </p>
-                                            <p class="card-text" style="font-size: 18px;">Còn: @trip.Buses.TotalSeats chỗ trống</p>
-                                            <a href="#" class="btn btn-info" style="border-radius: 8px; font-size: 22px;">Chi tiết</a>
+                                            <p class="card-text" style="font-size: 18px;">Còn: @trip.Buses.EmptySeats chỗ trống</p>
+                                            <a href="#" class="btn btn-info" style="border-radius: 8px; font-size: 22px;" onclick="loadSeats('@trip.Buses.Id', '@trip.Id'); return false;">Chi tiết</a>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="container my-5 bg-white border rounded shadow-lg p-4" id="seatsDetail-@trip.Id" style="display: none;">
+                                <div class="row">
+                                    <!-- Ghi chú trạng thái ghế -->
+                                    <div class="col-md-6 text-center">
+                                        <h5 class="mb-3 text-secondary">Ghi Chú Trạng Thái Ghế</h5>
+                                        <ul class="list-unstyled">
+                                            <li><span class="badge bg-danger shadow-sm"><i class="fas fa-user-tie seat-icon"></i></span> - Dành cho tài xế</li>
+                                            <li><span class="badge bg-success shadow-sm"><i class="fas fa-couch seat-icon"></i></span> - Ghế có thể đặt</li>
+                                            <li><span class="badge bg-warning text-dark shadow-sm"><i class="fas fa-user-check seat-icon"></i></span> - Ghế bạn đã chọn</li>
+                                            <li><span class="badge bg-secondary shadow-sm"><i class="fas fa-ban seat-icon"></i></span> - Ghế đã được đặt</li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Danh sách ghế -->
+                                    <div class="col-md-6 text-center">
+                                        <h5 class="mb-3 text-secondary">Danh Sách Ghế</h5>
+                                        <div id="seatsDisplay" class="d-flex flex-wrap justify-content-center align-items-center border rounded p-3" style="background-color: #f5f5f5; box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.1);"></div>
+                                        <h5 class="mb-3">Số Ghế Đã Chọn: <span id="selectedSeatsCount" class="text-primary">0</span></h5>
+                                        <button id="purchaseButton" class="btn btn-success shadow"><i class="fas fa-ticket-alt"></i> Mua Vé</button>
                                     </div>
                                 </div>
                             </div>
@@ -102,3 +139,104 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        let selectedSeats = []; // Mảng để lưu ghế đã chọn
+
+        function loadSeats(busId, tripId) {
+            const seatsDetail = $(`#seatsDetail-${tripId}`);
+
+            if (seatsDetail.is(':visible')) {
+                seatsDetail.hide();
+                resetSelectedSeats(); // Reset ghế đã chọn
+                return;
+            } else {
+                $('[id^=seatsDetail-]').hide(); // Ẩn tất cả các phần chi tiết ghế
+            }
+
+            $.ajax({
+                url: `/api/v1/bus/GetSeatsByBusId/${busId}`,
+                method: 'GET',
+                success: function (response) {
+                    if (response.code === 200) {
+                        seatsDetail.show();
+                        seatsDetail.find('#seatsDisplay').empty();
+                        resetSelectedSeats();
+
+                        response.data.sort((a, b) => parseInt(a.seatNumber.substring(1)) - parseInt(b.seatNumber.substring(1)));
+                        const seatsInColumn = 8;
+                        const columns = Math.ceil(response.data.length / seatsInColumn);
+
+                        for (let j = 0; j < columns; j++) {
+                            const columnDiv = $('<div class="d-flex flex-column me-2"></div>');
+                            for (let i = 0; i < seatsInColumn; i++) {
+                                const index = i + j * seatsInColumn;
+                                if (index < response.data.length) {
+                                    const seat = response.data[index];
+                                    const iconClass = seat.status === "Driver" ? 'fa-user-tie' :
+                                        seat.status === "Empty" ? 'fa-couch' :
+                                            seat.status === "Selected" ? 'fa-user-check' :
+                                                'fa-ban';
+
+                                    const statusClass = seat.status === "Driver" ? "bg-danger" :
+                                        seat.status === "Empty" ? "bg-success" :
+                                            seat.status === "Selected" ? "bg-warning text-dark" :
+                                                "bg-secondary";
+
+                                    columnDiv.append(
+                                        `<div class="seat mb-2 ${statusClass} text-white p-2" data-id="${seat.id}">
+                                                        <i class="fas ${iconClass} seat-icon"></i>
+                                                        <span>${seat.seatNumber}</span>
+                                                    </div>`
+                                    );
+                                }
+                            }
+                            seatsDetail.find('#seatsDisplay').append(columnDiv);
+                        }
+
+                        $('.seat.bg-success').off('click').on('click', function () {
+                            const seatNumber = $(this).find('span').text();
+                            const seatId = $(this).data('id');
+
+                            if ($(this).hasClass('bg-warning')) {
+                                $(this).removeClass('bg-warning text-dark').addClass('bg-success');
+                                $(this).find('.seat-icon').removeClass('fa-user-check').addClass('fa-couch');
+                                selectedSeats = selectedSeats.filter(seat => seat.seatId !== seatId);
+                            } else {
+                                $(this).removeClass('bg-success').addClass('bg-warning text-dark');
+                                $(this).find('.seat-icon').removeClass('fa-couch').addClass('fa-user-check');
+                                selectedSeats.push({ seatId, seatNumber });
+                            }
+                            seatsDetail.find('#selectedSeatsCount').text(selectedSeats.length);
+                        });
+
+                        seatsDetail.find('#purchaseButton').off('click').on('click', function () {
+                            if (selectedSeats.length > 0) {
+                                const seatDetails = selectedSeats.map(seat => `ID: ${seat.seatId} (Số ghế: ${seat.seatNumber})`).join('\n');
+                                alert(`Bạn đã chọn ghế:\n${seatDetails}\nSố lượng ghế: ${selectedSeats.length}`);
+                            } else {
+                                alert('Bạn chưa chọn ghế nào.');
+                            }
+                        });
+
+                    } else {
+                        console.log(response.message);
+                    }
+                },
+                error: function (e) {
+                    console.log(JSON.parse(e.responseText).message);
+                }
+            });
+        }
+
+        function resetSelectedSeats() {
+            selectedSeats = [];
+            $('[id^=seatsDetail-] .seat').removeClass('bg-warning text-dark').addClass('bg-success');
+            $('[id^=seatsDetail-] .seat .seat-icon').removeClass('fa-user-check').addClass('fa-couch');
+            $('[id^=seatsDetail-] #selectedSeatsCount').text('0');
+        }
+    </script>
+
+}
+

@@ -63,17 +63,18 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                     bus.Image = @"images\buses\" + fileName + extension;
                 }
                 bus.Id = Guid.NewGuid();
-                bus.EmptySeats = bus.TotalSeats;
+                bus.EmptySeats = bus.TotalSeats - 1;
                 bus.Status = true;
                 await _unitOfWork.Buses.AddAsync(bus);
 
                 for (int i = 1; i <= bus.TotalSeats; i++)
                 {
+                    var seatNumber = "G" + i;
                     Seats seat = new Seats
                     {
                         BusId = bus.Id,
-                        SeatNumber = "G" + i,
-                        Status = SD.SeatStatus_Empty
+                        SeatNumber = seatNumber,
+                        Status = seatNumber == "G1" ? "Driver" : SD.SeatStatus_Empty
                     };
                     await _unitOfWork.Seats.AddAsync(seat);
                 }
