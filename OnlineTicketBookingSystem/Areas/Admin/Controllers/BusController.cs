@@ -158,11 +158,12 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 // Thêm ghế mới khi số ghế tăng lên
                 for (int i = (int)(existingBus.TotalSeats + 1); i <= bus.TotalSeats; i++)
                 {
+                    var seatNumber = "G" + i;
                     Seats seat = new Seats
                     {
                         BusId = bus.Id,
-                        SeatNumber = "G" + i,
-                        Status = SD.SeatStatus_Empty
+                        SeatNumber = seatNumber,
+                        Status = seatNumber == "G1" ? "Driver" : SD.SeatStatus_Empty
                     };
                     await _unitOfWork.Seats.AddAsync(seat);
                 }
@@ -178,7 +179,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
 
             // Cập nhật số ghế
             existingBus.TotalSeats = bus.TotalSeats;
-            existingBus.EmptySeats = bus.TotalSeats;
+            existingBus.EmptySeats = bus.TotalSeats - 1;
             _unitOfWork.Buses.Update(existingBus);
             await _unitOfWork.SaveAsync();
 

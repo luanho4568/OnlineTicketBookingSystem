@@ -14,6 +14,13 @@
         .seat.bg-warning:hover {
             opacity: 0.8;
         }
+
+    .btn.disabled {
+        background-color: #6c757d; /* Màu xám tối */
+        border-color: #6c757d; /* Đường vi màu xám tối */
+        cursor: not-allowed; /* Thay đổi con trỏ khi hover */
+        opacity: 0.65; /* Giảm độ sáng */
+    }
 </style>
 <!-- Search Section -->
 <div class="search-section bg-light text-dark p-4 container mt-4" style="border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
@@ -77,7 +84,6 @@
         <div class="col-md-9">
             <div class="row justify-content-center">
                 @if (Model.TripList != null && Model.TripList.Any())
-
                 {
                     foreach (var trip in Model.TripList)
                     {
@@ -97,8 +103,10 @@
                                             <p class="card-text" style="font-size: 22px; font-weight: bold;">
                                                 @(trip.Price.HasValue ? trip.Price.Value.ToString("N0").Replace(",", ".") : "0") đ
                                             </p>
-                                            <p class="card-text" style="font-size: 18px;">Còn: @trip.Buses.EmptySeats chỗ trống</p>
-                                            <a href="#" class="btn btn-info" style="border-radius: 8px; font-size: 22px;" onclick="loadSeats('@trip.Buses.Id', '@trip.Id'); return false;">Chi tiết</a>
+                                            <p class="card-text" style="font-size: 18px;">
+                                                @(trip.Buses.EmptySeats == 0 ? "Hết chỗ" : $"Còn: {trip.Buses.EmptySeats} chỗ trống")
+                                            </p>
+                                            <a href="#" class="btn btn-info" style="border-radius: 8px; font-size: 22px;" onclick="loadSeats('@trip.Buses.Id', '@trip.Id', @trip.Price.Value); return false;">Chi tiết</a>
                                         </div>
                                     </div>
                                 </div>
@@ -119,19 +127,21 @@
                                     <!-- Danh sách ghế -->
                                     <div class="col-md-6 text-center">
                                         <h5 class="mb-3 text-secondary">Danh Sách Ghế</h5>
-                                        <div id="seatsDisplay" class="d-flex flex-wrap justify-content-center align-items-center border rounded p-3" style="background-color: #f5f5f5; box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.1);"></div>
-                                        <h5 class="mb-3">Số Ghế Đã Chọn: <span id="selectedSeatsCount" class="text-primary">0</span></h5>
-                                        <button id="purchaseButton" class="btn btn-success shadow"><i class="fas fa-ticket-alt"></i> Mua Vé</button>
+                                        <div id="seatsDisplay" class="d-flex flex-wrap justify-content-center align-items-center border rounded p-3 mb-3" style="background-color: #f5f5f5; box-shadow: inset 0px 0px 8px rgba(0, 0, 0, 0.1);"></div>
+                                        @if (trip.Buses.EmptySeats > 0)
+                                        {
+                                            <h5 class="mb-3">Số Ghế Đã Chọn: <span id="selectedSeatsCount" class="text-primary">0</span></h5>
+                                        }
+                                        <button id="purchaseButton" class="btn btn-success shadow @(trip.Buses.EmptySeats == 0 ? "disabled" : "")" @(trip.Buses.EmptySeats == 0 ? "disabled" : "")>
+                                            <i class="fas fa-ticket-alt"></i> Mua Vé
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     }
-
                 }
-
                 else
-
                 {
                     <p>Không tìm thấy chuyến đi nào.</p>
                 }
@@ -144,7 +154,7 @@
     <script>
         let selectedSeats = []; // Mảng để lưu ghế đã chọn
 
-        function loadSeats(busId, tripId) {
+        function loadSeats(busId, tripId, price) {
             const seatsDetail = $(`#seatsDetail-${tripId}`);
 
             if (seatsDetail.is(':visible')) {
@@ -186,9 +196,9 @@
 
                                     columnDiv.append(
                                         `<div class="seat mb-2 ${statusClass} text-white p-2" data-id="${seat.id}">
-                                                        <i class="fas ${iconClass} seat-icon"></i>
-                                                        <span>${seat.seatNumber}</span>
-                                                    </div>`
+                                                                                <i class="fas ${iconClass} seat-icon"></i>
+                                                                                <span>${seat.seatNumber}</span>
+                                                                            </div>`
                                     );
                                 }
                             }
@@ -206,17 +216,103 @@
                             } else {
                                 $(this).removeClass('bg-success').addClass('bg-warning text-dark');
                                 $(this).find('.seat-icon').removeClass('fa-couch').addClass('fa-user-check');
-                                selectedSeats.push({ seatId, seatNumber });
+                                selectedSeats.push({ seatId, seatNumber, price }); // Thêm giá vào ghế đã chọn
                             }
                             seatsDetail.find('#selectedSeatsCount').text(selectedSeats.length);
                         });
 
                         seatsDetail.find('#purchaseButton').off('click').on('click', function () {
                             if (selectedSeats.length > 0) {
-                                const seatDetails = selectedSeats.map(seat => `ID: ${seat.seatId} (Số ghế: ${seat.seatNumber})`).join('\n');
-                                alert(`Bạn đã chọn ghế:\n${seatDetails}\nSố lượng ghế: ${selectedSeats.length}`);
+                                $.ajax({
+                                    url: '/api/v1/Token/ValidateAndDecodeToken', // API để giải mã token
+                                    type: 'POST',
+                                    contentType: 'application/json',
+                                    data: JSON.stringify(token), // Gửi token tới API để kiểm tra
+                                    success: function (response) {
+                                        var decodedToken = response.data;
+                                        const ticketData = {
+                                            userId: decodedToken.nameid,
+                                            tripId: tripId,
+                                            seatIds: selectedSeats.map(seat => seat.seatId),
+                                            price: price
+                                        };
+                                        $.ajax({
+                                            url: '/api/v1/ticket/BookTickets',
+                                            method: 'POST',
+                                            contentType: 'application/json',
+                                            data: JSON.stringify(ticketData),
+                                            success: function (response) {
+                                                console.log(response);
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: response.message,
+                                                    text: 'Vui lòng kiểm tra giỏ hàng!',
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                });
+                                                $.ajax({
+                                                    url: `/api/v1/bus/GetSeatsByBusId/${busId}`, // Bạn có thể cần thay đổi busId
+                                                    method: 'GET',
+                                                    success: function (seatsResponse) {
+                                                        if (seatsResponse.code === 200) {
+                                                            updateSeatDisplay(seatsResponse.data, tripId);
+                                                        }
+                                                    }
+                                                });
+                                                resetSelectedSeats();
+                                            },
+                                            error: function (e) {
+                                                const errorMessage = JSON.parse(e.responseText).message;
+                                                const errorCode = JSON.parse(e.responseText).code;
+                                                console.log(errorMessage)
+                                                console.log(errorCode)
+                                                if (errorCode === -1) {
+                                                    Swal.fire({
+                                                        title: errorMessage,
+                                                        text: "Vui lòng nạp thêm tiền vào ví!",
+                                                        icon: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#3085d6",
+                                                        cancelButtonColor: "#d33",
+                                                        confirmButtonText: "Nạp tiền",
+                                                        cancelButtonText: "Huỷ",
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            window.location.href = "/Guest/Stripe"
+                                                        }
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Lỗi',
+                                                        text: errorMessage,
+                                                        confirmButtonText: 'OK'
+                                                    });
+                                                }
+                                            }
+                                        });
+
+                                    },
+                                    error: function (e) {
+                                        localStorage.removeItem('user');
+                                        localStorage.removeItem('authToken');
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: JSON.parse(e.responseText).message,
+                                            text: "Vui lòng đăng nhập lại",
+                                        }).then(() => {
+                                            window.location.href = '/Account/Login';
+
+                                        });
+                                    }
+                                });
                             } else {
-                                alert('Bạn chưa chọn ghế nào.');
+                                Swal.fire({
+                                    icon: "warning",
+                                    title: "Vui lòng chọn ít nhất 1 chỗ!",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
                             }
                         });
 
@@ -229,13 +325,51 @@
                 }
             });
         }
+        function updateSeatDisplay(seats, tripId) {
+            const seatsDisplay = $(`#seatsDetail-${tripId} #seatsDisplay`);
+            seatsDisplay.empty();
 
-        function resetSelectedSeats() {
+            // Cập nhật lại hiển thị ghế tương tự như trong hàm loadSeats
+            // Sắp xếp ghế theo số ghế
+            seats.sort((a, b) => {
+                return parseInt(a.seatNumber.substring(1)) - parseInt(b.seatNumber.substring(1));
+            });
+
+            const seatsInColumn = 8;
+            const columns = Math.ceil(seats.length / seatsInColumn);
+            for (let j = 0; j < columns; j++) {
+                const columnDiv = $('<div class="d-flex flex-column me-2"></div>');
+                for (let i = 0; i < seatsInColumn; i++) {
+                    const index = i + j * seatsInColumn;
+                    if (index < seats.length) {
+                        const seat = seats[index];
+                        const iconClass = seat.status === "Driver" ? 'fa-user-tie' :
+                            seat.status === "Empty" ? 'fa-couch' :
+                                seat.status === "Selected" ? 'fa-user-check' :
+                                    'fa-ban';
+
+                        const statusClass = seat.status === "Driver" ? "bg-danger" :
+                            seat.status === "Empty" ? "bg-success" :
+                                seat.status === "Selected" ? "bg-warning text-dark" :
+                                    "bg-secondary";
+
+                        columnDiv.append(
+                            `<div class="seat mb-2 ${statusClass} text-white p-2" data-id="${seat.id}">
+                                                                    <i class="fas ${iconClass} seat-icon"></i>
+                                                                    <span>${seat.seatNumber}</span>
+                                                                </div>`
+                        );
+                    }
+                }
+                seatsDisplay.append(columnDiv);
+            }
+        } function resetSelectedSeats() {
             selectedSeats = [];
             $('[id^=seatsDetail-] .seat').removeClass('bg-warning text-dark').addClass('bg-success');
             $('[id^=seatsDetail-] .seat .seat-icon').removeClass('fa-user-check').addClass('fa-couch');
             $('[id^=seatsDetail-] #selectedSeatsCount').text('0');
         }
+
     </script>
 
 }

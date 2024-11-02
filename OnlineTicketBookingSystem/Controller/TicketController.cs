@@ -44,36 +44,51 @@ namespace OnlineTicketBookingSystem.Controller
             {
                 return BadRequest(new { code = 404, message = "Vui lòng chọn ít nhất một ghế." });
             }
+            var user = await _unitOfWork.User.GetFirstOrDefaultAsync(x => x.Id == ticketVM.UserId);
+            if (user == null)
+            {
+                return BadRequest(new { code = 404, message = "Không tìm thấy user" });
+            }
+            decimal totalCost = ticketVM.Price * ticketVM.SeatIds.Count;
+            if (user.Balance < totalCost)
+            {
+                return BadRequest(new { code = -1, message = "Số dư không đủ" });
+            }
+            var trip = await _unitOfWork.Trips.GetFirstOrDefaultAsync(t => t.Id == ticketVM.TripId);
+            if (trip == null || trip.BusId == null)
+            {
+                return BadRequest(new { code = 404, message = "Không tìm thấy chuyến xe hoặc xe buýt." });
+            }
 
+            var bus = await _unitOfWork.Buses.GetFirstOrDefaultAsync(b => b.Id == trip.BusId);
+            if (bus == null)
+            {
+                return BadRequest(new { code = 404, message = "Không tìm thấy xe buýt." });
+            }
             foreach (var seatId in ticketVM.SeatIds)
             {
                 var seat = await _unitOfWork.Seats.GetFirstOrDefaultAsync(s => s.Id == seatId);
-                if (seat == null)
+                if (seat == null || seat.Status != SD.SeatStatus_Empty)
                 {
-                    return BadRequest(new { code = 404, message = $"Ghế với ID {seatId} không tồn tại." });
+                    return BadRequest(new { code = 400, message = $"Ghế với ID {seatId} không thể đặt." });
                 }
-                if (seat.Status == SD.SeatStatus_Empty)
-                {
-                    // Cập nhật trạng thái ghế thành Processing
-                    seat.Status = SD.SeatStatus_Processing;
-                    _unitOfWork.Seats.Update(seat); // Cập nhật ghế
-                }
-                else
-                {
-                    return BadRequest(new { code = 400, message = $"Ghế với ID {seatId} đã được đặt." });
-                }
+                seat.Status = SD.SeatStatus_Sold;
+                _unitOfWork.Seats.Update(seat);
                 var ticket = new Tickets
                 {
                     UserId = ticketVM.UserId,
                     TripId = ticketVM.TripId,
                     SeatId = seatId,
                     Price = ticketVM.Price,
-                    Status = SD.TicketStatus_Pending,
+                    Status = SD.TicketStatus_Completed,
                 };
 
                 await _unitOfWork.Tickets.AddAsync(ticket);
             }
-
+            user.Balance -= totalCost;
+            _unitOfWork.User.Update(user);
+            bus.EmptySeats -= ticketVM.SeatIds.Count;
+            if (bus.EmptySeats < 0) bus.EmptySeats = 0;
             await _unitOfWork.SaveAsync();
 
             return Ok(new { code = 200, message = "Đặt vé thành công!" });

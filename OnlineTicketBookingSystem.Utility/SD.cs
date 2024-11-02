@@ -15,7 +15,6 @@
 
         public const string SeatStatus_Empty = "Empty";
         public const string SeatStatus_Sold = "Sold";
-        public const string SeatStatus_Processing = "Processing";
         public const string SeatStatus_Maintenance = "Maintenance";
 
         public const string TripStatus_Scheduled = "Scheduled";
@@ -31,8 +30,6 @@
         public const string TripAssignmentStatus_Complated = "Complated";
         public const string TripAssignmentStatus_Expired = "Expired";
 
-        public const string TicketStatus_Pending = "Pending"; // chờ
-        public const string TicketStatus_Confirmed = "Confirmed"; // đã xác nhận
         public const string TicketStatus_Completed = "Completed"; // đã hoàn thành
         public const string TicketStatus_Cancelled = "Cancelled"; // đã huỷ
         public const string TicketStatus_Refunded = "Refunded"; // đã hoàn tiền

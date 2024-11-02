@@ -63,8 +63,7 @@
 
     <script>
         $(document).ready(function () {
-            var token = localStorage.getItem('authToken');
-            var user = localStorage.getItem('user');
+            
             var userNav = $('#userNav');
 
             // Nếu token không tồn tại, hiển thị nút đăng nhập và chuyển hướng đến trang chủ
@@ -140,7 +139,6 @@
                             type: 'GET',
                             contentType: 'application/json',
                             success: function (response) {
-                                console.log(response)
                                 $("#balance").text(response?.data?.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "đ")
                             },
                             error: function (e) {
