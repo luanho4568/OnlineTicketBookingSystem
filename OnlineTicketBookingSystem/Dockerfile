@@ -1,32 +1,28 @@
-# Sử dụng image .NET SDK làm base image để build ứng dụng
+# Sử dụng .NET SDK image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-# Đặt thư mục làm việc bên trong container
+# Thiết lập thư mục làm việc trong container
 WORKDIR /app
 
-# Sao chép file csproj vào container
-COPY ["OnlineTicketBookingSystem/OnlineTicketBookingSystem/OnlineTicketBookingSystem.csproj", "OnlineTicketBookingSystem/"]
+# Sao chép các tệp .csproj vào container (đảm bảo đường dẫn chính xác)
+COPY OnlineTicketBookingSystem/OnlineTicketBookingSystem.csproj ./OnlineTicketBookingSystem.csproj
 
-# Restore các dependencies của dự án
-RUN dotnet restore "OnlineTicketBookingSystem/OnlineTicketBookingSystem/OnlineTicketBookingSystem.csproj"
+# Khôi phục các gói NuGet
+RUN dotnet restore
 
 # Sao chép toàn bộ mã nguồn vào container
-COPY . .
+COPY OnlineTicketBookingSystem/ .
 
-# Build ứng dụng
-RUN dotnet publish "OnlineTicketBookingSystem/OnlineTicketBookingSystem/OnlineTicketBookingSystem.csproj" -c Release -o /app/publish
+# Xây dựng ứng dụng
+RUN dotnet publish -c Release -o /app/publish
 
-# Tạo image runtime cho ứng dụng
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-
-# Đặt thư mục làm việc trong container
+# Thiết lập image chạy
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-
-# Sao chép các file đã build từ container trước
-COPY --from=build /app/publish .
-
-# Cung cấp cổng để ứng dụng có thể tiếp nhận request
 EXPOSE 80
 
-# Chạy ứng dụng khi container được khởi động
+# Sao chép ứng dụng đã xây dựng từ bước trước
+COPY --from=build /app/publish .
+
+# Chạy ứng dụng
 ENTRYPOINT ["dotnet", "OnlineTicketBookingSystem.dll"]
