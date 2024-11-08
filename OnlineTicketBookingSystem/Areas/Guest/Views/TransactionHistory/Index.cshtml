@@ -28,7 +28,8 @@ else
             <thead class="table-primary">
                 <tr>
                     <th scope="col"><i class="fas fa-receipt"></i> ID Giao dịch</th>
-                    <th scope="col"><i class="fas fa-money-bill-wave"></i> Số tiền</th>
+                    <th scope="col"><i class="fas fa-money-bill-wave"></i> Số tiền nạp</th>
+                    <th scope="col"><i class="fas fa-money-bill-wave"></i> Giá gốc</th>
                     <th scope="col"><i class="fas fa-coins"></i> Tiền tệ</th>
                     <th scope="col"><i class="fas fa-info-circle"></i> Trạng thái</th>
                     <th scope="col"><i class="fas fa-calendar-alt"></i> Ngày</th>
@@ -41,12 +42,12 @@ else
                 {
                     <tr>
                         <td>@transaction.TransactionId</td>
-                        <td>@string.Format("{0:N0} {1}", transaction.Amount / 100, transaction.Currency.ToUpper())</td>
+                        <td>@string.Format("{0:N0} {1}", transaction.Amount, transaction.Currency.ToUpper()).Replace(",", ".")</td>
+                        <td>@string.Format("{0:N0} {1}", transaction.OriginalPrice, transaction.Currency.ToUpper()).Replace(",", ".")</td>
                         <td>@transaction.Currency.ToUpper()</td>
                         <td>
-                            <span class="badge badge-pill @(transaction.Status == "paid" ? "badge-success" : "badge-danger")">
+                            <span class="badge badge-pill text-success @(transaction.Status == "paid" ? "badge-success" : "badge-danger")">
                                 <i class="fas @(transaction.Status == "paid" ? "fa-check-circle" : "fa-times-circle")"></i>
-                                @transaction.Status
                             </span>
                         </td>
                         <td>@transaction.CreatedAt.ToString("dd/MM/yyyy HH:mm:ss")</td>

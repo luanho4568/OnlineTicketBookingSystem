@@ -62,19 +62,11 @@
                     {
                         "data": "status",
                         "render": function (data) {
-                            if (data == "Expired") {
-                                return "Đã hết hạn";
-                            } else if (data == "Pending") {
-                                return "Đang chờ phê duyệt";
-                            } else if (data == "Complated") {
+                            if (data == "Completed") {
                                 return "Hoàn thành";
-                            } else if (data == "Confirmed") {
-                                return "Đã xác nhận";
                             } else if (data == "Refunded") {
                                 return "Đã hoàn tiền";
-                            } else if (data == "Cancelled") {
-                                return "Đã huỷ";
-                            } else {
+                            }  else {
                                 return null;
                             }
                         },
@@ -84,49 +76,18 @@
                     {
                         "data": null,
                         "render": function (data) {
-                            if (data.status === "Pending") {
-                                return `
-                                    <div class="text-center">
-                                        <span class="check-icon me-3">
-                                            <i class="fas fa-check text-success"></i>
-                                        </span>
-                                        <span class="times-icon">
-                                            <i class="fas fa-times text-danger"></i>
-                                        </span>
-                                    </div>`;
-                            } else if (data.status === "Confirmed") {
+                            if (data.status === "Completed") {
                                 return `
                                     <div class="text-center">
                                         <span class="check-icon me-3">
                                             <i class="fas fa-check-circle text-success"></i>
                                         </span>
                                     </div>`;
-                            } else if (data.status === "Complated") {
-                                return `
-                                    <div class="text-center">
-                                        <span class="check-icon me-3">
-                                            <i class="fas fa-check-double text-info"></i>
-                                        </span>
-                                    </div>`;
-                            } else if (data.status === "Cancelled") {
-                                return `
-                                    <div class="text-center">
-                                        <span class="check-icon me-3">
-                                            <i class="fas fa-times-circle text-danger"></i>
-                                        </span>
-                                    </div>`;
-                            } else if (data.status === "Refunded") {
+                            }  else if (data.status === "Refunded") {
                                 return `
                                     <div class="text-center">
                                         <span class="check-icon me-3">
                                             <i class="fas fa-undo-alt text-primary"></i>
-                                        </span>
-                                    </div>`;
-                            } else if (data.status === "Expired") {
-                                return `
-                                    <div class="text-center">
-                                        <span class="check-icon me-3">
-                                            <i class="fas fa-clock text-secondary"></i>
                                         </span>
                                     </div>`;
                             } else {

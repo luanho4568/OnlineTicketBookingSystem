@@ -1,249 +1,124 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Trang chủ Admin";
+}
+<style>
+    .container-fluid {
+        margin-top: 50px;
+    }
+
+    h1, h2 {
+        margin-bottom: 20px;
+    }
+
+    .text-primary {
+        color: #007bff;
+    }
+
+    .text-success {
+        color: #28a745;
+    }
+
+    .text-muted {
+        color: #6c757d;
+    }
+
+    .text-dark {
+        color: #343a40;
+    }
+
+    /* Khung cho các phần */
+    .section-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        background-color: #fff;
+        height: 100%;
+    }
+
+        .section-card h2 {
+            font-size: 1.5rem;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+    .bi {
+        margin-right: 10px;
+    }
+
+    /* Cột thông tin liên hệ */
+    .contact-info p {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .contact-info strong {
+        color: #007bff;
+    }
+
+    /* Tạo khoảng cách giữa các mục */
+    .list-unstyled li {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .list-unstyled {
+        padding-left: 20px;
+    }
+
+    /* Đảm bảo các cột có chiều cao bằng nhau */
+    .equal-height {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    /* Đảm bảo nội dung không bị đẩy ra ngoài */
+    .section-card .row {
+        margin-bottom: 20px;
+    }
+
+</style>
+
 <div class="container-fluid">
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Người dùng</h1>
+    <!-- Phần Chào mừng -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 text-primary fw-bold">Chào mừng đến với Trang Quản Lý Của Admin</h1>
+            <p class="lead text-muted">Chúng tôi cung cấp một hệ thống quản lý toàn diện cho tài xế, người dùng, xe buýt và các tuyến đi. Hãy cùng khám phá các lợi ích của hệ thống này.</p>
+        </div>
     </div>
-    <!-- Content Row -->
-    <div class="row">
-        <!-- Earnings (Monthly) Card Example -->
-        <!-- Tổng Khách hàng -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">
-                                Tổng Khách hàng
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">100</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-4x text-primary"></i>
-                        </div>
-                    </div>
-                </div>
+
+    <!-- Phần Nội dung chia Layout 2 cột -->
+    <div class="row mt-5">
+        <!-- Cột Lợi ích -->
+        <div class="col-md-6 col-12 equal-height">
+            <div class="section-card">
+                <h2 class="text-dark text-center">Lợi ích khi sử dụng hệ thống</h2>
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check-circle-fill text-success"></i> Quản lý tài xế hiệu quả, theo dõi hành vi và lịch sử làm việc của họ.</li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i> Quản lý người dùng, giám sát các hoạt động của họ trong hệ thống.</li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i> Quản lý xe buýt, theo dõi tình trạng xe và bảo dưỡng định kỳ.</li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i> Quản lý tuyến đi, phê duyệt các tuyến đi cho tài xế một cách dễ dàng.</li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i> Theo dõi và phê duyệt số tiền nạp của người dùng vào hệ thống.</li>
+                    <li><i class="bi bi-check-circle-fill text-success"></i> Quản lý số tiền vé người dùng đã mua và dễ dàng thống kê doanh thu.</li>
+                </ul>
             </div>
         </div>
 
-        <!-- Khách hàng Online -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-2">
-                                Khách hàng Online
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-user fa-4x text-success"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Khách hàng Offline -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-secondary shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-2">
-                                Khách hàng Offline
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>f
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-user-times fa-4x text-secondary"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-2">
-                                Khách hàng bị khoá
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-user-lock fa-4x text-danger"></i>
-                        </div>
-                    </div>
-                </div>
+        <!-- Cột Thông tin Liên hệ -->
+        <div class="col-md-6 col-12 equal-height">
+            <div class="section-card contact-info">
+                <h2 class="text-dark text-center">Thông tin liên hệ</h2>
+                <p><strong>Họ và tên:</strong> Hồ Đình Thanh Luân</p>
+                <p><strong>Chủ công ty:</strong> Công ty Thanh Luân </p>
+                <p><strong>Địa chỉ:</strong> 123 Đường ABC, Quận 1, TP. Hồ Chí Minh</p>
+                <p><strong>Email:</strong> luanho@gmail.com</p>
+                <p><strong>Số điện thoại:</strong> +84 123 456 789</p>
+                <p><strong>Zalo:</strong> +84 123 456 789</p>
             </div>
         </div>
     </div>
 
-    <div class="row">
-    <!-- Earnings (Monthly) Card Example -->
-    <!-- Tổng Khách hàng -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-3">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col text-center">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">
-                            Tổng tài xế
-                        </div>
-                        <div class="h3 mb-0 font-weight-bold text-gray-800">100</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-users fa-4x text-primary"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Khách hàng Online -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-3">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col text-center">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-2">
-                            tài xế Online
-                        </div>
-                        <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-user fa-4x text-success"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Khách hàng Offline -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-secondary shadow h-100 py-3">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col text-center">
-                        <div class="text-xs font-weight-bold text-secondary text-uppercase mb-2">
-                            tài xế Offline
-                        </div>
-                        <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                    </div>
-                    <div class="col-auto">
-                        <i class="fas fa-user-times fa-4x text-secondary"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-2">
-                                tài xế bị khoá
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-user-lock fa-4x text-danger"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-</div>
-
-    <hr />
-
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Xe</h1>
-    </div>
-
-    <div class="row">
-        <!-- Earnings (Monthly) Card Example -->
-        <!-- Tổng Khách hàng -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-2">
-                                tổng số lượng xe
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">100</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bus fa-4x text-primary"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Khách hàng Online -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-2">
-                                xe hoạt động
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bus fa-4x text-success"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Khách hàng Offline -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-secondary shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-2">
-                                xe bảo trì
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bus fa-4x text-secondary"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col text-center">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-2">
-                                Tổng số chuyến đi
-                            </div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">50</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-road fa-4x text-info"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
 </div>

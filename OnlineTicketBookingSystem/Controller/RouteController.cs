@@ -34,13 +34,16 @@ namespace OnlineTicketBookingSystem.Controller
                                 assignment.Status = SD.TripAssignmentStatus_Expired;
                                 _unitOfWork.TripsAssignments.Update(assignment);
 
-                                var seats = await _unitOfWork.Seats.GetAllAsync(x => x.BusId == route.BusId);
-                                if (seats != null && seats.Any())
+                                if (assignment.Status == SD.TripAssignmentStatus_Empty)
                                 {
-                                    foreach (var seat in seats)
+                                    var seats = await _unitOfWork.Seats.GetAllAsync(x => x.BusId == route.BusId);
+                                    if (seats != null && seats.Any())
                                     {
-                                        seat.Status = SD.SeatStatus_Empty;
-                                        _unitOfWork.Seats.Update(seat);
+                                        foreach (var seat in seats)
+                                        {
+                                            seat.Status = SD.SeatStatus_Empty;
+                                            _unitOfWork.Seats.Update(seat);
+                                        }
                                     }
                                 }
                             }

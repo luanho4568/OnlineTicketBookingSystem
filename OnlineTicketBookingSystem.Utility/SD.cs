@@ -31,9 +31,8 @@
         public const string TripAssignmentStatus_Expired = "Expired";
 
         public const string TicketStatus_Completed = "Completed"; // đã hoàn thành
-        public const string TicketStatus_Cancelled = "Cancelled"; // đã huỷ
         public const string TicketStatus_Refunded = "Refunded"; // đã hoàn tiền
-        public const string TicketStatus_Expired = "Expired"; // đã hết hạn
+
 
 
         public const bool IsActive_False = false;

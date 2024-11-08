@@ -53,10 +53,55 @@ namespace OnlineTicketBookingSystem.Controller
             {
                 var users = await _unitOfWork.User.GetFirstOrDefaultAsync(u => u.Id == id);
                 if (users == null) return NotFound(new { code = 404, message = "Không tìm thấy user!" });
+                if (!string.IsNullOrEmpty(users.Avatar))
+                {
+                    string wwwRootPath = _env.WebRootPath;
+                    var avatarFilePath = Path.Combine(wwwRootPath, users.Avatar.TrimStart('\\'));
+                    if (System.IO.File.Exists(avatarFilePath))
+                    {
+                        System.IO.File.Delete(avatarFilePath);
+                    }
+                }
                 var transactions = await _unitOfWork.TransactionHistory.GetAllAsync(x => x.UserId == id);
+                var tickets = await _unitOfWork.Tickets.GetAllAsync(t => t.UserId == id, includeProperties: "Seats");
+                var tripAssignments = await _unitOfWork.TripsAssignments.GetAllAsync(t => t.DriverId == id);
+                foreach (var ticket in tickets)
+                {
+                    if (ticket.Seats != null)
+                    {
+                        ticket.Seats.Status = SD.SeatStatus_Empty;
+                        _unitOfWork.Seats.Update(ticket.Seats);
+
+                        var bus = await _unitOfWork.Buses.GetFirstOrDefaultAsync(b => b.Id == ticket.Seats.BusId);
+                        if (bus != null)
+                        {
+                            bus.EmptySeats += 1;
+                            _unitOfWork.Buses.Update(bus);
+                        }
+                    }
+
+                    await _unitOfWork.Tickets.RemoveAsync(ticket);
+                }
                 foreach (var transaction in transactions)
                 {
                     await _unitOfWork.TransactionHistory.RemoveAsync(transaction);
+                }
+                foreach (var assignment in tripAssignments)
+                {
+                    assignment.Driver = null;
+                    if (assignment.Status != "Expired")
+                    {
+                        assignment.Status = "Empty";
+                    }
+                    _unitOfWork.TripsAssignments.Update(assignment);
+
+                    // Cập nhật trạng thái tuyến đi nếu chưa Expired
+                    var trip = await _unitOfWork.Trips.GetFirstOrDefaultAsync(t => t.Id == assignment.TripId);
+                    if (trip != null && trip.Status != SD.TripStatus_Expired)
+                    {
+                        trip.Status = SD.TripStatus_Expired;
+                        _unitOfWork.Trips.Update(trip);
+                    }
                 }
                 await _unitOfWork.User.RemoveAsync(users);
                 await _unitOfWork.SaveAsync();

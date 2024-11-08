@@ -26,6 +26,52 @@
             padding: 10px 0; /* Padding cho footer */
             text-align: center; /* Canh giữa nội dung trong footer */
         }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Thiết kế form liên hệ */
+        .contact-form {
+            background-color: #ffffff;
+            border-radius: 10px;
+        }
+
+            .contact-form label {
+                font-weight: 600;
+                color: #333333;
+            }
+
+            .contact-form .form-control {
+                border-radius: 8px;
+                border: 1px solid #dcdcdc;
+                padding: 0.75rem;
+                box-shadow: none;
+                transition: all 0.3s ease;
+            }
+
+                .contact-form .form-control:focus {
+                    border-color: #007bff;
+                    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+                }
+
+            .contact-form .btn-primary {
+                background-color: #007bff;
+                border: none;
+                border-radius: 8px;
+                transition: background-color 0.3s;
+            }
+
+                .contact-form .btn-primary:hover {
+                    background-color: #0056b3;
+                }
+
+                .contact-form .btn-primary:focus {
+                    box-shadow: 0 4px 8px rgba(0, 91, 187, 0.3);
+                }
     </style>
 </head>
 <body>
@@ -49,7 +95,6 @@
         <partial name="_Notifycation" />
         @RenderBody()
     </main>
-
     <footer>
         <div>
             Website Đặt Vé Xe Trực Tuyến © 2024 by Hồ Đình Thanh Luân.
@@ -111,28 +156,29 @@
 
                         // Hiển thị thông tin người dùng với tùy chọn quản lý (nếu có)
                         userNav.html(`
-                                    <li class="nav-item dropdown d-flex align-items-center" style="margin-right: 15px;">
-                                        <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="balanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
-                                            <span id="balance"></span>
-                                            <i class="fas fa-wallet ms-2" style="color: orange; font-size: 1.4em;"></i>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="balanceDropdown">
-                                            <li><a class="dropdown-item" href="/Guest/Stripe">Nạp tiền</a></li>
-                                            <li><a class="dropdown-item" href="/Guest/TransactionHistory?token=${token}">Lịch sử giao dịch</a></li>
-                                        </ul>
-                                    </li>
+                             <li class="nav-item dropdown d-flex align-items-center" style="margin-right: 15px;">
+                                <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="balanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
+                                    <span id="balance"></span>
+                                    <i class="fas fa-wallet ms-2" style="color: orange; font-size: 1.4em;"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="balanceDropdown">
+                                    <li><a class="dropdown-item" href="/Guest/Stripe">Nạp tiền</a></li>
+                                    <li><a class="dropdown-item" href="/Guest/TransactionHistory?token=${token}">Lịch sử giao dịch</a></li>
+                                    <!-- Thêm mục "Đơn hàng của bạn" -->
+                                                    <li><a class="dropdown-item" href="/Guest/Ticket?userId=${decodedToken.nameid}">Đơn hàng của bạn</a></li>
+                                </ul>
+                            </li>
 
-                                    <!-- Mục Tài khoản người dùng -->
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
-                                            <img src="${avatar}" alt="User Avatar" class="rounded-circle" width="30" height="30" style="margin-right: 8px;">
-                                            <span>${userName}</span>
-                                        </a>
-                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                            ${managementLink}
-                                            <li><a class="dropdown-item" id="logout">Đăng xuất</a></li>
-                                        </ul>
-                                    </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-white fw-bold d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 10px; border-radius: 5px;">
+                                    <img src="${avatar}" alt="User Avatar" class="rounded-circle" width="30" height="30" style="margin-right: 8px;">
+                                    <span>${userName}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    ${managementLink}
+                                    <li><a class="dropdown-item" id="logout">Đăng xuất</a></li>
+                                </ul>
+                            </li>
                                 `);
                         $.ajax({
                             url: `/api/v1/user/GetInfoUser?token=${token}`,

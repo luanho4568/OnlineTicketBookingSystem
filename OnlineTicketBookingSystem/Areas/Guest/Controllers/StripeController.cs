@@ -35,6 +35,11 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
             double discount = 0.05;
             return Convert.ToInt32(originalAmount / (1 - discount));
         }
+        private int ReducedPrice(string amount)
+        {
+            int originalAmount = Convert.ToInt32(amount);
+            return originalAmount;
+        }
         public IActionResult CreateCheckoutSession(string amount, string token)
         {
             if (amount == null)
@@ -145,7 +150,8 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                 var transactionHistory = new TransactionHistory
                 {
                     UserId = user.Id,
-                    Amount = OriginalPrice(amount),
+                    OriginalPrice = OriginalPrice(amount),
+                    Amount = ReducedPrice(amount),
                     Currency = "vnd", // Hoặc mã tiền tệ tương ứng
                     TransactionId = session.Id, // ID giao dịch từ Stripe
                     Status = session.PaymentStatus, // Trạng thái thanh toán

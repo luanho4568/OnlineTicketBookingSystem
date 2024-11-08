@@ -145,7 +145,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 var trip = await _unitOfWork.Trips.GetFirstOrDefaultAsync(u => u.Id == tripVM.Trip.Id);
                 if (trip == null)
                 {
-                    return View(tripVM);
+                    return NotFound();
                 }
                 var isDuplicateTrip = await _unitOfWork.Trips.GetFirstOrDefaultAsync(
                     x => x.DepartureDate == tripVM.Trip.DepartureDate
@@ -169,6 +169,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 trip.Price = tripVM.Trip.Price;
                 trip.EstimatedArrivalTime = tripVM.Trip.EstimatedArrivalTime;
                 trip.UpdatedAt = DateTime.Now;
+
                 var tripAssignments = await _unitOfWork.TripsAssignments.GetFirstOrDefaultAsync(x => x.TripId == tripVM.Trip.Id);
                 bool isApprovedAssignment = tripAssignments.Status == SD.TripAssignmentStatus_Approved && tripAssignments.DriverId.HasValue;
                 if (tripVM.Trip.Status == SD.TripStatus_Cancelled)

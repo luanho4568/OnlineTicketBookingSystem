@@ -1,0 +1,114 @@
+﻿@model X.PagedList.IPagedList<OnlineTicketBookingSystem.Models.Tickets>
+
+<div class="container p-4">
+    <h2 class="text-center mb-4 text-primary">Lịch Sử Đơn Hàng</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <strong>Rất tiếc! Bạn chưa có đơn hàng nào.</strong>
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Tên Người Dùng</th>
+                    <th>Tên Xe Buýt</th>
+                    <th>Tuyến Đường</th>
+                    <th>Số Ghế</th>
+                    <th>Giá Tiền</th>
+                    <th>Ngày Mua</th>
+                    <th>Trạng Thái</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model)
+                {
+                    <tr>
+                        <td>@ticket.User.FullName</td>
+                        <td>@ticket.Trips.Buses.Name</td>
+                        <td>Từ @ticket.Trips.StartProvince.Name đến @ticket.Trips.EndProvince.Name</td>
+                        <td>@ticket.Seats.SeatNumber</td>
+                        <td>@ticket.Price.ToString("N0").Replace(",", ".")đ</td>
+                        <td>@ticket.CreatedAt?.ToString("dd/MM/yyyy")</td>
+                        <td class="text-center">
+                            @if (ticket.Status == "Completed")
+                            {
+                                <i class="fas fa-check-circle text-success" title="Hoàn thành"></i>
+                            }
+                            else if (ticket.Status == "Refunded")
+                            {
+                                <i class="fas fa-undo-alt text-primary" title="Đã hoàn tiền"></i>
+                            }
+                            else
+                            {
+                                <i class="fas fa-clock text-warning" title="Chưa xử lý"></i>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Phân trang -->
+        <div class="text-center mt-4">
+            @if (Model.PageCount > 1)
+            {
+                <ul class="pagination justify-content-center">
+                    <!-- Trang đầu -->
+                    <li class="page-item @((Model.PageNumber == 1) ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { userId = ViewData["UserId"], page = 1 })" aria-label="Trang đầu">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- Trang trước -->
+                    <li class="page-item @((Model.PageNumber == 1) ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { userId = ViewData["UserId"], page = Model.PageNumber - 1 })" aria-label="Trang trước">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- Hiển thị các trang gần với trang hiện tại -->
+                    @for (var i = 1; i <= Math.Min(3, Model.PageCount); i++)
+                    {
+                        <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { userId = ViewData["UserId"], page = i })">@i</a>
+                        </li>
+                    }
+
+                    <!-- Hiển thị "..." nếu có các trang còn lại -->
+                    @if (Model.PageCount > 3)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    }
+
+                    <!-- Trang sau -->
+                    <li class="page-item @((Model.PageNumber == Model.PageCount) ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { userId = ViewData["UserId"], page = Model.PageNumber + 1 })" aria-label="Trang sau">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+
+                    <!-- Trang cuối -->
+                    <li class="page-item @((Model.PageNumber == Model.PageCount) ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { userId = ViewData["UserId"], page = Model.PageCount })" aria-label="Trang cuối">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            }
+        </div>
+    }
+
+    <!-- Nút quay lại ở cuối trang -->
+    <div class="mt-3">
+        <a href="/" class="btn btn-danger">
+            <i class="fas fa-arrow-left"></i> Quay lại Trang Chủ
+        </a>
+    </div>
+</div>

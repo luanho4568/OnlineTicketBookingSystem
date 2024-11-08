@@ -85,11 +85,23 @@ namespace OnlineTicketBookingSystem.Controller
                         if (tripAssignment.Status == "Pending")
                         {
                             tripAssignment.Status = SD.TripAssignmentStatus_Approved;
+                            var seats = await _unitOfWork.Seats.GetAllAsync(
+                                   t => t.BusId == tripAssignment.Trips.BusId);
+
+                            foreach (var seat in seats)
+                            {
+                                if (seat.SeatNumber == "G1")
+                                {
+                                    seat.Status = "Driver";
+                                    _unitOfWork.Seats.Update(seat);
+                                }
+                            }
                         }
                         else if (tripAssignment.Status == "Approved")
                         {
                             tripAssignment.Status = SD.TripAssignmentStatus_Departing;
                             tripAssignment.Trips.Status = SD.TripStatus_Departing;
+
                         }
                         else if (tripAssignment.Status == "Departing")
                         {
@@ -101,6 +113,17 @@ namespace OnlineTicketBookingSystem.Controller
                             {
                                 tripAssignment.Trips.Status = SD.TripStatus_Completed;
                                 tripAssignment.Status = SD.TripAssignmentStatus_Complated;
+                                var seats = await _unitOfWork.Seats.GetAllAsync(
+                                   t => t.BusId == tripAssignment.Trips.BusId);
+
+                                foreach (var seat in seats)
+                                {
+                                    if (seat.SeatNumber != "G1")
+                                    {
+                                        seat.Status = "Empty";
+                                        _unitOfWork.Seats.Update(seat);
+                                    }
+                                }
                             }
                         }
                         else
@@ -110,7 +133,7 @@ namespace OnlineTicketBookingSystem.Controller
                         break;
 
                     case "Cancel":
-                        tripAssignment.Status = SD.TripAssignmentStatus_Empty; // Đặt lại trạng thái về "Empty"
+                        tripAssignment.Status = SD.TripAssignmentStatus_Empty;
                         tripAssignment.Trips.Status = SD.TripStatus_Scheduled;
                         tripAssignment.DriverId = null;
                         break;

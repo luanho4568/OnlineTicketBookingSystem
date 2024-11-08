@@ -20,11 +20,33 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
         public async Task<IActionResult> Index(string startPoint, string endPoint, DateTime departureDate)
         {
             var provinceGetAll = await _unitOfWork.Province.GetAllAsync();
-            IEnumerable<Trips> trips = new List<Trips>();
-            trips = await _unitOfWork.Trips.GetAllAsync(t => t.StartPoint == startPoint &&
-            t.EndPoint == endPoint &&
-            t.DepartureDate == departureDate.Date,
-            includeProperties: "Buses");
+
+            var seats = await _unitOfWork.Seats.GetAllAsync();
+
+            IEnumerable<Trips> trips = await _unitOfWork.Trips.GetAllAsync(t => t.StartPoint == startPoint &&
+                                                                             t.EndPoint == endPoint &&
+                                                                             t.DepartureDate == departureDate.Date &&
+                                                                             t.Status == "Scheduled",
+                                                                             includeProperties: "Buses");
+
+            var filteredTrips = new List<Trips>();
+
+            foreach (var trip in trips)
+            {
+                var bus = trip.Buses;
+
+                if (bus != null)
+                {
+                    var seatG1 = seats.FirstOrDefault(seat => seat.BusId == bus.Id && seat.SeatNumber == "G1");
+
+                    if (seatG1 != null && seatG1.Status == "Driver")
+                    {
+                        filteredTrips.Add(trip);
+                    }
+                }
+            }
+
+            // Trả dữ liệu về View với các chuyến đi đã lọc
             TripVM tripVM = new TripVM
             {
                 Province = provinceGetAll.Select(x => new SelectListItem
@@ -32,10 +54,12 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                     Text = x.Name,
                     Value = x.Code
                 }),
-                TripList = trips
+                TripList = filteredTrips
             };
+
             return View(tripVM);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(TripVM tripVM)
