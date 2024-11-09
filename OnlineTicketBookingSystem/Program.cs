@@ -102,7 +102,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
-
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
+    if (response.StatusCode == 403 || response.StatusCode == 404)
+    {
+        response.Redirect("/");
+    }
+    await Task.CompletedTask;
+});
 app.UseAuthentication();
 app.UseAuthorization();
 
