@@ -73,12 +73,10 @@ $(document).ready(function () {
                             showConfirmButton: false,
                             timer: 1500
                         });
-                    } else if (response.code === 404) {
-                        $('#otpFeedback').text(response.message).css('color', 'red').show();
                     }
                 },
                 error: function (errormessage) {
-                    console.log(errormessage.responseText);
+                    $('#otpFeedback').text(JSON.parse(errormessage.responseText).message).css('color', 'red').show();
                 }
             });
         });
@@ -134,10 +132,20 @@ $(document).ready(function () {
         $('#countdown').text(timeLeft + "s");
         $('#resendMessage').hide();
         $('#otpFeedback').hide();
+
+        // Dừng bộ đếm nếu có
+        if (countdownTimer) {
+            clearInterval(countdownTimer);
+        }
     }
 
     // Bắt đầu đếm ngược thời gian
     function startCountdown() {
+        // Dừng bộ đếm trước khi khởi động lại
+        if (countdownTimer) {
+            clearInterval(countdownTimer);
+        }
+
         countdownTimer = setInterval(function () {
             timeLeft--;
             $('#countdown').text(timeLeft + "s");
