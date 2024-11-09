@@ -77,6 +77,11 @@ namespace AdminDriverDashboard.Areas.Account.Controllers
 
                     return View(userVM);
                 }
+                if (string.IsNullOrEmpty(user.Password))
+                {
+                    ModelState.AddModelError("Password", "Mật khẩu không được để trống.");
+                    return View(userVM);
+                }
                 var confirmPassword = Request.Form["ConfirmPassword"];
                 if (user.Password != confirmPassword)
                 {

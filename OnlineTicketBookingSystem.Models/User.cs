@@ -15,7 +15,6 @@ namespace OnlineTicketBookingSystem.Models
         [Required(ErrorMessage = "Email không được để trống")]
         public string? Email { get; set; }
         [DataType(DataType.Password)]
-        [Required(ErrorMessage = "Mật khẩu không được để trống")]
         [MinLength(6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
         [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]*$",
             ErrorMessage = "Mật khẩu phải chứa ít nhất một chữ cái, số và kí tự đặc biệt.")]
@@ -24,6 +23,7 @@ namespace OnlineTicketBookingSystem.Models
 
         public string? Gender { get; set; }
         [Required(ErrorMessage = "Số điện thoại không được để trống.")]
+        [StringLength(11, MinimumLength = 10, ErrorMessage = "Vui lòng nhập đúng số điện thoại")]
         [RegularExpression(@"^\d+$", ErrorMessage = "Số điện thoại chỉ được phép nhập số.")]
         public string? PhoneNumber { get; set; }
         public string? ProvinceCode { get; set; }

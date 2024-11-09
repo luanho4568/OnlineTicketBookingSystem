@@ -10,10 +10,7 @@
     <div class="col-md-10 col-lg-8">
         <form class="bg-white p-4 rounded shadow-lg" asp-action="EditUser" method="post">
             <input type="hidden" asp-for="@Model.User.Id" />
-            <input type="hidden" asp-for="@Model.User.Password" />
             <input type="hidden" asp-for="@Model.User.Email" />
-            <input type="hidden" asp-for="@Model.User.PhoneNumber" />
-
             <!-- Thông tin cá nhân -->
             <fieldset class="border p-4 mb-4">
                 <legend class="text-primary fw-bold">Thông tin cá nhân</legend>
@@ -27,7 +24,7 @@
                         <label asp-for="@Model.User.Email" class="mx-2">Email</label>
                     </div>
                     <div class="form-floating mb-3 col-md-6">
-                        <input class="form-control" asp-for="@Model.User.PhoneNumber" aria-required="true" placeholder="Số điện thoại" required disabled />
+                        <input class="form-control" asp-for="@Model.User.PhoneNumber" aria-required="true" placeholder="Số điện thoại" required  />
                         <label asp-for="@Model.User.PhoneNumber" class="mx-2">Số điện thoại</label>
                     </div>
                     <div class="form-floating mb-3 col-md-6">

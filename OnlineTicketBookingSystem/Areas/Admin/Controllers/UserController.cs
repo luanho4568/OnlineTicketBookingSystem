@@ -235,6 +235,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
         {
             try
             {
+
                 if (!ModelState.IsValid)
                 {
                     foreach (var state in ModelState)
@@ -257,6 +258,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                 user.IsActive = userVM.User.IsActive;
                 user.GroupId = userVM.User.GroupId;
                 user.Address = userVM.User.Address;
+                user.PhoneNumber = userVM.User.PhoneNumber;
                 user.ProvinceCode = userVM.User.ProvinceCode;
                 user.DistrictCode = userVM.User.DistrictCode;
                 user.WardCode = userVM.User.WardCode;

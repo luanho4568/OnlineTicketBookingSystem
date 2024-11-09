@@ -261,15 +261,20 @@
                                                             showConfirmButton: false,
                                                             timer: 1500
                                                         });
+
+                                                        // Cập nhật lại danh sách ghế sau khi đặt vé thành công
                                                         $.ajax({
                                                             url: `/api/v1/bus/GetSeatsByBusId/${busId}`, // Bạn có thể cần thay đổi busId
                                                             method: 'GET',
                                                             success: function (seatsResponse) {
                                                                 if (seatsResponse.code === 200) {
-                                                                    updateSeatDisplay(seatsResponse.data, tripId);
+                                                                    // Cập nhật lại hiển thị ghế với dữ liệu mới
+                                                                    updateSeatDisplay(seatsResponse.data, tripId, price);
+                                                                    
                                                                 }
                                                             }
                                                         });
+                                                        // Reset ghế đã chọn
                                                         resetSelectedSeats();
                                                     },
                                                     error: function (e) {
@@ -338,12 +343,9 @@
                 }
             });
         }
-        function updateSeatDisplay(seats, tripId) {
+        function updateSeatDisplay(seats, tripId,price) {
             const seatsDisplay = $(`#seatsDetail-${tripId} #seatsDisplay`);
             seatsDisplay.empty();
-
-            // Cập nhật lại hiển thị ghế tương tự như trong hàm loadSeats
-            // Sắp xếp ghế theo số ghế
             seats.sort((a, b) => {
                 return parseInt(a.seatNumber.substring(1)) - parseInt(b.seatNumber.substring(1));
             });
@@ -368,15 +370,33 @@
 
                         columnDiv.append(
                             `<div class="seat mb-2 ${statusClass} text-white p-2" data-id="${seat.id}">
-                                                                    <i class="fas ${iconClass} seat-icon"></i>
-                                                                    <span>${seat.seatNumber}</span>
-                                                                </div>`
+                                                                        <i class="fas ${iconClass} seat-icon"></i>
+                                                                        <span>${seat.seatNumber}</span>
+                                                                    </div>`
                         );
                     }
                 }
                 seatsDisplay.append(columnDiv);
             }
-        } function resetSelectedSeats() {
+
+            // Gán lại sự kiện click cho ghế còn trống (Empty)
+            $('.seat.bg-success').off('click').on('click', function () {
+                const seatNumber = $(this).find('span').text();
+                const seatId = $(this).data('id');
+
+                if ($(this).hasClass('bg-warning')) {
+                    $(this).removeClass('bg-warning text-dark').addClass('bg-success');
+                    $(this).find('.seat-icon').removeClass('fa-user-check').addClass('fa-couch');
+                    selectedSeats = selectedSeats.filter(seat => seat.seatId !== seatId);
+                } else {
+                    $(this).removeClass('bg-success').addClass('bg-warning text-dark');
+                    $(this).find('.seat-icon').removeClass('fa-couch').addClass('fa-user-check');
+                    selectedSeats.push({ seatId, seatNumber, price }); // Thêm giá vào ghế đã chọn
+                }
+                $('#selectedSeatsCount').text(selectedSeats.length);
+            });
+        }
+        function resetSelectedSeats() {
             selectedSeats = [];
             $('[id^=seatsDetail-] .seat').removeClass('bg-warning text-dark').addClass('bg-success');
             $('[id^=seatsDetail-] .seat .seat-icon').removeClass('fa-user-check').addClass('fa-couch');
