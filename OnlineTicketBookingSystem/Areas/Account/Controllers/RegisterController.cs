@@ -53,11 +53,41 @@ namespace AdminDriverDashboard.Areas.Account.Controllers
                     }
                     return View(userVM);
                 }
+                var groupGetAll = await _unitOfWork.Group.GetAllAsync(u => u.Id != 1);
+                var provinceGetAll = await _unitOfWork.Province.GetAllAsync();
+
+                userVM.Group = groupGetAll.Select(
+                    x => new SelectListItem()
+                    {
+                        Text = x.NameVI,
+                        Value = x.Id.ToString(),
+                    });
+
+                userVM.Province = provinceGetAll.Select(
+                    x => new SelectListItem()
+                    {
+                        Text = x.Name,
+                        Value = x.Code,
+                    });
                 var user = userVM.User;
+                var existingUser = await _unitOfWork.User.GetFirstOrDefaultAsync(u => u.Email == user.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Email này đã được sử dụng.");
+
+                    return View(userVM);
+                }
                 var confirmPassword = Request.Form["ConfirmPassword"];
                 if (user.Password != confirmPassword)
                 {
                     ModelState.AddModelError("Password", "Mật khẩu và xác nhận mật khẩu không khớp.");
+
+                    return View(userVM);
+                }
+                if (user.DateOfBirth > DateTime.Now)
+                {
+                    ModelState.AddModelError("DateOfBirth", "Vui lòng nhập đúng ngày sinh");
+
                     return View(userVM);
                 }
                 user.Id = Guid.NewGuid();

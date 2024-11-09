@@ -14,9 +14,12 @@
                     <input class="form-control" asp-for="Email" type="email" id="email" />
                     <label asp-for="Email" class="mx-2">Tài khoản</label>
                 </div>
-                <div class="form-floating mb-3">
-                    <input class="form-control" asp-for="Password" type="password" id="password"  />
+                <div class="form-floating mb-3 position-relative">
+                    <input class="form-control" asp-for="Password" type="password" id="password" />
                     <label asp-for="Password" class="mx-2">Mật khẩu</label>
+                    <span onclick="togglePasswordVisibility()" class="eye-icon">
+                        <i id="togglePasswordIcon" class="fa fa-eye mx-3"></i>
+                    </span>
                 </div>
                 <div>
                     <button type="submit" class="w-100 btn btn-lg btn-primary">Đăng nhập</button>
@@ -28,4 +31,34 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("password");
+            const togglePasswordIcon = document.getElementById("togglePasswordIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                togglePasswordIcon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                togglePasswordIcon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+    </script>
+
+    <style>
+        .position-relative {
+            position: relative;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            z-index: 2;
+            color: #6c757d; /* Adjust color if needed */
+        }
+    </style>
 }

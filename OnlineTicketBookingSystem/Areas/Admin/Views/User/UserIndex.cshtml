@@ -3,7 +3,7 @@
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2>Danh sách tài xế</h2>
+            <h2>Danh sách khách hàng</h2>
         </div>
     </div>
     <!-- Thêm lớp table-responsive vào bảng -->
@@ -47,10 +47,10 @@
                     {
                         "data": null,
                         "render": function (data) {
-                            return `${data.address}, ${data.ward.name}, ${data.district.name}, ${data.province.name}`;
+                            return `${data.address}, ${data.ward?.name}, ${data.district?.name}, ${data.province?.name}`;
                         },
                         "width": "14%"
-                    },
+                    },  
                     { "data": "phoneNumber", "width": "10%" },
                     {
                         "data": "dateOfBirth",

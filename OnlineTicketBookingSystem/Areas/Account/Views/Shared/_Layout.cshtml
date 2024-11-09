@@ -65,12 +65,14 @@
             const token = localStorage.getItem('authToken'); // Hoặc kiểm tra từ session hoặc cookie tùy thuộc vào cách bạn lưu token
             const user = localStorage.getItem('user')
             const userGroup = JSON.parse(user)?.group
-            console.log(userGroup)
             if (token) {
                 if(userGroup == 1) {
               window.location.href = "/Admin/Home";
                 } else if (userGroup == 2) {
                     window.location.href = "/Driver/Home";
+                }
+                else if (userGroup == 3) {
+                    window.location.href = "/";
                 }
             }
         });

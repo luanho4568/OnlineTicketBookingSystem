@@ -3,7 +3,22 @@
 @{
     ViewData["Title"] = "Đăng ký";
 }
+<style>
+    .position-relative {
+        position: relative;
+    }
 
+    .eye-icon {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        z-index: 2;
+        color: #6c757d; /* Màu sắc của icon, có thể thay đổi */
+    }
+
+</style>
 <h1 class="text-center mb-4">@ViewData["Title"]</h1>
 
 <div class="row justify-content-center align-items-center">
@@ -11,24 +26,32 @@
         <form class="bg-light p-4 rounded shadow" method="post">
             <div class="row">
                 <div class="form-floating mb-3 col-6">
-                    <input class="form-control" asp-for="@Model.User.FullName" aria-required="true" placeholder="Nhập họ và tên" required />
+                    <input class="form-control" asp-for="@Model.User.FullName" aria-required="true" placeholder="Nhập họ và tên" />
                     <label asp-for="@Model.User.FullName" class="mx-2">Họ và tên</label>
                 </div>
 
                 <div class="form-floating mb-3 col-6">
-                    <input class="form-control" asp-for="@Model.User.Email" type="email" aria-required="true" placeholder="name@example.com" required />
+                    <input class="form-control" asp-for="@Model.User.Email" type="email" aria-required="true" placeholder="name@example.com"  required/>
                     <label asp-for="@Model.User.Email" class="mx-2">Email</label>
+
                 </div>
 
-                <div class="form-floating mb-3 col-6">
-                    <input class="form-control" asp-for="@Model.User.Password" aria-required="true" placeholder="Mật khẩu" required />
+                <div class="form-floating mb-3 col-6 position-relative">
+                    <input class="form-control" asp-for="@Model.User.Password" aria-required="true" placeholder="Mật khẩu" type="password" id="passwordInput" required />
                     <label asp-for="@Model.User.Password" class="mx-2">Mật khẩu</label>
+                    <span onclick="togglePassword('passwordInput', 'togglePasswordIcon')" class="eye-icon">
+                        <i id="togglePasswordIcon" class="fa fa-eye  mx-3"></i>
+                    </span>
                 </div>
 
-                <div class="form-floating mb-3 col-6">
-                    <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" aria-required="true" placeholder="Xác nhận mật khẩu" required />
+                <div class="form-floating mb-3 col-6 position-relative">
+                    <input class="form-control" id="confirmPassword" name="confirmPassword" type="password" aria-required="true" placeholder="Xác nhận mật khẩu" />
                     <label for="confirmPassword" class="mx-2">Xác nhận mật khẩu</label>
+                    <span onclick="togglePassword('confirmPassword', 'toggleConfirmIcon')" class="eye-icon">
+                        <i id="toggleConfirmIcon" class="fa fa-eye mx-3"></i>
+                    </span>
                 </div>
+
 
                 <div class="form-floating mb-3 col-6">
                     <input class="form-control" asp-for="@Model.User.PhoneNumber" aria-required="true" placeholder="Số điện thoại" required />
@@ -41,7 +64,7 @@
                 </div>
 
                 <div class="form-floating mb-3 col-6">
-                    <select asp-for="@Model.User.Gender" class="form-select" aria-required="true">
+                    <select asp-for="@Model.User.Gender" class="form-select" aria-required="true" required>
                         <option disabled selected>-- Chọn giới tính --</option>
                         <option value="Male">Nam</option>
                         <option value="Female">Nữ</option>
@@ -51,40 +74,41 @@
                 </div>
 
                 <div class="form-floating mb-3 col-6">
-                    <select asp-items="@Model.Group" asp-for="@Model.User.GroupId" class="form-select">
+                    <select asp-items="@Model.Group" asp-for="@Model.User.GroupId" class="form-select" required>
                         <option disabled selected>-- Chọn vai trò --</option>
                     </select>
                     <label asp-for="@Model.User.GroupId" class="mx-2">Vai trò</label>
                 </div>
 
                 <div class="form-floating mb-3 col-6">
-                    <select id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.User.ProvinceCode" class="form-select">
+                    <select id="provinceDropdown" asp-items="@Model.Province" asp-for="@Model.User.ProvinceCode" class="form-select" >
                         <option disabled selected>-- Chọn tỉnh --</option>
                     </select>
                     <label asp-for="@Model.User.ProvinceCode" class="mx-2">Tỉnh</label>
                 </div>
 
                 <div class="form-floating mb-3 col-6">
-                    <select id="districtDropdown" asp-for="@Model.User.DistrictCode" class="form-select">
+                    <select id="districtDropdown" asp-for="@Model.User.DistrictCode" class="form-select" >
                         <option disabled selected>-- Chọn huyện/quận --</option>
                     </select>
                     <label asp-for="@Model.User.DistrictCode" class="mx-2">Huyện/Quận</label>
                 </div>
 
                 <div class="form-floating mb-3 col-6">
-                    <select id="wardDropdown" asp-for="@Model.User.WardCode" class="form-select">
+                    <select id="wardDropdown" asp-for="@Model.User.WardCode" class="form-select" >
                         <option disabled selected>-- Chọn phường/xã --</option>
                     </select>
                     <label asp-for="@Model.User.WardCode" class="mx-2">Phường/Xã</label>
                 </div>
 
                 <div class="form-floating mb-3 col-6">
-                    <input class="form-control" asp-for="@Model.User.Address" aria-required="true" placeholder="Địa chỉ" required />
+                    <input class="form-control" asp-for="@Model.User.Address" aria-required="true" placeholder="Địa chỉ" />
                     <label class="mx-2" asp-for="@Model.User.Address">Địa chỉ</label>
                 </div>
-
             </div>
-
+            <div class="mb-3 text-danger">
+                @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            </div>
             <button type="submit" class="w-100 btn btn-lg btn-primary">Đăng ký</button>
         </form>
     </div>
@@ -95,7 +119,7 @@
     <script type="module">
         import location from '/js/location/locationHandler.js'
 
-        $(document).ready(function () {
+        $(document).ready(function (e) {
             $('#provinceDropdown').change(function () {
                 var provinceCode = $(this).val();
                 location.loadDistricts(provinceCode);
@@ -106,6 +130,21 @@
                 location.loadWards(districtCode);
             });
 
-        })
+            // Script ẩn/hiện mật khẩu
+            window.togglePassword = function (inputId, iconId) {
+                const passwordInput = document.getElementById(inputId);
+                const togglePasswordIcon = document.getElementById(iconId);
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    togglePasswordIcon.classList.replace("fa-eye", "fa-eye-slash");
+                } else {
+                    passwordInput.type = "password";
+                    togglePasswordIcon.classList.replace("fa-eye-slash", "fa-eye");
+                }
+            }
+        });
     </script>
+
 }
+
+

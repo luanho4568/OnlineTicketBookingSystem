@@ -88,8 +88,11 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                 },
 
                 Mode = "payment",
-                SuccessUrl = $"https://localhost:7025/Guest/Stripe/success?token={token}&amount={amount}&sessionId={{CHECKOUT_SESSION_ID}}",
-                CancelUrl = "https://localhost:7025/Guest/Stripe",
+                //SuccessUrl = $"https://localhost:7025/Guest/Stripe/success?token={token}&amount={amount}&sessionId={{CHECKOUT_SESSION_ID}}",
+                //CancelUrl = "https://localhost:7025/Guest/Stripe",
+                SuccessUrl = $"https://onlineticketbookingsystem.azurewebsites.net/Guest/Stripe/success?token={token}&amount={amount}&sessionId={{CHECKOUT_SESSION_ID}}",
+                CancelUrl = "https://onlineticketbookingsystem.azurewebsites.net/Guest/Stripe",
+
                 CustomerEmail = email,
 
             };

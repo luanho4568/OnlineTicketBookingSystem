@@ -31,12 +31,13 @@ $(document).ready(function () {
                                 window.location.href = '/Admin/Home';
                             }
                             else if (response.group == 2) {
-                                console.log(token)
-                                console.log(response.group)
+                               
                                 window.location.href = '/Driver/Home';
                             }
-                            else {
-                                window.location.href = '/Guest/Home';
+                            else if (response.group == 3) {
+                                console.log(token)
+                                console.log(response.group)
+                                window.location.href = '/';
                             }
                         }
                     })
@@ -129,7 +130,7 @@ $(document).ready(function () {
     }
     // Reset thời gian đếm ngược
     function resetCountdown() {
-        timeLeft = 30;
+        timeLeft = 120;
         $('#countdown').text(timeLeft + "s");
         $('#resendMessage').hide();
         $('#otpFeedback').hide();

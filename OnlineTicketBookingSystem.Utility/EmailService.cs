@@ -62,7 +62,7 @@ namespace OnlineTicketBookingSystem.Utility
                     <main>
                         <p>Xin chào, {fullName}</p>
                         <p>Cảm ơn bạn đã đăng ký tại ThanhLuan.</p>
-                        <p>Vui lòng sử dụng mã xác thực dưới đây để hoàn tất việc đăng ký. Mã xác thực có giá trị trong <strong>30 giây</strong>. Đừng chia sẻ mã này với bất kỳ ai.</p>
+                        <p>Vui lòng sử dụng mã xác thực dưới đây để hoàn tất việc đăng ký. Mã xác thực có giá trị trong <strong>120 giây</strong>. Đừng chia sẻ mã này với bất kỳ ai.</p>
                         <p class='otp-code'>{codeId}</p>
                         <div class='help-section mt-4'>
                             <p>Cần hỗ trợ? Liên hệ tại <a href='mailto:luanhotest@gmail.com'>luanhotest@gmail.com</a></p>

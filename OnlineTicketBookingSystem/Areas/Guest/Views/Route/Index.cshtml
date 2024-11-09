@@ -223,89 +223,102 @@
 
                         seatsDetail.find('#purchaseButton').off('click').on('click', function () {
                             if (selectedSeats.length > 0) {
-                                $.ajax({
-                                    url: '/api/v1/Token/ValidateAndDecodeToken', // API để giải mã token
-                                    type: 'POST',
-                                    contentType: 'application/json',
-                                    data: JSON.stringify(token), // Gửi token tới API để kiểm tra
-                                    success: function (response) {
-                                        var decodedToken = response.data;
-                                        const ticketData = {
-                                            userId: decodedToken.nameid,
-                                            tripId: tripId,
-                                            seatIds: selectedSeats.map(seat => seat.seatId),
-                                            price: price
-                                        };
+                                Swal.fire({
+                                    title: "Bạn có chắc chắn muốn đặt vé?",
+                                    text: "Vé sẽ không hoàn lại sau khi đặt!",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Đặt vé",
+                                    cancelButtonText: "Huỷ",
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
                                         $.ajax({
-                                            url: '/api/v1/ticket/BookTickets',
-                                            method: 'POST',
+                                            url: '/api/v1/Token/ValidateAndDecodeToken', // API để giải mã token
+                                            type: 'POST',
                                             contentType: 'application/json',
-                                            data: JSON.stringify(ticketData),
+                                            data: JSON.stringify(token), // Gửi token tới API để kiểm tra
                                             success: function (response) {
-                                                console.log(response);
-                                                Swal.fire({
-                                                    icon: 'success',
-                                                    title: response.message,
-                                                    text: 'Vui lòng kiểm tra giỏ hàng!',
-                                                    showConfirmButton: false,
-                                                    timer: 1500
-                                                });
+                                                var decodedToken = response.data;
+                                                const ticketData = {
+                                                    userId: decodedToken.nameid,
+                                                    tripId: tripId,
+                                                    seatIds: selectedSeats.map(seat => seat.seatId),
+                                                    price: price
+                                                };
                                                 $.ajax({
-                                                    url: `/api/v1/bus/GetSeatsByBusId/${busId}`, // Bạn có thể cần thay đổi busId
-                                                    method: 'GET',
-                                                    success: function (seatsResponse) {
-                                                        if (seatsResponse.code === 200) {
-                                                            updateSeatDisplay(seatsResponse.data, tripId);
+                                                    url: '/api/v1/ticket/BookTickets',
+                                                    method: 'POST',
+                                                    contentType: 'application/json',
+                                                    data: JSON.stringify(ticketData),
+                                                    success: function (response) {
+                                                        console.log(response);
+                                                        Swal.fire({
+                                                            icon: 'success',
+                                                            title: response.message,
+                                                            text: 'Vui lòng kiểm tra giỏ hàng!',
+                                                            showConfirmButton: false,
+                                                            timer: 1500
+                                                        });
+                                                        $.ajax({
+                                                            url: `/api/v1/bus/GetSeatsByBusId/${busId}`, // Bạn có thể cần thay đổi busId
+                                                            method: 'GET',
+                                                            success: function (seatsResponse) {
+                                                                if (seatsResponse.code === 200) {
+                                                                    updateSeatDisplay(seatsResponse.data, tripId);
+                                                                }
+                                                            }
+                                                        });
+                                                        resetSelectedSeats();
+                                                    },
+                                                    error: function (e) {
+                                                        const errorMessage = JSON.parse(e.responseText).message;
+                                                        const errorCode = JSON.parse(e.responseText).code;
+                                                        console.log(errorMessage)
+                                                        console.log(errorCode)
+                                                        if (errorCode === -1) {
+                                                            Swal.fire({
+                                                                title: errorMessage,
+                                                                text: "Vui lòng nạp thêm tiền vào ví!",
+                                                                icon: "warning",
+                                                                showCancelButton: true,
+                                                                confirmButtonColor: "#3085d6",
+                                                                cancelButtonColor: "#d33",
+                                                                confirmButtonText: "Nạp tiền",
+                                                                cancelButtonText: "Huỷ",
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    window.location.href = "/Guest/Stripe"
+                                                                }
+                                                            });
+                                                        } else {
+                                                            Swal.fire({
+                                                                icon: 'error',
+                                                                title: 'Lỗi',
+                                                                text: errorMessage,
+                                                                confirmButtonText: 'OK'
+                                                            });
                                                         }
                                                     }
                                                 });
-                                                resetSelectedSeats();
+
                                             },
                                             error: function (e) {
-                                                const errorMessage = JSON.parse(e.responseText).message;
-                                                const errorCode = JSON.parse(e.responseText).code;
-                                                console.log(errorMessage)
-                                                console.log(errorCode)
-                                                if (errorCode === -1) {
-                                                    Swal.fire({
-                                                        title: errorMessage,
-                                                        text: "Vui lòng nạp thêm tiền vào ví!",
-                                                        icon: "warning",
-                                                        showCancelButton: true,
-                                                        confirmButtonColor: "#3085d6",
-                                                        cancelButtonColor: "#d33",
-                                                        confirmButtonText: "Nạp tiền",
-                                                        cancelButtonText: "Huỷ",
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            window.location.href = "/Guest/Stripe"
-                                                        }
-                                                    });
-                                                } else {
-                                                    Swal.fire({
-                                                        icon: 'error',
-                                                        title: 'Lỗi',
-                                                        text: errorMessage,
-                                                        confirmButtonText: 'OK'
-                                                    });
-                                                }
+                                                localStorage.removeItem('user');
+                                                localStorage.removeItem('authToken');
+                                                Swal.fire({
+                                                    icon: "error",
+                                                    title: JSON.parse(e.responseText).message,
+                                                    text: "Vui lòng đăng nhập lại",
+                                                }).then(() => {
+                                                    window.location.href = '/Account/Login';
+
+                                                });
                                             }
                                         });
-
-                                    },
-                                    error: function (e) {
-                                        localStorage.removeItem('user');
-                                        localStorage.removeItem('authToken');
-                                        Swal.fire({
-                                            icon: "error",
-                                            title: JSON.parse(e.responseText).message,
-                                            text: "Vui lòng đăng nhập lại",
-                                        }).then(() => {
-                                            window.location.href = '/Account/Login';
-
-                                        });
                                     }
-                                });
+                                })
                             } else {
                                 Swal.fire({
                                     icon: "warning",
