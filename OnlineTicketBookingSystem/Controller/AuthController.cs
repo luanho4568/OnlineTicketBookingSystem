@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
-using OnlineTicketBookingSystem.Models;
 using OnlineTicketBookingSystem.Models.DTO;
 using OnlineTicketBookingSystem.Utility;
 using System.Security.Claims;
@@ -102,7 +101,7 @@ namespace OnlineTicketBookingSystem.Controller
             }
         }
         [HttpPost("CheckActivation")]
-        public async Task<IActionResult> CheckActivation([FromBody] User user)
+        public async Task<IActionResult> CheckActivation([FromBody] LoginDTO user)
         {
             try
             {
@@ -130,7 +129,7 @@ namespace OnlineTicketBookingSystem.Controller
         }
 
         [HttpPost("VerifyCode")]
-        public async Task<IActionResult> VerifyCode([FromBody] User user)
+        public async Task<IActionResult> VerifyCode([FromBody] VerifyCodeDTO user)
         {
             try
             {

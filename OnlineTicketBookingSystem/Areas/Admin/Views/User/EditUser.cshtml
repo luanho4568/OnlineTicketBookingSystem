@@ -10,6 +10,9 @@
     <div class="col-md-10 col-lg-8">
         <form class="bg-white p-4 rounded shadow-lg" asp-action="EditUser" method="post">
             <input type="hidden" asp-for="@Model.User.Id" />
+            <input type="hidden" asp-for="@Model.User.Password" />
+            <input type="hidden" asp-for="@Model.User.Email" />
+            <input type="hidden" asp-for="@Model.User.PhoneNumber" />
 
             <!-- Thông tin cá nhân -->
             <fieldset class="border p-4 mb-4">
