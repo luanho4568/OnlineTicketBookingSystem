@@ -106,6 +106,7 @@ $(document).ready(function () {
     function initializeModal(user) {
         $('#accountModal').modal('show');
         $("#nextToOtpModal").click(function () {
+            $(this).prop("disabled", true);
             $.ajax({
                 url: '/api/v1/Auth/CheckActivation',
                 type: 'POST',
@@ -122,6 +123,9 @@ $(document).ready(function () {
                 },
                 error: function (errormessage) {
                     console.log(errormessage.responseText);
+                },
+                complete: function () {
+                    $(this).prop("disabled", false); // Kích hoạt lại nút sau khi ajax hoàn tất
                 }
             });
         });

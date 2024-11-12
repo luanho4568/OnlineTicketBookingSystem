@@ -10,6 +10,11 @@
 *.userosscache
 *.sln.docstates
 
+
+/OnlineTicketBookingSystem/appsettings.json
+/OnlineTicketBookingSystem/appsettings.Development.json
+
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
