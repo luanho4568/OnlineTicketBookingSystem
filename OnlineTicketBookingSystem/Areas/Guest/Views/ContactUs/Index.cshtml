@@ -1,0 +1,70 @@
+﻿@model OnlineTicketBookingSystem.Models.ContactUsRequest
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <!-- Left: Contact Us Form -->
+        <div class="col-md-6">
+            <div class="card shadow-lg rounded-4 mb-5 border-primary">
+                <div class="card-body bg-light">
+                    <h3 class="card-title text-center mb-4 text-primary">Gửi thông tin liên hệ</h3>
+                    <form method="post" asp-action="Index">
+                        <div class="mb-3">
+                            <label for="FullName" class="form-label fs-5">Họ và tên</label>
+                            <input type="text" id="FullName" name="FullName" class="form-control fs-6" asp-for="FullName" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="PhoneNumber" class="form-label fs-5">Số điện thoại</label>
+                            <input type="text" id="PhoneNumber" name="PhoneNumber" class="form-control fs-6" asp-for="PhoneNumber" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Email" class="form-label fs-5">Email</label>
+                            <input type="email" id="Email" name="Email" class="form-control fs-6" asp-for="Email" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Subject" class="form-label fs-5">Chủ đề</label>
+                            <select id="Subject" name="Subject" class="form-select fs-6" asp-for="Subject" required>
+                                <option value="Hỏi về dịch vụ đặt vé">Hỏi về dịch vụ đặt vé</option>
+                                <option value="Yêu cầu hỗ trợ đặt vé">Yêu cầu hỗ trợ đặt vé</option>
+                                <option value="Phản hồi về dịch vụ">Phản hồi về dịch vụ</option>
+                                <option value="Khiếu nại">Khiếu nại</option>
+                                <option value="Hỏi về lịch trình">Hỏi về lịch trình</option>
+                                <option value="Thông tin về giá vé">Thông tin về giá vé</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Message" class="form-label fs-5">Nội dung</label>
+                            <textarea id="Message" name="Message" class="form-control fs-6" asp-for="Message" rows="5" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Gửi</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Admin Contact Information -->
+        <div class="col-md-6">
+            <div class="card shadow-lg rounded-4 mb-5 border-success">
+                <div class="card-body bg-light">
+                    <h3 class="card-title text-center mb-4 text-success">Thông tin liên hệ Admin</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <strong class="fs-4">Họ và tên:</strong> <span class="fs-5">Hồ Đình Thanh Luân</span>
+                        </li>
+                        <li class="mb-3">
+                            <strong class="fs-4">Số điện thoại:</strong> <span class="fs-5">0123456789</span>
+                        </li>
+                        <li class="mb-3">
+                            <strong class="fs-4">Email:</strong> <span class="fs-5">luanhotest@gmail.com</span>
+                        </li>
+                        <li class="mb-3">
+                            <strong class="fs-4">Địa chỉ:</strong> <span class="fs-5">123 Đường ABC, Quận 1, TP. Hồ Chí Minh</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

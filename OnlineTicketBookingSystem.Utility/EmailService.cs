@@ -109,5 +109,128 @@ namespace OnlineTicketBookingSystem.Utility
                 await client.DisconnectAsync(true);
             }
         }
+
+        public async Task SendContactUsEmailAsync(string fullName, string email, string phoneNumber, string subject, string messageContent)
+        {
+            messageContent = messageContent.Replace("\n", "<br />");
+
+            // HTML body for the email
+            string body = $@"
+<!DOCTYPE html>
+<html lang='vi'>
+<head>
+    <meta charset='UTF-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+    <meta http-equiv='X-UA-Compatible' content='ie=edge' />
+    <meta name='description' content='Liên hệ từ người dùng' />
+    <title>Liên hệ - {subject}</title>
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css' rel='stylesheet' />
+    <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap' rel='stylesheet' />
+    <style>
+        body {{
+            font-family: 'Poppins', sans-serif;
+            background: #fff6f2; /* Màu nền sáng cam nhẹ cho toàn bộ email */
+            color: #434343;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }}
+        .container {{
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 45px 30px 60px;
+            background: #ffffff; /* Nền trắng cho container */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }}
+        h4 {{
+            font-size: 24px;
+            font-weight: 600;
+            color: #ff5733; /* Màu cam đỏ cho tiêu đề */
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ff5733;
+            padding-bottom: 10px;
+            
+        }}
+        .details p {{
+            font-size: 16px;
+            color: #333;
+            margin: 8px 0;
+        }}
+        .details strong {{
+            color: #ff5733; /* Màu cam đỏ cho các thông tin quan trọng */
+        }}
+        .message-content {{
+            font-size: 16px;
+            margin-top: 30px;
+            color: #555;
+        }}
+        .footer {{
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ff5733; /* Đường viền cam đỏ cho footer */
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+        }}
+        .footer a {{
+            color: #ff5733; /* Màu cam đỏ cho liên kết */
+            text-decoration: none;
+        }}
+        .footer a:hover {{
+            text-decoration: underline;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h4>{subject}</h4>
+        <div class='details'>
+            <p><strong>Họ và tên:</strong> {fullName}</p>
+            <p><strong>Email:</strong> {email}</p>
+            <p><strong>Số điện thoại:</strong> {phoneNumber}</p>
+        </div>
+        <div class='message-content'>
+            <p><strong>Nội dung:</strong></p>
+            <p>{messageContent}</p>
+        </div>
+        <div class='footer'>
+            <p>Cảm ơn bạn đã liên hệ với chúng tôi!</p>
+            <p><a href='mailto:{email}'>Trả lời email</a></p>
+        </div>
+    </div>
+</body>
+</html>";
+
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Thanh Luân", _smtpUser));
+
+            // Gửi email đến admin
+            message.To.Add(new MailboxAddress("Admin", _smtpUser));
+
+            // Nếu cần gửi thông báo cho người dùng cũng có thể thêm:
+            //message.To.Add(new MailboxAddress(fullName, email));
+
+            message.Subject = $"Liên hệ - {subject}";
+            message.Body = new TextPart("html") { Text = body };
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    await client.ConnectAsync(_smtpServer, _smtpPort, SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync(_smtpUser, _smtpPass);
+                    await client.SendAsync(message);
+                    await client.DisconnectAsync(true);
+                }
+                catch (Exception ex)
+                {
+                    // Bạn có thể log lỗi hoặc xử lý thêm nếu cần
+                    throw new Exception("Không thể gửi email. Vui lòng thử lại sau.");
+                }
+            }
+        }
     }
 }
