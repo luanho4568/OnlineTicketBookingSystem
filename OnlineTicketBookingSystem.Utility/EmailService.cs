@@ -227,7 +227,6 @@ namespace OnlineTicketBookingSystem.Utility
                 }
                 catch (Exception ex)
                 {
-                    // Bạn có thể log lỗi hoặc xử lý thêm nếu cần
                     throw new Exception("Không thể gửi email. Vui lòng thử lại sau.");
                 }
             }

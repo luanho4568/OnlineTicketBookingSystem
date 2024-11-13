@@ -33,13 +33,13 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                     await _unitOfWork.ContactUsRequest.AddAsync(request);
                     await _unitOfWork.SaveAsync();
                     TempData["Success"] = "Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi bạn trong thời gian sớm nhất.";
-                    return View(nameof(Index));
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    // Ghi log hoặc xử lý lỗi nếu có
                     TempData["Error"] = "Có lỗi xảy ra khi gửi thông tin. Vui lòng thử lại sau.";
-                    throw ex;
+                    Console.WriteLine(ex);
+                    return View(nameof(Index));
                 }
             }
             else
