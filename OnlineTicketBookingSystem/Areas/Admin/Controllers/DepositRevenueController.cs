@@ -28,7 +28,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                     "year" => th.CreatedAt.ToString("yyyy"),
                     _ => th.CreatedAt.ToString("dd/MM/yyyy")
                 })
-                .ToDictionary(g => g.Key, g => g.Sum(th => th.Amount));
+                .ToDictionary(g => g.Key, g => g.Sum(th => th.Amount ?? 0));
 
             ViewBag.TimeType = timeType;
             ViewBag.ChartType = chartType; // Lưu loại biểu đồ

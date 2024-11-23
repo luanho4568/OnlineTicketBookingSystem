@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineTicketBookingSystem.DAL.Repository.IRepository;
 using OnlineTicketBookingSystem.Models;
+using OnlineTicketBookingSystem.Utility;
 
 namespace AdminDriverDashboard.Areas.Admin.Controllers
 {
@@ -62,9 +63,19 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                     bus.Image = @"images\buses\" + fileName + extension;
                 }
                 bus.Id = Guid.NewGuid();
-                bus.EmptySeats = bus.TotalSeats;
+                bus.EmptySeats = bus.TotalSeats - 1;
                 bus.Status = true;
                 await _unitOfWork.Buses.AddAsync(bus);
+                for (int i = 1; i <= bus.TotalSeats; i++)
+                {
+                    Seats seat = new Seats
+                    {
+                        BusId = bus.Id,
+                        SeatNumber = "G" + i,
+                        Status = SD.SeatStatus_Empty
+                    };
+                    await _unitOfWork.Seats.AddAsync(seat);
+                }
                 await _unitOfWork.SaveAsync();
 
                 return RedirectToAction(nameof(Index));
@@ -165,7 +176,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
 
             // Cập nhật số ghế
             existingBus.TotalSeats = bus.TotalSeats;
-            existingBus.EmptySeats = bus.TotalSeats;
+            existingBus.EmptySeats = bus.TotalSeats - 1;
             _unitOfWork.Buses.Update(existingBus);
             await _unitOfWork.SaveAsync();
 

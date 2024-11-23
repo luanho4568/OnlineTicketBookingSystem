@@ -31,7 +31,7 @@
                         <td>@ticket.Trips.Buses.Name</td>
                         <td>Từ @ticket.Trips.StartProvince.Name đến @ticket.Trips.EndProvince.Name</td>
                         <td>@ticket.Seats.SeatNumber</td>
-                        <td>@ticket.Price.ToString("N0").Replace(",", ".")đ</td>
+                        <td>@ticket.Price?.ToString("N0").Replace(",", ".")đ</td>
                         <td>@ticket.CreatedAt?.ToString("dd/MM/yyyy")</td>
                         <td class="text-center">
                             @if (ticket.Status == "Completed")

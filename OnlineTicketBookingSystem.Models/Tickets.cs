@@ -17,7 +17,7 @@ namespace OnlineTicketBookingSystem.Models
         [ForeignKey(nameof(SeatId))]
         public Seats? Seats { get; set; }
         [DataType(DataType.Currency)]
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
         public string? Status { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }

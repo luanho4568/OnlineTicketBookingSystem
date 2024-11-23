@@ -29,7 +29,7 @@ namespace AdminDriverDashboard.Areas.Admin.Controllers
                     "year" => th.CreatedAt.HasValue ? th.CreatedAt.Value.ToString("yyyy") : "No Date",
                     _ => th.CreatedAt.HasValue ? th.CreatedAt.Value.ToString("dd/MM/yyyy") : "No Date"
                 })
-                .ToDictionary(g => g.Key, g => g.Sum(th => th.Price));
+                .ToDictionary(g => g.Key, g => g.Sum(th => th.Price ?? 0));
 
             ViewBag.TimeType = timeType;
             ViewBag.ChartType = chartType;
