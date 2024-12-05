@@ -38,8 +38,15 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                 var trips = await _unitOfWork.Trips.GetAllAsync(
                         t => t.StartPoint == tripVM.Trip.StartPoint &&
                              t.EndPoint == tripVM.Trip.EndPoint &&
-                             t.DepartureDate == tripVM.Trip.DepartureDate &&
+                             t.DepartureDate == (tripVM.Trip.DepartureDate ?? null) &&
                              t.Status == "Scheduled");
+                var checkTrips = string.IsNullOrEmpty(tripVM.Trip.StartPoint) || string.IsNullOrEmpty(tripVM.Trip.EndPoint)
+                    || string.IsNullOrEmpty(tripVM.Trip.DepartureDate.ToString());
+                if (checkTrips)
+                {
+                    TempData["Error"] = "Vui lòng nhập đầy đủ thông tin chuyến đi";
+                    return View(tripVM);
+                }
                 if (!trips.Any())
                 {
                     return RedirectToAction("Index", "NoTrips");
@@ -48,7 +55,7 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                 {
                     startPoint = tripVM.Trip.StartPoint,
                     endPoint = tripVM.Trip.EndPoint,
-                    departureDate = tripVM.Trip.DepartureDate.Value.ToString("yyyy-MM-dd") // Định dạng lại nếu cần
+                    departureDate = tripVM.Trip.DepartureDate.Value.ToString("yyyy-MM-dd") ?? null
                 });
             }
             catch (Exception e)

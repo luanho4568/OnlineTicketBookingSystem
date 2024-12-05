@@ -41,6 +41,13 @@ namespace AdminDriverDashboard.Areas.Guest.Controllers
                              t.EndPoint == tripVM.Trip.EndPoint &&
                              t.DepartureDate == tripVM.Trip.DepartureDate &&
                              t.Status == "Scheduled");
+                var checkTrips = string.IsNullOrEmpty(tripVM.Trip.StartPoint) || string.IsNullOrEmpty(tripVM.Trip.EndPoint)
+                    || string.IsNullOrEmpty(tripVM.Trip.DepartureDate.ToString());
+                if (checkTrips)
+                {
+                    TempData["Error"] = "Vui lòng nhập đầy đủ thông tin chuyến đi";
+                    return View(tripVM);
+                }
                 if (!trips.Any())
                 {
                     return RedirectToAction("Index", "NoTrips");

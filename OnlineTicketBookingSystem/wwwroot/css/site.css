@@ -42,3 +42,6 @@ footer {
     height: 200px; /* Điều chỉnh chiều cao ảnh để đảm bảo ảnh đồng nhất */
     object-fit: cover;
 }
+.nav-link:hover {
+    text-decoration : none !important;
+}
